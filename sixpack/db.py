@@ -1,9 +1,12 @@
-from sixpack import REDIS
+from datetime import datetime
+import redis
+
+REDIS = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 DEFAULT_PREFIX = "sixpack"
 
 def _key(k):
-    return "%s:%s" % (DEFAULT_PREFIX, k)
+    return "{0}:{1}".format(DEFAULT_PREFIX, k)
 
 monotonic_zadd = REDIS.register_script("""
     local sequential_id = redis.call('zscore', KEYS[1], ARGV[1])
@@ -27,9 +30,21 @@ msetbit = REDIS.register_script("""
 """)
 def record_participation(_id, test, variation):
     """Record a user's participation in a test along with a given variation"""
-    # TODO: monthly, daily, hourly buckets
-    msetbit(keys=[_key("participation:%s" % (test,)), _key("participation:%s:%s" % (test, variation))],
-            args=[_id, 1, _id, 1])
+    date = datetime.now()
+
+    # TODO: Replace all %s % with .format()
+    keys = [
+        _key("participation:{0}".format(test)),
+        _key("participation:{0}:{1}".format(test, variation)),
+        _key("participation:{0}:{1}".format(test, date.strftime('%Y'))),
+        _key("participation:{0}:{1}".format(test, date.strftime('%Y-%m'))),
+        _key("participation:{0}:{1}".format(test, date.strftime('%Y-%m-%d'))),
+        _key("participation:{0}:{1}:Y"), # with variation name (should settle on variation or alternative)
+        _key("participation:{0}:{1}:Y-m"),
+        _key("participation:{0}:{1}:Y-m-d"),
+    ]
+    msetbit(keys=keys,
+            args=[_id, 1, _id, 1, _id, 1, _id, 1, _id, 1])
 
 
 def record_conversion(_id, test, variation, goal, value=None):
