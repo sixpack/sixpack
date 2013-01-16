@@ -4,7 +4,8 @@ from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 from werkzeug.utils import redirect
 import json
-import random
+from models.experiment import Experiment
+#from models.alternative import Alternative
 
 class Sixpack(object):
 
@@ -41,36 +42,25 @@ class Sixpack(object):
 
     def on_start_experiment(self, request):
         alts = request.args.getlist('alternatives')
-        test = request.args.get('experiment')
+        experiment_name = request.args.get('experiment')
         force = request.args.get('force', None)
         client_id = request.args.get('client_id')
 
-        seq_id = db.sequential_id('sequential_ids', client_id)
-
-        # Do we have a forced choice?
-        # TODO
         if force and force in alts:
             return json_resp(force)
 
-        chosen_alternative = chose_alternative(alts)
-
-        # Does this user have a participation for this test?
-        db.record_participation(seq_id, test, alts[0])
-            # return that
-        # No?! Congradulations
-            # Choose an alte, and store it
+        # This should be wrapped up and moved out of the 'controller'
+        seq_id = db.sequential_id('sequential_ids', client_id)
+        experiment = Experiment.find_or_create(experiment_name, alts)
+        alternative = experiment.get_alternative(seq_id)
 
         resp = {
-            'chosen_alt': chosen_alternative,
-            'experiment': test,
+            'chosen_alt': alternative,
+            'experiment': experiment_name,
             'client_id': client_id,
             'seq_id': seq_id
         }
         return json_resp(resp)
-
-# This will change significantly when steve gets a hold of it.
-def chose_alternative(alternatives):
-    return random.choice(alternatives)
 
 # troll helper
 def json_resp(thign):

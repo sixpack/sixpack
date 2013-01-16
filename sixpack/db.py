@@ -32,7 +32,6 @@ def record_participation(_id, test, variation):
     """Record a user's participation in a test along with a given variation"""
     date = datetime.now()
 
-    # TODO: Replace all %s % with .format()
     keys = [
         _key("participation:{0}".format(test)),
         _key("participation:{0}:{1}".format(test, variation)),
@@ -46,7 +45,7 @@ def record_participation(_id, test, variation):
     msetbit(keys=keys,
             args=[_id, 1, _id, 1, _id, 1, _id, 1, _id, 1])
 
-
 def record_conversion(_id, test, variation, goal, value=None):
     """Record a user's goal conversion with an optional value"""
     pass
+
