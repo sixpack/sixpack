@@ -99,8 +99,11 @@ class Experiment(object):
         pass
 
     @classmethod
-    def find():
-        pass
+    def find(cls, experiment_name):
+        if REDIS.exists(_key(experiment_name)):
+            return cls(experiment_name, Experiment.load_alternatives(experiment_name))
+        else:
+            raise Exception('Experiment does not exist') # TODO, not sure if necessary (fry)
 
     @classmethod
     def find_or_create(cls, experiment_name, alternatives):
