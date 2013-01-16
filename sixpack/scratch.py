@@ -14,7 +14,8 @@ class Sixpack(object):
 
         self.url_map = Map([
             Rule('/', endpoint='status'),
-            Rule('/experiment', endpoint='start_experiment')
+            Rule('/experiment', endpoint='start_experiment'),
+            Rule('/convert', endpoint='convert')
         ])
 
     def dispatch_request(self, request):
@@ -40,11 +41,25 @@ class Sixpack(object):
         }
         return json_resp(status)
 
+    def on_convert(self, request):
+        experiment_name = request.args.get('experiment')
+        client_id = request.args.get('client_id')
+
+        experiment = Experiment.find(experiment_name)
+
+        if client_id is None or experiment_name is None:
+            raise Exception('You forgot something, bro')
+
+        return json_resp({'status': 'ok'})
+
     def on_start_experiment(self, request):
         alts = request.args.getlist('alternatives')
         experiment_name = request.args.get('experiment')
         force = request.args.get('force', None)
         client_id = request.args.get('client_id')
+
+        if client_id is None or experiment_name is None or alts is None:
+            raise Exception('You forgot something, bro')
 
         if force and force in alts:
             return json_resp(force)
