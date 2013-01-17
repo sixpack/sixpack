@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from db import REDIS, _key, record_participation
-from alternative import Alternative
+
 import random
 
 class Experiment(object):
@@ -42,6 +42,7 @@ class Experiment(object):
     def reset(self):
         for alternative in self.alternatives:
             alternative.reset()
+
         self.reset_winner()
         self.increment_version()
 
@@ -57,7 +58,9 @@ class Experiment(object):
         if not alternative: # TODO or has already converted?
             raise('this client was not participaing')
 
-
+        # TODO, there needs to be get alternative NAME vs get alternative
+        alt = Alternative(alternative, self.name)
+        alt.increment_completion()
 
     def increment_version(self):
         REDIS.incr(_key('{0}:version'.format(self.name)))
@@ -152,3 +155,47 @@ class Experiment(object):
                 raise Exception
 
         return [Alternative(n, experiment_name) for n in alternatives]
+
+class Alternative(object):
+
+    def __init__(self, name, experiment_name):
+        self.name = name
+        self.experiment_name = experiment_name
+
+    def reset(self):
+        REDIS.hset(self.key(), 'participant_count', 0)
+        REDIS.hset(self.key(), 'completed_count', 0)
+
+    def delete(self):
+        REDIS.delete(self.key())
+
+    def is_control():
+        pass
+
+    def experiment(self):
+        return Experiment.find(self.experiment_name)
+
+    def increment_participation(self):
+        REDIS.hinctby(self.key(), 'participant_count', 1)
+
+    def participant_count(self):
+        return REDIS.hget(self.key(), 'participant_count')
+
+    def completed_count(self):
+        return REDIS.hget(self.key(), 'completed_count')
+
+    def increment_completion(self):
+        REDIS.hincrby(self.key(), 'completed_count', 1)
+
+    def conversion_rate():
+        pass
+
+    def z_score():
+        pass
+
+    def key(self):
+        return _key("{0}:{1}".format(self.experiment_name, self.name))
+
+    @staticmethod
+    def is_valid(alternative_name):
+        return isinstance(alternative_name, basestring)

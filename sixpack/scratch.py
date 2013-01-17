@@ -4,7 +4,8 @@ from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 from werkzeug.utils import redirect
 import json
-from models.experiment import Experiment
+
+from models import Experiment
 #from models.alternative import Alternative
 
 class Sixpack(object):
@@ -45,9 +46,12 @@ class Sixpack(object):
         experiment_name = request.args.get('experiment')
 
         client_id = request.args.get('client_id')
+        seq_id = db.sequential_id('sequential_ids', client_id)
 
         experiment = Experiment.find(experiment_name)
-        experiment.convert(client_id)
+        experiment.convert(seq_id)
+
+        # did client convert already?
 
         if client_id is None or experiment_name is None:
             raise Exception('You forgot something, bro')
@@ -70,6 +74,13 @@ class Sixpack(object):
         seq_id = db.sequential_id('sequential_ids', client_id)
         experiment = Experiment.find_or_create(experiment_name, alts)
         alternative = experiment.get_alternative(seq_id)
+
+        # Did we pick a winner?
+        #  return it
+        # otherwise
+        #  clean old versions
+        #  exclusions
+        #  get user? # this is based on client now.
 
         resp = {
             'chosen_alt': alternative,
