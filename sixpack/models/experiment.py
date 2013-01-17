@@ -51,6 +51,14 @@ class Experiment(object):
     def version():
         pass
 
+    def convert(self, client_id):
+        alternative = self.get_alternative(client_id)
+
+        if not alternative: # TODO or has already converted?
+            raise('this client was not participaing')
+
+
+
     def increment_version(self):
         REDIS.incr(_key('{0}:version'.format(self.name)))
 
@@ -65,6 +73,14 @@ class Experiment(object):
             alternative.delete()
 
     def get_alternative(self, client_id):
+        chosen_alternative = self.get_alternative_by_client_id(client_id)
+        if not chosen_alternative:
+            chosen_alternative = self.choose_alternative(client_id)
+            record_participation(client_id, self.name, chosen_alternative)
+
+        return chosen_alternative
+
+    def get_alternative_by_client_id(self, client_id):
         # TODO, THIS IS SCRATCH/PROTO
         # MOVE INTO A LUA SCRIPT
         alternatives = REDIS.lrange(self.key(), 0, -1)
@@ -72,31 +88,22 @@ class Experiment(object):
             if REDIS.getbit(_key("participation:{0}:{1}".format(self.name, alternative)), client_id):
                 return alternative
 
-        chosen_alternative = self.choose_alternative(client_id)
-        record_participation(client_id, self.name, chosen_alternative)
-
-        return chosen_alternative
+        return None
 
     def choose_alternative(self, client_id):
         return random.choice(self.alternatives).name
-
-# psudo code for is participating
-# get key for experiment name
-# alts = key lrange 0 -1
-# for each alt
-#    sismember alt key:participation client_id
-#    if true return alt
-#
-# get random choice (MGS will do something here, most likely)
-# record participation(client, test, random variation)
 
     # TODO, Support Versioning
     def key(self):
         return _key(self.name)
 
     @classmethod
-    def all():
-        pass
+    def all(cls):
+        experiments = []
+        for exp_key in REDIS.smembers(_key('experiments')):
+            experiments.append(Experiment.find(exp_key))
+
+        return experiments
 
     @classmethod
     def find(cls, experiment_name):
