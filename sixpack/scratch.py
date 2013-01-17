@@ -43,9 +43,11 @@ class Sixpack(object):
 
     def on_convert(self, request):
         experiment_name = request.args.get('experiment')
+
         client_id = request.args.get('client_id')
 
         experiment = Experiment.find(experiment_name)
+        experiment.convert(client_id)
 
         if client_id is None or experiment_name is None:
             raise Exception('You forgot something, bro')
