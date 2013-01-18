@@ -75,7 +75,7 @@ class Experiment(object):
         alternative = self.get_alternative(client_id)
 
         if not alternative: # TODO or has already converted?
-            raise('this client was not participaing')
+            raise Exception('this client was not participaing')
 
         # TODO, there needs to be get alternative NAME vs get alternative
         alt = Alternative(alternative, self.name, self.redis)
