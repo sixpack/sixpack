@@ -1,4 +1,3 @@
-
 import unittest
 from numbers import Number
 from mock import MagicMock
