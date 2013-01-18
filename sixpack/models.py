@@ -40,8 +40,8 @@ class Experiment(object):
         else:
             pass
 
-    def control():
-        pass
+    def control(self):
+        return self.alternatives[0]
 
     def start_time():
         pass
@@ -53,9 +53,6 @@ class Experiment(object):
         return not self.redis.exists(self.key())
 
     def next_alternative():
-        pass
-
-    def random_alternative():
         pass
 
     def reset(self):
@@ -76,7 +73,6 @@ class Experiment(object):
         self.increment_version()
 
     def version(self):
-        # return \Split\Split::$redis->get(\Split\Split::redis_key("{$this->name}:version")) ?: 0;
         ret = self.redis.get(_key("{0}:version".format(self.name)))
         return 0 if not ret else ret
 
