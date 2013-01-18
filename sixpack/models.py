@@ -78,7 +78,7 @@ class Experiment(object):
             raise('this client was not participaing')
 
         # TODO, there needs to be get alternative NAME vs get alternative
-        alt = Alternative(alternative, self.name)
+        alt = Alternative(alternative, self.name, self.redis)
         alt.increment_completion()
 
     def increment_version(self):
@@ -122,7 +122,7 @@ class Experiment(object):
     @classmethod
     def find(cls, experiment_name, redis_conn):
         if redis_conn.exists(_key(experiment_name)):
-            return cls(experiment_name, Experiment.load_alternatives(experiment_name), redis_conn)
+            return cls(experiment_name, Experiment.load_alternatives(experiment_name, redis_conn), redis_conn)
         else:
             raise Exception('Experiment does not exist') # TODO, not sure if necessary (fry)
 
