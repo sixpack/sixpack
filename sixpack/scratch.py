@@ -10,8 +10,8 @@ from models import Experiment
 
 class Sixpack(object):
 
-    def __init__(self):
-        self.redis = db.REDIS
+    def __init__(self, redis_conn):
+        self.redis = redis_conn
 
         self.url_map = Map([
             Rule('/', endpoint='status'),
@@ -48,7 +48,7 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
         seq_id = db.sequential_id('sequential_ids', client_id)
 
-        experiment = Experiment.find(experiment_name)
+        experiment = Experiment.find(experiment_name, self.redis)
         experiment.convert(seq_id)
 
         # did client convert already?
@@ -72,7 +72,7 @@ class Sixpack(object):
 
         # This should be wrapped up and moved out of the 'controller'
         seq_id = db.sequential_id('sequential_ids', client_id)
-        experiment = Experiment.find_or_create(experiment_name, alts)
+        experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
         alternative = experiment.get_alternative(seq_id)
 
         # Did we pick a winner?
@@ -97,7 +97,7 @@ def json_resp(thign):
     return resp
 
 def create_app():
-    app = Sixpack()
+    app = Sixpack(db.REDIS)
 
     return app
 
