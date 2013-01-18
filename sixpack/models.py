@@ -46,8 +46,8 @@ class Experiment(object):
     def start_time():
         pass
 
-    def get_alternative_names():
-        pass
+    def get_alternative_names(self):
+        return [alt.name for alt in self.alternatives]
 
     def is_new_record(self):
         return not self.redis.exists(self.key())
@@ -65,11 +65,20 @@ class Experiment(object):
         self.reset_winner()
         self.increment_version()
 
-    def delete():
-        pass
+    def delete(self):
+        # kill the alts first
+        self.delete_alternatives()
+        self.reset_winner()
 
-    def version():
-        pass
+        self.redis.srem(_key('experiments'), self.name)
+        self.redis.delete(_key(self.name))
+        self.redis.hdel(_key('experiment_start_times'), self.name)
+        self.increment_version()
+
+    def version(self):
+        # return \Split\Split::$redis->get(\Split\Split::redis_key("{$this->name}:version")) ?: 0;
+        ret = self.redis.get(_key("{0}:version".format(self.name)))
+        return 0 if not ret else ret
 
     def convert(self, client_id):
         alternative = self.get_alternative(client_id)
@@ -112,7 +121,7 @@ class Experiment(object):
 
         return None
 
-    def choose_alternative(self, client_id):
+    def choose_alternative(self, client_id=None):
         return random.choice(self.alternatives).name
 
     # TODO, Support Versioning
