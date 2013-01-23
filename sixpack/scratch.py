@@ -37,9 +37,7 @@ class Sixpack(object):
 
     # Routes are below, investigate moving these out of this file
     def on_status(self, request):
-        status = {
-            'status': 'ok'
-        }
+        status = {'status': 'ok'}
         return json_resp(status)
 
     def on_convert(self, request):
@@ -73,14 +71,7 @@ class Sixpack(object):
         # This should be wrapped up and moved out of the 'controller'
         seq_id = db.sequential_id('sequential_ids', client_id)
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
-        alternative = experiment.get_alternative(seq_id)
-
-        # Did we pick a winner?
-        #  return it
-        # otherwise
-        #  clean old versions
-        #  exclusions
-        #  get user? # this is based on client now.
+        alternative = experiment.get_alternative(seq_id).name
 
         resp = {
             'chosen_alt': alternative,

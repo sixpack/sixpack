@@ -1,7 +1,7 @@
 import unittest
 from numbers import Number
 from mock import MagicMock
-from sixpack.db import REDIS
+from sixpack.db import REDIS, _key
 
 from sixpack.models import Alternative
 
@@ -11,6 +11,7 @@ class TestAlternativeModel(unittest.TestCase):
 
     def setUp(self):
         self.redis = MagicMock(REDIS)
+        self.client_id = 381
 
     def test_key(self):
         alt = Alternative('yes', 'show-something', self.redis)
@@ -45,33 +46,33 @@ class TestAlternativeModel(unittest.TestCase):
         pass
 
     def test_participant_count(self):
-        self.redis.hget.return_value = 1
+        self.redis.bitcount.return_value = 1
 
         alt = Alternative('yes', 'show-something', self.redis)
         count = alt.participant_count()
 
-        self.redis.hget.assert_called_once_with(alt.key(), 'participant_count')
+        self.redis.bitcount.assert_called_once_with(_key("participation:show-something:yes"))
         self.assertTrue(isinstance(count, Number))
 
         self.redis.reset_mock()
 
     def test_completion_count(self):
-        self.redis.hget.return_value = 1
+        self.redis.bitcount.return_value = 1
 
         alt = Alternative('yes', 'show-something', self.redis)
         count = alt.completed_count()
 
-        self.redis.hget.assert_called_once_with(alt.key(), 'completed_count')
+        self.redis.bitcount.assert_called_once_with(_key("conversion:show-something:yes"))
         self.assertTrue(isinstance(count, Number))
 
         self.redis.reset_mock()
 
-    def test_increment_participation(self):
+    def test_record_participation(self):
         alt = Alternative('yes', 'show-something', self.redis)
-        alt.increment_participation()
-        self.redis.hincrby.assert_called_once_with(alt.key(), 'participant_count', 1)
+        alt.record_participation(self.client_id)
 
-    def test_increment_completion(self):
+
+    def test_record_conversion(self):
         alt = Alternative('yes', 'show-something', self.redis)
-        alt.increment_completion()
-        self.redis.hincrby.assert_called_once_with(alt.key(), 'completed_count', 1)
+        alt.record_conversion(self.client_id)
+        self.redis.setbit.assert_called_once_with(_key('conversion:show-something:yes'), 381, 1)

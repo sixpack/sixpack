@@ -86,4 +86,4 @@ class TestExperimentModel(unittest.TestCase):
         exp = Experiment('show-something', self.alternatives, self.redis)
         alt = exp.choose_alternative()
 
-        self.assertIn(alt, self.alternatives)
+        self.assertIn(alt.name, self.alternatives)
