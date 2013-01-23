@@ -76,7 +76,10 @@ class Sixpack(object):
 
         resp = {
             'chosen_alt': alternative.name,
-            'experiment': experiment_name,
+            'experiment': {
+                'name': experiment.name,
+                'version': experiment.version()
+            },
             'client_id': client_id,
             'seq_id': seq_id
         }
