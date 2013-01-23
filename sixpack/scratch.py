@@ -2,7 +2,6 @@ import db
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
-from werkzeug.utils import redirect
 import json
 
 from models import Experiment
