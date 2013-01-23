@@ -1,4 +1,3 @@
-from datetime import datetime
 import redis
 
 REDIS = redis.StrictRedis(host='localhost', port=6379, db=0)
@@ -28,24 +27,3 @@ msetbit = REDIS.register_script("""
     end
     return redis.status_reply('ok')
 """)
-def record_participation(_id, test, variation):
-    """Record a user's participation in a test along with a given variation"""
-    date = datetime.now()
-
-    keys = [
-        _key("participation:{0}".format(test)),
-        _key("participation:{0}:{1}".format(test, variation)),
-        _key("participation:{0}:{1}".format(test, date.strftime('%Y'))),
-        _key("participation:{0}:{1}".format(test, date.strftime('%Y-%m'))),
-        _key("participation:{0}:{1}".format(test, date.strftime('%Y-%m-%d'))),
-        _key("participation:{0}:{1}:Y"), # with variation name (should settle on variation or alternative)
-        _key("participation:{0}:{1}:Y-m"),
-        _key("participation:{0}:{1}:Y-m-d"),
-    ]
-    msetbit(keys=keys,
-            args=[_id, 1, _id, 1, _id, 1, _id, 1, _id, 1])
-
-def record_conversion(_id, test, variation, goal, value=None):
-    """Record a user's goal conversion with an optional value"""
-    pass
-
