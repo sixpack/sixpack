@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from db import _key, record_participation
+from db import _key, msetbit
 
 import random
 
@@ -103,7 +103,7 @@ class Experiment(object):
         chosen_alternative = self.get_alternative_by_client_id(client_id)
         if not chosen_alternative:
             chosen_alternative = self.choose_alternative(client_id)
-            record_participation(client_id, self.name, chosen_alternative)
+            chosen_alternative.record_participation(client_id)
 
         return chosen_alternative
 
@@ -113,12 +113,13 @@ class Experiment(object):
         alternatives = self.redis.lrange(self.key(), 0, -1)
         for alternative in alternatives:
             if self.redis.getbit(_key("participation:{0}:{1}".format(self.name, alternative)), client_id):
-                return alternative
+                return Alternative(alternative, self.name, self.redis)
 
         return None
 
     def choose_alternative(self, client_id=None):
-        return random.choice(self.alternatives).name
+        # This will be hooked up with some fun math-guy-steve stuff later
+        return random.choice(self.alternatives)
 
     # TODO, Support Versioning
     def key(self):
@@ -193,18 +194,35 @@ class Alternative(object):
         return Experiment.find(self.experiment_name)
 
     def participant_count(self):
-        ret = self.redis.hget(self.key(), 'participant_count')
-        return 0 if not ret else ret
+        key = _key("participation:{0}:{1}".format(self.experiment_name, self.name))
+        return self.redis.bitcount(key)
 
     def completed_count(self):
-        ret = self.redis.hget(self.key(), 'completed_count')
-        return 0 if not ret else ret
+        key = _key("conversion:{0}:{1}".format(self.experiment_name, self.name))
+        return self.redis.bitcount(key)
 
-    def increment_participation(self):
-        self.redis.hincrby(self.key(), 'participant_count', 1)
+    def record_participation(self, client_id):
+        """Record a user's participation in a test along with a given variation"""
+        date = datetime.now()
 
-    def increment_completion(self):
-        self.redis.hincrby(self.key(), 'completed_count', 1)
+        keys = [
+            _key("participation:{0}".format(self.experiment_name)),
+            _key("participation:{0}:{1}".format(self.experiment_name, self.name)),
+            _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y'))),
+            _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y-%m'))),
+            _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y-%m-%d'))),
+            _key("participation:{0}:{1}:Y"), # with variation name (should settle on variation or alternative)
+            _key("participation:{0}:{1}:Y-m"),
+            _key("participation:{0}:{1}:Y-m-d"),
+        ]
+
+        msetbit(keys=keys,
+                args=[client_id, 1, client_id, 1, client_id, 1, client_id, 1, client_id, 1])
+
+    def record_conversion(self, client_id):
+        # def record_conversion(_id, test, variation, goal, value=None):
+        key = _key("conversion:{0}:{1}".format(self.experiment_name, self.name))
+        self.redis.setbit(key, client_id, 1)
 
     def conversion_rate():
         pass
