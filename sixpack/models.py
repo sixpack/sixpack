@@ -34,7 +34,6 @@ class Experiment(object):
             self.redis.sadd(_key('experiments'), self.name)
             self.redis.hset(_key('experiment_start_times'), self.name, datetime.now())
 
-
             for alternative in reversed(self.alternatives):
                 self.redis.lpush(self.key(), alternative.name)
         else:
@@ -87,7 +86,13 @@ class Experiment(object):
     def increment_version(self):
         self.redis.incr(_key('{0}:version'.format(self.name)))
 
-    def set_winner():
+    def set_winner(self):
+        pass
+
+    def has_winner(self):
+        pass
+
+    def get_winner(self):
         pass
 
     def reset_winner(self):
@@ -191,8 +196,8 @@ class Alternative(object):
         self.redis = redis_conn
 
     def reset(self):
-        self.redis.hset(self.key(), 'participant_count', 0)
-        self.redis.hset(self.key(), 'completed_count', 0)
+        self.redis.delete(_key("conversion:{0}:{1}".format(self.experiment_name, self.name)))
+        self.redis.delete(_key("participation:{0}:{1}".format(self.experiment_name, self.name)))
 
     def delete(self):
         self.redis.delete(self.key())
@@ -221,13 +226,14 @@ class Alternative(object):
             _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y'))),
             _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y-%m'))),
             _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y-%m-%d'))),
-            _key("participation:{0}:{1}:Y"), # with variation name (should settle on variation or alternative)
-            _key("participation:{0}:{1}:Y-m"),
-            _key("participation:{0}:{1}:Y-m-d"),
+            _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y-%m'))),
+            _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y-%m'))),
+            _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name,date.strftime('%Y-%m-%d'))),
         ]
 
         msetbit(keys=keys,
-                args=[client_id, 1, client_id, 1, client_id, 1, client_id, 1, client_id, 1])
+                args=[client_id, 1, client_id, 1, client_id, 1, client_id, 1, client_id, 1,
+                client_id, 1, client_id, 1, client_id, 1])
 
     def record_conversion(self, client_id):
         key = _key("conversion:{0}:{1}".format(self.experiment_name, self.name))

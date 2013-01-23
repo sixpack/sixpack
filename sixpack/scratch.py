@@ -14,7 +14,7 @@ class Sixpack(object):
 
         self.url_map = Map([
             Rule('/', endpoint='status'),
-            Rule('/experiment', endpoint='start_experiment'),
+            Rule('/participate', endpoint='participate'),
             Rule('/convert', endpoint='convert')
         ])
 
@@ -48,14 +48,12 @@ class Sixpack(object):
         experiment = Experiment.find(experiment_name, self.redis)
         experiment.convert(seq_id)
 
-        # did client convert already?
-
         if client_id is None or experiment_name is None:
             raise Exception('You forgot something, bro')
 
         return json_resp({'status': 'ok'})
 
-    def on_start_experiment(self, request):
+    def on_participate(self, request):
         alts = request.args.getlist('alternatives')
         experiment_name = request.args.get('experiment')
         force = request.args.get('force', None)
@@ -64,16 +62,21 @@ class Sixpack(object):
         if client_id is None or experiment_name is None or alts is None:
             raise Exception('You forgot something, bro')
 
-        if force and force in alts:
-            return json_resp(force)
-
-        # This should be wrapped up and moved out of the 'controller'
-        seq_id = db.sequential_id('sequential_ids', client_id)
+        # Get the experiment ready for action
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
-        alternative = experiment.get_alternative(seq_id).name
+
+
+        if force and force in alts:
+            return json_resp(force) # TODO, this shit isn't close to done
+        elif experiment.has_winner():
+            alternative = experiment.get_winner()
+        else:
+            # This should be wrapped up and moved out of the 'controller'
+            seq_id = db.sequential_id('sequential_ids', client_id)
+            alternative = experiment.get_alternative(seq_id)
 
         resp = {
-            'chosen_alt': alternative,
+            'chosen_alt': alternative.name,
             'experiment': experiment_name,
             'client_id': client_id,
             'seq_id': seq_id
