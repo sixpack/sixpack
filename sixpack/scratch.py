@@ -65,7 +65,6 @@ class Sixpack(object):
         # Get the experiment ready for action
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
 
-
         if force and force in alts:
             return json_resp(force) # TODO, this shit isn't close to done
         elif experiment.has_winner():
@@ -84,8 +83,8 @@ class Sixpack(object):
         return json_resp(resp)
 
 # troll helper
-def json_resp(thign):
-    resp = Response(json.dumps(thign))
+def json_resp(thing):
+    resp = Response(json.dumps(thing))
     resp.headers['Context-Type'] = 'application/json'
     return resp
 
