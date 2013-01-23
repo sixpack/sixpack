@@ -90,7 +90,7 @@ class Experiment(object):
         pass
 
     def has_winner(self):
-        pass
+        return False # TODO Yeah.. this isn't done.
 
     def get_winner(self):
         pass
@@ -226,7 +226,7 @@ class Alternative(object):
             _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y'))),
             _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y-%m'))),
             _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y-%m-%d'))),
-            _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y-%m'))),
+            _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y'))),
             _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y-%m'))),
             _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name,date.strftime('%Y-%m-%d'))),
         ]
