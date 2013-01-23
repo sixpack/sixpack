@@ -33,11 +33,11 @@ class Experiment(object):
         if self.is_new_record():
             self.redis.sadd(_key('experiments'), self.name)
             self.redis.hset(_key('experiment_start_times'), self.name, datetime.now())
-
-            for alternative in reversed(self.alternatives):
-                self.redis.lpush(self.key(), alternative.name)
         else:
-            pass
+            self.redis.delete(self.key())
+
+        for alternative in reversed(self.alternatives):
+            self.redis.lpush(self.key(), alternative.name)
 
     def control(self):
         return self.alternatives[0]
@@ -136,9 +136,12 @@ class Experiment(object):
         # This will be hooked up with some fun math-guy-steve stuff later
         return random.choice(self.alternatives)
 
-    # TODO, Support Versioning
-    def key(self):
-        return _key(self.name)
+    def key(self, version=False):
+        if version and self.version() > 0:
+            key = "{0}:{1}".format(self.name, self.version())
+        else:
+            key = self.name
+        return _key(key)
 
     @classmethod
     def find(cls, experiment_name, redis_conn):
@@ -228,9 +231,10 @@ class Alternative(object):
             _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y-%m-%d'))),
             _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y'))),
             _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y-%m'))),
-            _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name,date.strftime('%Y-%m-%d'))),
+            _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y-%m-%d'))),
         ]
 
+        # TODO... clean this up
         msetbit(keys=keys,
                 args=[client_id, 1, client_id, 1, client_id, 1, client_id, 1, client_id, 1,
                 client_id, 1, client_id, 1, client_id, 1])
