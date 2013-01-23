@@ -77,14 +77,12 @@ class Experiment(object):
         return 0 if not ret else ret
 
     def convert(self, client_id):
-        alternative = self.get_alternative(client_id)
+        alternative = self.get_alternative_by_client_id(client_id)
 
         if not alternative: # TODO or has already converted?
             raise Exception('this client was not participaing')
 
-        # TODO, there needs to be get alternative NAME vs get alternative
-        alt = Alternative(alternative, self.name, self.redis)
-        alt.increment_completion()
+        alternative.record_conversion(client_id)
 
     def increment_version(self):
         self.redis.incr(_key('{0}:version'.format(self.name)))
@@ -116,6 +114,16 @@ class Experiment(object):
                 return Alternative(alternative, self.name, self.redis)
 
         return None
+
+    def has_converted_by_client_id(self, client_id):
+        # TODO, THIS IS SCRATCH/PROTO
+        # MOVE INTO A LUA SCRIPT
+        alternatives = self.redis.lrange(self.key(), 0, -1)
+        for alternative in alternatives:
+            if self.redis.getbit(_key("conversion:{0}:{1}".format(self.name, alternative)), client_id):
+                return True
+
+        return False
 
     def choose_alternative(self, client_id=None):
         # This will be hooked up with some fun math-guy-steve stuff later
@@ -220,7 +228,6 @@ class Alternative(object):
                 args=[client_id, 1, client_id, 1, client_id, 1, client_id, 1, client_id, 1])
 
     def record_conversion(self, client_id):
-        # def record_conversion(_id, test, variation, goal, value=None):
         key = _key("conversion:{0}:{1}".format(self.experiment_name, self.name))
         self.redis.setbit(key, client_id, 1)
 
