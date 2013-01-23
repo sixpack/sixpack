@@ -110,7 +110,8 @@ class Experiment(object):
         # MOVE INTO A LUA SCRIPT
         alternatives = self.redis.lrange(self.key(), 0, -1)
         for alternative in alternatives:
-            if self.redis.getbit(_key("participation:{0}:{1}".format(self.name, alternative)), client_id):
+            key = _key("participation:{0}:{1}".format(self.name, alternative))
+            if self.redis.getbit(key, client_id):
                 return Alternative(alternative, self.name, self.redis)
 
         return None
@@ -120,7 +121,8 @@ class Experiment(object):
         # MOVE INTO A LUA SCRIPT
         alternatives = self.redis.lrange(self.key(), 0, -1)
         for alternative in alternatives:
-            if self.redis.getbit(_key("conversion:{0}:{1}".format(self.name, alternative)), client_id):
+            key = _key("conversion:{0}:{1}".format(self.name, alternative))
+            if self.redis.getbit(key, client_id):
                 return True
 
         return False
@@ -143,7 +145,7 @@ class Experiment(object):
     @classmethod
     def find_or_create(cls, experiment_name, alternatives, redis_conn):
         if len(alternatives) < 2:
-            raise Exception('Must provide at least two alternatives') # Custom Exceptions, Maybe? TODO
+            raise Exception('Must provide at least two alternatives')
 
         # We don't use the class method key here
         if redis_conn.exists(_key(experiment_name)):
