@@ -73,7 +73,7 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None:
-            raise BadRequest
+            return json_resp({'status': 'missing arguments'}, 400)
 
         client = Client(self.redis, client_id)
         experiment = Experiment.find(experiment_name, self.redis)
@@ -88,7 +88,7 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None or alts is None:
-            raise BadRequest
+            return json_resp({'status': 'missing arguments'}, 400)
 
         # Get the experiment ready for action
         client = Client(self.redis, client_id)
@@ -113,9 +113,9 @@ class Sixpack(object):
         }
         return json_resp(resp)
 
-def json_resp(json, status=None):
+def json_resp(in_dict, status=None):
     headers = {'Context-Type': 'application/json'}
-    return Response(json.dumps(json), status=status, headers=headers)
+    return Response(json.dumps(in_dict), status=status, headers=headers)
 
 
 
