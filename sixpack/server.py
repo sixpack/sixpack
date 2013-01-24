@@ -100,7 +100,6 @@ class Sixpack(object):
         elif experiment.has_winner():
             alternative = experiment.get_winner().name
         else:
-            # This should be wrapped up and moved out of the 'controller'
             alternative = experiment.get_alternative(seq_id).name
 
         resp = {
