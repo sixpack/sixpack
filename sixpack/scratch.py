@@ -1,7 +1,7 @@
 import db
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
-from werkzeug.exceptions import HTTPException, NotFound
+from werkzeug.exceptions import HTTPException, BadRequest
 import json
 
 from models import Experiment
@@ -15,7 +15,8 @@ class Sixpack(object):
         self.url_map = Map([
             Rule('/', endpoint='status'),
             Rule('/participate', endpoint='participate'),
-            Rule('/convert', endpoint='convert')
+            Rule('/convert', endpoint='convert'),
+            Rule('/favicon.ico', endpoint='favicon')
         ])
 
     def dispatch_request(self, request):
@@ -45,6 +46,9 @@ class Sixpack(object):
         status = {'status': message, 'code': code}
         return json_resp(status, code)
 
+    def on_favicon(self, request):
+        return Response()
+
     def on_convert(self, request):
         experiment_name = request.args.get('experiment')
 
@@ -55,7 +59,7 @@ class Sixpack(object):
         experiment.convert(seq_id)
 
         if client_id is None or experiment_name is None:
-            raise Exception('You forgot something, bro')
+            raise BadRequest
 
         return json_resp({'status': 'ok'})
 
@@ -66,7 +70,7 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None or alts is None:
-            raise Exception('You forgot something, bro')
+            raise BadRequest
 
         # Get the experiment ready for action
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
