@@ -36,8 +36,14 @@ class Sixpack(object):
 
     # Routes are below, investigate moving these out of this file
     def on_status(self, request):
-        status = {'status': 'ok'}
-        return json_resp(status)
+        code, message = 200, 'ok'
+        try:
+            self.redis.ping()
+        except:
+            code, message = 503, '[REDIS] is unavailable'
+
+        status = {'status': message, 'code': code}
+        return json_resp(status, code)
 
     def on_convert(self, request):
         experiment_name = request.args.get('experiment')
@@ -86,8 +92,8 @@ class Sixpack(object):
         return json_resp(resp)
 
 # troll helper
-def json_resp(thing):
-    resp = Response(json.dumps(thing))
+def json_resp(thing, status=None):
+    resp = Response(json.dumps(thing), status=status)
     resp.headers['Context-Type'] = 'application/json'
     return resp
 
