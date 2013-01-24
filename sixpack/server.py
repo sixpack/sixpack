@@ -48,7 +48,7 @@ class Sixpack(object):
         return json_resp({'status': message, 'code': code}, code)
 
     def on_home(self, request):
-        text = """
+        dales = """
                  ,-"-.__,-"-.__,-"-..
                 ( C>  )( C>  )( C>  ))
                /.`-_-'||`-_-'||`-_-'/
@@ -61,7 +61,7 @@ class Sixpack(object):
              |     ||     ||     |
              `-_-'  `-_-'  `-_-'
         http://github.com/seatgeek/sixpack"""
-        return Response(text)
+        return Response(dales)
 
     def on_favicon(self, request):
         return Response()
