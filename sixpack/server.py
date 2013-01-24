@@ -113,12 +113,13 @@ class Sixpack(object):
         }
         return json_resp(resp)
 
-# troll helper
-def json_resp(thing, status=None):
-    resp = Response(json.dumps(thing), status=status)
-    resp.headers['Context-Type'] = 'application/json'
-    return resp
+def json_resp(json, status=None):
+    headers = {'Context-Type': 'application/json'}
+    return Response(json.dumps(json), status=status, headers=headers)
 
+
+
+# Move these to bin/sixpack
 def create_app():
     app = Sixpack(db.REDIS)
 
