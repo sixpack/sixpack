@@ -6,11 +6,11 @@ import random
 
 class Client(object):
 
-    def __init__(self, redis_conn, client_id):
+    def __init__(self, client_id, redis_conn):
         self.redis = redis_conn
         self.client_id = client_id
 
-    def get_sequntial_id(self):
+    def get_sequential_id(self):
         return sequential_id('sequential_ids', self.client_id)
 
 class ExperimentCollection(object):

@@ -75,7 +75,7 @@ class Sixpack(object):
         if client_id is None or experiment_name is None:
             return json_resp({'status': 'missing arguments'}, 400)
 
-        client = Client(self.redis, client_id)
+        client = Client(client_id, self.redis)
         experiment = Experiment.find(experiment_name, self.redis)
         experiment.convert(client.get_sequential_id())
 
@@ -91,8 +91,8 @@ class Sixpack(object):
             return json_resp({'status': 'missing arguments'}, 400)
 
         # Get the experiment ready for action
-        client = Client(self.redis, client_id)
-        seq_id = client.get_sequntial_id()
+        client = Client(client_id, self.redis)
+        seq_id = client.get_sequential_id()
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
 
         if force and force in alts:
