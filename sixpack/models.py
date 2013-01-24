@@ -1,8 +1,17 @@
 from datetime import datetime
 
-from db import _key, msetbit
+from db import _key, msetbit, sequential_id
 
 import random
+
+class Client(object):
+
+    def __init__(self, redis_conn, client_id):
+        self.redis = redis_conn
+        self.client_id = client_id
+
+    def get_sequntial_id(self):
+        return sequential_id('sequential_ids', self.client_id)
 
 class ExperimentCollection(object):
 
