@@ -125,6 +125,11 @@ def create_app():
 
     return app
 
+def start(environ, start_response):
+    app = Sixpack(db.REDIS)
+
+    return app(environ, start_response)
+
 if __name__ == '__main__':
     from werkzeug.serving import run_simple
     app = create_app()
