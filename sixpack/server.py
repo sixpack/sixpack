@@ -6,12 +6,14 @@ from werkzeug.exceptions import HTTPException, BadRequest
 import json
 
 from models import Experiment, Client
-
+from config import CONFIG as cfg
 
 class Sixpack(object):
 
     def __init__(self, redis_conn):
         self.redis = redis_conn
+
+        self.config = cfg
 
         self.url_map = Map([
             Rule('/', endpoint='home'),
@@ -76,10 +78,19 @@ class Sixpack(object):
             return json_resp({'status': 'missing arguments'}, 400)
 
         client = Client(client_id, self.redis)
+        seq_id = client.get_sequntial_id()
         experiment = Experiment.find(experiment_name, self.redis)
-        experiment.convert(client.get_sequential_id())
+        experiment.convert(seq_id)
 
-        return json_resp({'status': 'ok'})
+        if self.cfg.get('full_response', True):
+            resp = {
+                'seq_id': seq_id,
+                'status': 'ok'
+            }
+        else:
+            resp = {'s': 'ok'}
+
+        return json_resp(resp)
 
     def on_participate(self, request):
         alts = request.args.getlist('alternatives')
@@ -102,15 +113,19 @@ class Sixpack(object):
         else:
             alternative = experiment.get_alternative(seq_id).name
 
-        resp = {
-            'alternative': alternative,
-            'experiment': {
-                'name': experiment.name,
-                'version': experiment.version()
-            },
-            'client_id': client_id,
-            'seq_id': seq_id
-        }
+        if self.config.get('full_response', True):
+            resp = {
+                'alternative': alternative,
+                'experiment': {
+                    'name': experiment.name,
+                    'version': experiment.version()
+                },
+                'client_id': client_id,
+                'seq_id': seq_id
+            }
+        else:
+            resp = {'a': alternative}
+
         return json_resp(resp)
 
 def json_resp(in_dict, status=None):

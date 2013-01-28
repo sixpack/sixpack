@@ -7,3 +7,8 @@ Travis
 ======
 
 [![Build Status](https://travis-ci.org/seatgeek/sixpack.png)](https://travis-ci.org/seatgeek/sixpack)
+
+Notes
+=====
+
+gunicorn --access-logfile - -w 8 --worker-class=gevent server:start
