@@ -9,9 +9,13 @@ class Client(object):
     def __init__(self, client_id, redis_conn):
         self.redis = redis_conn
         self.client_id = client_id
+        self._sequential_id = None
 
-    def get_sequential_id(self):
-        return sequential_id('sequential_ids', self.client_id)
+    @property
+    def sequential_id(self):
+        if self._sequential_id is None:
+            self._sequential_id = sequential_id('internal_user_ids', self.client_id)
+        return self._sequential_id
 
 class ExperimentCollection(object):
 
@@ -84,13 +88,13 @@ class Experiment(object):
         ret = self.redis.get(_key("{0}:version".format(self.name)))
         return 0 if not ret else ret
 
-    def convert(self, client_id):
-        alternative = self.get_alternative_by_client_id(client_id)
+    def convert(self, client):
+        alternative = self.get_alternative_by_client_id(client.sequential_id)
 
         if not alternative: # TODO or has already converted?
             raise Exception('this client was not participaing')
 
-        alternative.record_conversion(client_id)
+        alternative.record_conversion(client.sequential_id)
 
     def increment_version(self):
         self.redis.incr(_key('{0}:version'.format(self.name)))
@@ -111,11 +115,11 @@ class Experiment(object):
         for alternative in self.alternatives:
             alternative.delete()
 
-    def get_alternative(self, client_id):
-        chosen_alternative = self.get_alternative_by_client_id(client_id)
+    def get_alternative(self, client):
+        chosen_alternative = self.get_alternative_by_client_id(client.sequential_id)
         if not chosen_alternative:
-            chosen_alternative = self.choose_alternative(client_id)
-            chosen_alternative.record_participation(client_id)
+            chosen_alternative = self.choose_alternative(client=client)
+            chosen_alternative.record_participation(client)
 
         return chosen_alternative
 
@@ -141,7 +145,7 @@ class Experiment(object):
 
         return False
 
-    def choose_alternative(self, client_id=None):
+    def choose_alternative(self, client=None):
         # This will be hooked up with some fun math-guy-steve stuff later
         return random.choice(self.alternatives)
 
@@ -233,10 +237,9 @@ class Alternative(object):
         key = _key("conversion:{0}:{1}".format(self.experiment_name, self.name))
         return self.redis.bitcount(key)
 
-    def record_participation(self, client_id):
+    def record_participation(self, client):
         """Record a user's participation in a test along with a given variation"""
         date = datetime.now()
-
         keys = [
             _key("participation:{0}".format(self.experiment_name)),
             _key("participation:{0}:{1}".format(self.experiment_name, self.name)),
@@ -247,11 +250,7 @@ class Alternative(object):
             _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y-%m'))),
             _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y-%m-%d'))),
         ]
-
-        # TODO... clean this up
-        msetbit(keys=keys,
-                args=[client_id, 1, client_id, 1, client_id, 1, client_id, 1, client_id, 1,
-                client_id, 1, client_id, 1, client_id, 1])
+        msetbit(keys=keys, args=([client.sequential_id, 1] * len(keys)))
 
     def record_conversion(self, client_id):
         key = _key("conversion:{0}:{1}".format(self.experiment_name, self.name))

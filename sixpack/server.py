@@ -60,7 +60,7 @@ class Sixpack(object):
              |     ||     ||     |
              |     ||     ||     |
              `-_-'  `-_-'  `-_-'
-        http://github.com/seatgeek/sixpack"""
+        https://github.com/seatgeek/sixpack"""
         return Response(dales)
 
     def on_favicon(self, request):
@@ -77,7 +77,7 @@ class Sixpack(object):
 
         client = Client(client_id, self.redis)
         experiment = Experiment.find(experiment_name, self.redis)
-        experiment.convert(client.get_sequential_id())
+        experiment.convert(client)
 
         return json_resp({'status': 'ok'})
 
@@ -92,7 +92,6 @@ class Sixpack(object):
 
         # Get the experiment ready for action
         client = Client(client_id, self.redis)
-        seq_id = client.get_sequential_id()
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
 
         if force and force in alts:
@@ -100,7 +99,7 @@ class Sixpack(object):
         elif experiment.has_winner():
             alternative = experiment.get_winner().name
         else:
-            alternative = experiment.get_alternative(seq_id).name
+            alternative = experiment.get_alternative(client).name
 
         resp = {
             'alternative': alternative,
@@ -108,8 +107,7 @@ class Sixpack(object):
                 'name': experiment.name,
                 'version': experiment.version()
             },
-            'client_id': client_id,
-            'seq_id': seq_id
+            'client_id': client_id
         }
         return json_resp(resp)
 
