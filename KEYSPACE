@@ -29,6 +29,14 @@ conversions
   conversions:test-name/0:alternative-name:users:2013
   conversions:test-name/0:alternative-name:users:2013-01
   conversions:test-name/0:alternative-name:users:2013-01-28
+  conversions:test-name/0:_all:sum:all                          # KEY containing the total conversion magnitude for all alternatives for all time
+  conversions:test-name/0:_all:sum:2013
+  conversions:test-name/0:_all:sum:2013-01
+  conversions:test-name/0:_all:sum:2013-01-28
+  conversions:test-name/0:alternative-name:sum:all              # KEY containing the total conversion magnitude for a single alternative for all time
+  conversions:test-name/0:alternative-name:sum:2013
+  conversions:test-name/0:alternative-name:sum:2013-01
+  conversions:test-name/0:alternative-name:sum:2013-01-28
   conversions:test-name/0:_all:vals:all                         # LIST containing conversion magnitudes for all alternatives for all time
   conversions:test-name/0:_all:vals:2013
   conversions:test-name/0:_all:vals:2013-01
