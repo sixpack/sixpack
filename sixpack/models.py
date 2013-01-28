@@ -1,8 +1,18 @@
+import random
 from datetime import datetime
+import re
 
 from db import _key, msetbit, sequential_id
 
-import random
+# This is pretty restrictive, but we can always relax is later.
+VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9\-_ ]+$", re.I)
+
+def valid_experiment_name(name):
+    return VALID_EXPERIMENT_ALTERNATIVE_RE.match(name) is not None
+
+def valid_alternative_name(name):
+    return VALID_EXPERIMENT_ALTERNATIVE_RE.match(name) is not None
+
 
 class Client(object):
 
@@ -16,6 +26,7 @@ class Client(object):
         if self._sequential_id is None:
             self._sequential_id = sequential_id('internal_user_ids', self.client_id)
         return self._sequential_id
+
 
 class ExperimentCollection(object):
 
@@ -34,6 +45,7 @@ class ExperimentCollection(object):
     def __next__(self):
         for i in self.experiments:
             yield i
+
 
 class Experiment(object):
 
@@ -203,6 +215,7 @@ class Experiment(object):
                 raise Exception
 
         return [Alternative(n, experiment_name, redis_conn) for n in alternatives]
+
 
 class Alternative(object):
 
