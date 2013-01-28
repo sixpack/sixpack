@@ -4,8 +4,8 @@ import re
 
 from db import _key, msetbit, sequential_id
 
-# This is pretty restrictive, but we can always relax is later.
-VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9\-_ ]+$", re.I)
+# This is pretty restrictive, but we can always relax it later.
+VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 
 def valid_experiment_name(name):
     return VALID_EXPERIMENT_ALTERNATIVE_RE.match(name) is not None
