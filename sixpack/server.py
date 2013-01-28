@@ -62,7 +62,7 @@ class Sixpack(object):
              |     ||     ||     |
              |     ||     ||     |
              `-_-'  `-_-'  `-_-'
-        http://github.com/seatgeek/sixpack"""
+        https://github.com/seatgeek/sixpack"""
         return Response(dales)
 
     def on_favicon(self, request):
@@ -78,13 +78,12 @@ class Sixpack(object):
             return json_resp({'status': 'missing arguments'}, 400)
 
         client = Client(client_id, self.redis)
-        seq_id = client.get_sequntial_id()
         experiment = Experiment.find(experiment_name, self.redis)
-        experiment.convert(seq_id)
+        experiment.convert(client)
 
         if self.cfg.get('full_response', True):
             resp = {
-                'seq_id': seq_id,
+                'client_id': client_id,
                 'status': 'ok'
             }
         else:
@@ -103,7 +102,6 @@ class Sixpack(object):
 
         # Get the experiment ready for action
         client = Client(client_id, self.redis)
-        seq_id = client.get_sequential_id()
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
 
         if force and force in alts:
@@ -111,20 +109,16 @@ class Sixpack(object):
         elif experiment.has_winner():
             alternative = experiment.get_winner().name
         else:
-            alternative = experiment.get_alternative(seq_id).name
+            alternative = experiment.get_alternative(client).name
 
-        if self.config.get('full_response', True):
-            resp = {
-                'alternative': alternative,
-                'experiment': {
-                    'name': experiment.name,
-                    'version': experiment.version()
-                },
-                'client_id': client_id,
-                'seq_id': seq_id
-            }
-        else:
-            resp = {'a': alternative}
+        resp = {
+            'alternative': alternative,
+            'experiment': {
+                'name': experiment.name,
+                'version': experiment.version()
+            },
+            'client_id': client_id
+        }
 
         return json_resp(resp)
 
