@@ -8,6 +8,7 @@ experiments                                                     # SET containing
   experiments:test-name                                         # KEY containing current version id?
   experiments:test-name/0                                       # HASH containing metadata about the experiment (created_at, etc.)
   experiments:test-name/0:alternatives                          # LIST containing alternative names
+  experiments:test-name/0:winner                                # KEY containing the winning alternative name
 
 participations
   participations:test-name/0:_all:all                           # BITMAP containing all participations
