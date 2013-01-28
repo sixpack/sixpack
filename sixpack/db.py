@@ -1,8 +1,9 @@
 import redis
+from config import CONFIG as cfg
 
-REDIS = redis.StrictRedis(host='localhost', port=6379, db=0)
+REDIS = redis.StrictRedis(host=cfg.get('redis_host'), port=cfg.get('redis_port'), db=cfg.get('redis_db'))
 
-DEFAULT_PREFIX = "sixpack"
+DEFAULT_PREFIX = cfg.get('redis_prefix')
 
 def _key(k):
     return "{0}:{1}".format(DEFAULT_PREFIX, k)
