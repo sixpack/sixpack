@@ -3,6 +3,7 @@
 #   - test/alternative names cannot start with an underscore
 #   - we should be careful to ensure that clients which have not participated in the current experiment version cannot convert on that version
 #   - we should probably use shorter type names (experiments -> exps) just to be judicious about memory
+#   - all keys should be versioned, not just tests after the first
 
 experiments                                                     # SET containing all experiment names
   experiments:test-name                                         # KEY containing current version id?
