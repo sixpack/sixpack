@@ -81,7 +81,7 @@ class Sixpack(object):
         if client_id is None or experiment_name is None:
             return json_resp({'status': 'missing arguments'}, 400)
 
-        if self.should_exclude_visitor(request):
+        if should_exclude_visitor(request):
             return json_resp({'status': 'ok'})
 
         # Return control on db failure by default
@@ -107,7 +107,7 @@ class Sixpack(object):
         if client_id is None or experiment_name is None or alts is None:
             return json_resp({'status': 'missing arguments'}, 400)
 
-        if self.should_exclude_visitor(request):
+        if should_exclude_visitor(request):
             return json_resp({'alternative': alts[0]})
 
         # Return control on db failure by default
@@ -139,21 +139,21 @@ class Sixpack(object):
 
         return json_resp(resp)
 
-    def should_exclude_visitor(self, request):
-        user_agent = request.args.get('user_agent')
-        ip_address = request.args.get('ip_address')
+def should_exclude_visitor(request):
+    user_agent = request.args.get('user_agent')
+    ip_address = request.args.get('ip_address')
 
-        return self.is_robot(user_agent) or self.is_ignored_ip(ip_address)
+    return is_robot(user_agent) or is_ignored_ip(ip_address)
 
-    def is_robot(self, user_agent):
-        try:
-            regex = re.compile(r"{0}".format(self.config.get('robot_regex')), re.I)
-            return regex.match(unquote(user_agent))
-        except:
-            return False
+def is_robot(user_agent):
+    try:
+        regex = re.compile(r"{0}".format(cfg.get('robot_regex')), re.I)
+        return regex.match(unquote(user_agent))
+    except:
+        return False
 
-    def is_ignored_ip(self, ip_address):
-        return ip_address in self.config.get('ignored_ip_addresses')
+def is_ignored_ip(ip_address):
+    return ip_address in cfg.get('ignored_ip_addresses')
 
 def json_resp(in_dict, status=None):
     headers = {'Context-Type': 'application/json'}
