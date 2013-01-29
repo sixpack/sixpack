@@ -1,8 +1,10 @@
-from flask import Flask
+from flask import Flask, render_template
 import db
 from models import Experiment
 
 app = Flask(__name__)
+
+
 
 # List of experiments
 @app.route("/")
@@ -10,7 +12,7 @@ def hello():
     experiments = Experiment.all(db.REDIS)
     for experiment in experiments:
         print dir(experiment)
-    return "Hello World!"
+    return render_template('dashboard.html')
 
 # Details for experiment
 @app.route("/experiment/<experiment_name>/")
