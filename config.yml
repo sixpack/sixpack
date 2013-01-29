@@ -1,6 +1,16 @@
+enabled: True
+
 redis_port: 6379
 redis_host: localhost
 redis_prefix: sixpack
 redis_db: 1
 
 full_response: True
+
+robot_regex: >
+    /($^|trivial|facebook|MetaURI|butterfly|google|amazon|goldfire|sleuth|
+    xenu|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|pingdom|bot|yahoo|
+    slurp|java|fetch|spider|url|crawl|oneriot|abby|commentreader|twiceler)/
+ignored_ip_addresses: []
+control_on_db_failure: True
+allow_multiple_experiments: False

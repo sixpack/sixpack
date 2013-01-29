@@ -1,7 +1,7 @@
 import db
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
-from werkzeug.exceptions import HTTPException, BadRequest
+from werkzeug.exceptions import HTTPException
 
 import json
 
@@ -81,7 +81,7 @@ class Sixpack(object):
         experiment = Experiment.find(experiment_name, self.redis)
         experiment.convert(client)
 
-        if self.cfg.get('full_response', True):
+        if self.config.get('full_response', True):
             resp = {
                 'client_id': client_id,
                 'status': 'ok'
@@ -99,6 +99,13 @@ class Sixpack(object):
 
         if client_id is None or experiment_name is None or alts is None:
             return json_resp({'status': 'missing arguments'}, 400)
+
+        # Return control on db failure by default
+        if self.config.get('control_on_db_failure'):
+            try:
+                self.redis.ping()
+            except:
+                return json_resp({'alternative': alts[0]})
 
         # Get the experiment ready for action
         client = Client(client_id, self.redis)
