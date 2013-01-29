@@ -1,3 +1,6 @@
+import re
+from urllib import unquote
+
 import db
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
@@ -7,6 +10,7 @@ import json
 
 from models import Experiment, Client
 from config import CONFIG as cfg
+
 
 class Sixpack(object):
 
@@ -91,15 +95,7 @@ class Sixpack(object):
         experiment = Experiment.find(experiment_name, self.redis)
         experiment.convert(client)
 
-        if self.config.get('full_response', True):
-            resp = {
-                'client_id': client_id,
-                'status': 'ok'
-            }
-        else:
-            resp = {'s': 'ok'}
-
-        return json_resp(resp)
+        return json_resp({'status': 'ok'})
 
     def on_participate(self, request):
 
