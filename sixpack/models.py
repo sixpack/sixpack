@@ -27,17 +27,16 @@ class ExperimentCollection(object):
         self.redis = redis_conn
         self.experiments = []
 
-    # TODO: call redis in __next__
     def __iter__(self):
         self.experiments = []
         for exp_key in self.redis.smembers(_key('experiments')):
-            self.experiments.append(Experiment.find(exp_key))
+            self.experiments.append(exp_key)
 
         return self
 
     def __next__(self):
         for i in self.experiments:
-            yield i
+            yield Experiment.find(i)
 
 
 class Experiment(object):
