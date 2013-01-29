@@ -36,7 +36,7 @@ class ExperimentCollection(object):
 
     def __next__(self):
         for i in self.experiments:
-            yield Experiment.find(i)
+            yield Experiment.find(i, self.redis)
 
 
 class Experiment(object):
@@ -55,6 +55,16 @@ class Experiment(object):
 
         for alternative in reversed(self.alternatives):
             self.redis.lpush(self.key(), alternative.name)
+
+    @staticmethod
+    def all(redis_conn):
+        experiments = []
+        keys = redis_conn.smembers(_key('experiments'))
+        for key in keys:
+            experiments.append(Experiment.find(key, redis_conn))
+        # get keys,
+        # new experiment collection with all the keys
+        return experiments
 
     def control(self):
         return self.alternatives[0]

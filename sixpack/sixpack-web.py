@@ -1,11 +1,15 @@
 from flask import Flask
 import db
+from models import Experiment
 
 app = Flask(__name__)
 
 # List of experiments
 @app.route("/")
 def hello():
+    experiments = Experiment.all(db.REDIS)
+    for experiment in experiments:
+        print dir(experiment)
     return "Hello World!"
 
 # Details for experiment
@@ -43,4 +47,4 @@ def favicon():
     return ''
 
 if __name__ == "__main__":
-    app.run(port=5051, debug=True)
+    app.run(port=5001, debug=True)
