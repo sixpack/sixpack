@@ -1,12 +1,22 @@
 import redis
+from redis.connection import ConnectionPool, PythonParser
+
 from config import CONFIG as cfg
 
-REDIS = redis.StrictRedis(host=cfg.get('redis_host'), port=cfg.get('redis_port'), db=cfg.get('redis_db'))
-
+# Because of a bug (https://github.com/andymccurdy/redis-py/issues/318) with
+# script reloading in `redis-py, we need to force the `PythonParser` to prevent
+# sixpack from crashing if redis restarts (or scripts are flushed).
+pool = ConnectionPool(host=cfg.get('redis_host'),
+                      port=cfg.get('redis_port'),
+                      db=cfg.get('redis_db'),
+                      parser_class=PythonParser)
+REDIS = redis.StrictRedis(connection_pool=pool)
 DEFAULT_PREFIX = cfg.get('redis_prefix')
+
 
 def _key(k):
     return "{0}:{1}".format(DEFAULT_PREFIX, k)
+
 
 monotonic_zadd = REDIS.register_script("""
     local sequential_id = redis.call('zscore', KEYS[1], ARGV[1])
