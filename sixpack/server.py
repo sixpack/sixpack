@@ -1,5 +1,6 @@
 import re
 from urllib import unquote
+from socket import inet_aton
 
 import db
 from werkzeug.wrappers import Request, Response
@@ -150,10 +151,16 @@ def is_robot(user_agent):
         regex = re.compile(r"{0}".format(cfg.get('robot_regex')), re.I)
         return regex.match(unquote(user_agent))
     except:
-        return False
+        return False # TODO Not sure if default should be true or false
 
 def is_ignored_ip(ip_address):
-    return ip_address in cfg.get('ignored_ip_addresses')
+    # Ignore invalid/local IP addresses
+    try:
+        inet_aton(unquote(ip_address))
+    except:
+        return False # TODO Same as above not sure of default
+
+    return unquote(ip_address) in cfg.get('ignored_ip_addresses')
 
 def json_resp(in_dict, status=None):
     headers = {'Context-Type': 'application/json'}
