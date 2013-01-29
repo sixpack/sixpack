@@ -7,13 +7,6 @@ from db import _key, msetbit, sequential_id
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 
-def valid_experiment_name(name):
-    return VALID_EXPERIMENT_ALTERNATIVE_RE.match(name) is not None
-
-def valid_alternative_name(name):
-    return VALID_EXPERIMENT_ALTERNATIVE_RE.match(name) is not None
-
-
 class Client(object):
 
     def __init__(self, client_id, redis_conn):
@@ -216,6 +209,10 @@ class Experiment(object):
 
         return [Alternative(n, experiment_name, redis_conn) for n in alternatives]
 
+    @staticmethod
+    def is_valid(experiment_name):
+        return (isinstance(experiment_name, basestring) and \
+            VALID_EXPERIMENT_ALTERNATIVE_RE.match(experiment_name) is not None)
 
 class Alternative(object):
 
@@ -280,4 +277,5 @@ class Alternative(object):
 
     @staticmethod
     def is_valid(alternative_name):
-        return isinstance(alternative_name, basestring)
+        return (isinstance(alternative_name, basestring) and \
+            VALID_EXPERIMENT_ALTERNATIVE_RE.match(alternative_name) is not None)

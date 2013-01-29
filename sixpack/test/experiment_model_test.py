@@ -18,6 +18,19 @@ class TestExperimentModel(unittest.TestCase):
         key = exp.key()
         self.assertEqual(key, 'sixpack:show-something')
 
+    def test_is_not_valid(self):
+        not_valid = Experiment.is_valid(1)
+        self.assertFalse(not_valid)
+
+        not_valid = Experiment.is_valid(':123:name')
+        self.assertFalse(not_valid)
+
+        not_valid = Experiment.is_valid('_123name')
+        self.assertFalse(not_valid)
+
+        not_valid = Experiment.is_valid('&123name')
+        self.assertFalse(not_valid)
+
     def test_save(self):
         pass
 
