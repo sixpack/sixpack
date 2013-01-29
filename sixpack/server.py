@@ -160,7 +160,6 @@ def json_resp(in_dict, status=None):
     return Response(json.dumps(in_dict), status=status, headers=headers)
 
 
-
 # Move these to bin/sixpack
 def create_app():
     app = Sixpack(db.REDIS)
