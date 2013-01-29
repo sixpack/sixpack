@@ -213,6 +213,25 @@ class Experiment(object):
         return (isinstance(experiment_name, basestring) and \
             VALID_EXPERIMENT_ALTERNATIVE_RE.match(experiment_name) is not None)
 
+
+class AlternativeCollection(object):
+
+    def __init__(self, redis_conn):
+        self.redis = redis_conn
+        self.alternatives = []
+
+    # def __iter__(self):
+    #     self.alternatives = []
+    #     for exp_key in self.redis.smembers(_key('experiments')):
+    #         self.experiments.append(exp_key)
+
+    #     return self
+
+    # def __next__(self):
+    #     for i in self.alternatives:
+    #         yield Experiment.find(i)
+
+
 class Alternative(object):
 
     def __init__(self, name, experiment_name, redis_conn):
