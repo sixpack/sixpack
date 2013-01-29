@@ -12,7 +12,7 @@ def hello():
     experiments = Experiment.all(db.REDIS)
     for experiment in experiments:
         print dir(experiment)
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', experiments=experiments)
 
 # Details for experiment
 @app.route("/experiment/<experiment_name>/")

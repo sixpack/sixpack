@@ -1,4 +1,11 @@
 {% extends "layout.html" %}
 {% block body %}
-<p>This is how we do it, it's friday night.</p>
+<h1>Experiments, Bro.</h1>
+
+<ul>
+{% for experiment in experiments %}
+<li>{{ experiment.name }}</li>
+{% endfor %}
+</ul>
+
 {% endblock %}
