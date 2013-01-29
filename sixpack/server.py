@@ -55,15 +55,10 @@ class Sixpack(object):
         except HTTPException, e:
             return e
 
-    # housekeeping endpoints
+    @service_unavailable_on_connection_error
     def on_status(self, request):
-        code, message = 200, 'ok'
-        try:
-            self.redis.ping()
-        except:
-            code, message = 503, '[REDIS] is unavailable'
-
-        return json_resp({'status': message, 'code': code}, code)
+        self.redis.ping()
+        return json_resp({"message": "ok"})
 
     def on_home(self, request):
         dales = """
