@@ -1,16 +1,27 @@
 import re
 from urllib import unquote
 from socket import inet_aton
+import json
+import functools
 
 import db
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException
-
-import json
+import redis
 
 from models import Experiment, Client
 from config import CONFIG as cfg
+
+
+def service_unavailable_on_connection_error(fn):
+    @functools.wraps(fn)
+    def impl(*args, **kwargs):
+        try:
+            return fn(*args, **kwargs)
+        except redis.ConnectionError:
+            return json_resp({"message":"Service Unavailable"}, 503)
+    return impl
 
 
 class Sixpack(object):
@@ -44,15 +55,10 @@ class Sixpack(object):
         except HTTPException, e:
             return e
 
-    # housekeeping endpoints
+    @service_unavailable_on_connection_error
     def on_status(self, request):
-        code, message = 200, 'ok'
-        try:
-            self.redis.ping()
-        except:
-            code, message = 503, '[REDIS] is unavailable'
-
-        return json_resp({'status': message, 'code': code}, code)
+        self.redis.ping()
+        return json_resp({"message": "ok"})
 
     def on_home(self, request):
         dales = """
@@ -73,7 +79,7 @@ class Sixpack(object):
     def on_favicon(self, request):
         return Response()
 
-    # core endpoints
+    @service_unavailable_on_connection_error
     def on_convert(self, request):
         experiment_name = request.args.get('experiment')
 
@@ -85,21 +91,14 @@ class Sixpack(object):
         if should_exclude_visitor(request):
             return json_resp({'status': 'ok'})
 
-        # Return control on db failure by default
-        if self.config.get('control_on_db_failure'):
-            try:
-                self.redis.ping()
-            except:
-                return json_resp({'status': 'ok'}) # not ok?
-
         client = Client(client_id, self.redis)
         experiment = Experiment.find(experiment_name, self.redis)
         experiment.convert(client)
 
         return json_resp({'status': 'ok'})
 
+    @service_unavailable_on_connection_error
     def on_participate(self, request):
-
         alts = request.args.getlist('alternatives')
         experiment_name = request.args.get('experiment')
         force = request.args.get('force')
@@ -110,13 +109,6 @@ class Sixpack(object):
 
         if should_exclude_visitor(request):
             return json_resp({'alternative': alts[0]})
-
-        # Return control on db failure by default
-        if self.config.get('control_on_db_failure'):
-            try:
-                self.redis.ping()
-            except:
-                return json_resp({'alternative': alts[0]})
 
         # Get the experiment ready for action
         client = Client(client_id, self.redis)
