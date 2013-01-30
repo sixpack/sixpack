@@ -13,10 +13,13 @@ class TestExperimentModel(unittest.TestCase):
         self.redis = MagicMock(REDIS)
         self.alternatives = ['yes', 'no']
 
-    def test_key(self):
-        exp = Experiment('show-something', self.alternatives, self.redis)
-        key = exp.key()
-        self.assertEqual(key, 'sixpack:show-something')
+    # def test_key(self):
+    #     exp = Experiment('show-something', self.alternatives, self.redis)
+    #     key = exp.key()
+    #     self.redis.reset_mock()
+    #     self.redis.get.return_value = 0
+    #     self.assertEqual(key, 'sixpack:experiments:show-something/0')
+    #     self.redis.reset_mock()
 
     def test_is_not_valid(self):
         not_valid = Experiment.is_valid(1)
@@ -63,12 +66,12 @@ class TestExperimentModel(unittest.TestCase):
         pass
 
     def test_version(self):
-        self.redis.get.return_value = 1
+        self.redis.get.return_value = 0
 
         exp = Experiment('show-something', self.alternatives, self.redis)
         version = exp.version()
 
-        self.redis.get.assert_called_once_with(_key("{0}:version".format(exp.name)))
+        self.redis.get.assert_called_once_with(_key("experiments:{0}".format(exp.name)))
         self.assertTrue(isinstance(version, Number))
 
         self.redis.reset_mock()
@@ -79,7 +82,7 @@ class TestExperimentModel(unittest.TestCase):
     def test_increment_version(self):
         exp = Experiment('show-something', self.alternatives, self.redis)
         exp.increment_version()
-        self.redis.incr.assert_called_once_with(_key("{0}:version".format(exp.name)))
+        self.redis.incr.assert_called_once_with(_key("experiments:{0}".format(exp.name)))
 
     def test_set_winner(self):
         pass
@@ -87,7 +90,8 @@ class TestExperimentModel(unittest.TestCase):
     def test_reset_winner(self):
         exp = Experiment('show-something', self.alternatives, self.redis)
         exp.reset_winner()
-        self.redis.hdel.assert_called_once_with(_key('experiment_winner'), exp.name)
+        key = "{0}:winner".format(exp.key())
+        self.redis.delete.assert_called_once_with(key)
 
     def test_delete_alternatives(self):
         pass
