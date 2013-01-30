@@ -3,5 +3,4 @@ redis==2.7.0
 mock==1.0b1
 Werkzeug==0.8.3
 PyYAML==3.10
-
-# TODO, make sure this has all the things
+Flask==0.6
