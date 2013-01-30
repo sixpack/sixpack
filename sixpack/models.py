@@ -36,7 +36,7 @@ class ExperimentCollection(object):
 
     def __next__(self):
         for i in self.experiments:
-            yield Experiment.find(i)
+            yield Experiment.find(i, self.redis)
 
 
 class Experiment(object):
@@ -49,18 +49,27 @@ class Experiment(object):
     def save(self):
         if self.is_new_record():
             self.redis.sadd(_key('experiments'), self.name)
-            self.redis.hset(_key('experiment_start_times'), self.name, datetime.now())
-        else:
-            self.redis.delete(self.key())
+            self.redis.set(_key("experiments:{0}".format(self.name)), 0)
 
+        self.redis.hset(self.key(), 'created_at', datetime.now())
         for alternative in reversed(self.alternatives):
-            self.redis.lpush(self.key(), alternative.name)
+            self.redis.lpush("{0}:alternatives".format(self.key()), alternative.name)
+
+    @staticmethod
+    def all(redis_conn):
+        experiments = []
+        keys = redis_conn.smembers(_key('experiments'))
+        for key in keys:
+            experiments.append(Experiment.find(key, redis_conn))
+        # get keys,
+        # new experiment collection with all the keys
+        return experiments
 
     def control(self):
         return self.alternatives[0]
 
-    def start_time():
-        pass
+    def created_at(self):
+        return self.redis.hget(self.key(), 'created_at')
 
     def get_alternative_names(self):
         return [alt.name for alt in self.alternatives]
@@ -68,52 +77,49 @@ class Experiment(object):
     def is_new_record(self):
         return not self.redis.exists(self.key())
 
-    def next_alternative():
-        pass
-
-    def reset(self):
-        for alternative in self.alternatives:
-            alternative.reset()
-
-        self.reset_winner()
-        self.increment_version()
-
     def delete(self):
         # kill the alts first
         self.delete_alternatives()
         self.reset_winner()
 
         self.redis.srem(_key('experiments'), self.name)
-        self.redis.delete(_key(self.name))
-        self.redis.hdel(_key('experiment_start_times'), self.name)
+        self.redis.delete(self.key())
         self.increment_version()
 
     def version(self):
-        ret = self.redis.get(_key("{0}:version".format(self.name)))
-        return 0 if not ret else ret
+        version = self.redis.get(_key("experiments:{0}".format(self.name)))
+        return 0 if version is None else int(version)
+
+
+    def increment_version(self):
+        self.redis.incr(_key('experiments:{0}'.format(self.name)))
 
     def convert(self, client):
-        alternative = self.get_alternative_by_client_id(client.sequential_id)
+        alternative = self.get_alternative_by_client_id(client)
 
         if not alternative: # TODO or has already converted?
             raise Exception('this client was not participaing')
 
-        alternative.record_conversion(client.sequential_id)
+        alternative.record_conversion(client)
 
-    def increment_version(self):
-        self.redis.incr(_key('{0}:version'.format(self.name)))
-
-    def set_winner(self):
-        pass
+    def set_winner(self, alternative_name):
+        key = "{0}:winner".format(self.key())
+        self.redis.set(key, alternative_name)
 
     def has_winner(self):
-        return False # TODO Yeah.. this isn't done.
+        key = "{0}:winner".format(self.key())
+        return self.redis.exists(key)
 
     def get_winner(self):
-        pass
+        if self.has_winner():
+            key = "{0}:winner".format(self.key())
+            return self.redis.get(key)
+
+        return False
 
     def reset_winner(self):
-        self.redis.hdel(_key('experiment_winner'), self.name)
+        key = "{0}:winner".format(self.key())
+        self.redis.delete(key)
 
     def delete_alternatives(self):
         for alternative in self.alternatives:
@@ -127,13 +133,12 @@ class Experiment(object):
 
         return chosen_alternative
 
-    def get_alternative_by_client_id(self, client_id):
+    def get_alternative_by_client_id(self, client):
         # TODO, THIS IS SCRATCH/PROTO
         # MOVE INTO A LUA SCRIPT
-        alternatives = self.redis.lrange(self.key(), 0, -1)
-        for alternative in alternatives:
-            key = _key("participation:{0}:{1}".format(self.name, alternative))
-            if self.redis.getbit(key, client_id):
+        for alternative in self.get_alternative_names():
+            key = _key("participations:{0}:{1}:all".format(self.rawkey(), alternative))
+            if self.redis.getbit(key, client.sequential_id):
                 return Alternative(alternative, self.name, self.redis)
 
         return None
@@ -141,9 +146,8 @@ class Experiment(object):
     def has_converted_by_client_id(self, client_id):
         # TODO, THIS IS SCRATCH/PROTO
         # MOVE INTO A LUA SCRIPT
-        alternatives = self.redis.lrange(self.key(), 0, -1)
-        for alternative in alternatives:
-            key = _key("conversion:{0}:{1}".format(self.name, alternative))
+        for alternative in self.get_alternative_names():
+            key = _key("conversions:{0}:{1}:all".format(self.rawkey(), alternative))
             if self.redis.getbit(key, client_id):
                 return True
 
@@ -153,19 +157,19 @@ class Experiment(object):
         # This will be hooked up with some fun math-guy-steve stuff later
         return random.choice(self.alternatives)
 
-    def key(self, version=False):
-        if version and self.version() > 0:
-            key = "{0}:{1}".format(self.name, self.version())
-        else:
-            key = self.name
+    def rawkey(self):
+        return "{0}/{1}".format(self.name, self.version())
+
+    def key(self):
+        key = "experiments:{0}".format(self.rawkey())
         return _key(key)
 
     @classmethod
     def find(cls, experiment_name, redis_conn):
-        if redis_conn.exists(_key(experiment_name)):
+        if redis_conn.sismember(_key("experiments"), experiment_name):
             return cls(experiment_name, Experiment.load_alternatives(experiment_name, redis_conn), redis_conn)
         else:
-            raise Exception('Experiment does not exist') # TODO, not sure if necessary (fry)
+            raise Exception('Experiment does not exist')
 
     @classmethod
     def find_or_create(cls, experiment_name, alternatives, redis_conn):
@@ -173,23 +177,25 @@ class Experiment(object):
             raise Exception('Must provide at least two alternatives')
 
         # We don't use the class method key here
-        if redis_conn.exists(_key(experiment_name)):
+        if redis_conn.sismember(_key("experiments"), experiment_name):
+            # Note during refactor:
+            # We're not instanciating a new Experiment, rather than this load_alternatives hackery
+            experiment = Experiment.find(experiment_name, redis_conn)
+
             # get the existing alternatives
-            current_alternatives = Experiment.load_alternatives(experiment_name, redis_conn)
+            current_alternatives = experiment.get_alternative_names()
 
             # Make sure the alternative options are correct.
             # If they are not, then we have to make a new version
-            if sorted(current_alternatives) == sorted(alternatives):
-                experiment = cls(experiment_name, alternatives, redis_conn)
-            else:
-                # clear out the old experiment
-                old_exp = cls(experiment_name, current_alternatives, redis_conn)
-                old_exp.reset()
-                old_exp.delete_alternatives()
+            # above `experiment` is then returned eventually
+            if sorted(current_alternatives) != sorted(alternatives):
+                experiment.increment_version()
 
                 # initialize a new one
                 experiment = cls(experiment_name, alternatives, redis_conn)
                 experiment.save()
+
+        # completely new experiment
         else:
             experiment = cls(experiment_name, alternatives, redis_conn)
             experiment.save()
@@ -198,13 +204,16 @@ class Experiment(object):
 
     @staticmethod
     def load_alternatives(experiment_name, redis_conn):
-        return redis_conn.lrange(_key(experiment_name), 0, -1)
+        # get latest version of experiment
+        version = redis_conn.get(_key("experiments:{0}".format(experiment_name)))
+        key = _key("experiments:{0}/{1}:alternatives".format(experiment_name, version))
+        return redis_conn.lrange(key, 0, -1)
 
     @staticmethod
     def initialize_alternatives(alternatives, experiment_name, redis_conn):
         for alternative_name in alternatives:
             if not Alternative.is_valid(alternative_name):
-                raise Exception
+                raise Exception('Invalid alternative name')
 
         return [Alternative(n, experiment_name, redis_conn) for n in alternatives]
 
@@ -239,6 +248,7 @@ class Alternative(object):
         self.experiment_name = experiment_name
         self.redis = redis_conn
 
+    # TODO KEYSPACE
     def reset(self):
         self.redis.delete(_key("conversion:{0}:{1}".format(self.experiment_name, self.name)))
         self.redis.delete(_key("participation:{0}:{1}".format(self.experiment_name, self.name)))
@@ -255,34 +265,49 @@ class Alternative(object):
         pass
 
     def experiment(self):
-        return Experiment.find(self.experiment_name)
+        return Experiment.find(self.experiment_name, self.redis)
 
     def participant_count(self):
-        key = _key("participation:{0}:{1}".format(self.experiment_name, self.name))
+        key = _key("participations:{0}:{1}".format(self.experiment().rawkey(), self.name))
         return self.redis.bitcount(key)
 
     def completed_count(self):
-        key = _key("conversion:{0}:{1}".format(self.experiment_name, self.name))
+        key = _key("conversions:{0}:{1}".format(self.experiment().rawkey(), self.name))
         return self.redis.bitcount(key)
 
     def record_participation(self, client):
         """Record a user's participation in a test along with a given variation"""
         date = datetime.now()
+        experiment_key = self.experiment().rawkey()
+
         keys = [
-            _key("participation:{0}".format(self.experiment_name)),
-            _key("participation:{0}:{1}".format(self.experiment_name, self.name)),
-            _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y'))),
-            _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y-%m'))),
-            _key("participation:{0}:{1}".format(self.experiment_name, date.strftime('%Y-%m-%d'))),
-            _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y'))),
-            _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y-%m'))),
-            _key("participation:{0}:{1}:{2}".format(self.experiment_name, self.name, date.strftime('%Y-%m-%d'))),
+            _key("participations:{0}:_all:all".format(experiment_key)),
+            _key("participations:{0}:_all:{1}".format(experiment_key, date.strftime('%Y'))),
+            _key("participations:{0}:_all:{1}".format(experiment_key, date.strftime('%Y-%m'))),
+            _key("participations:{0}:_all:{1}".format(experiment_key, date.strftime('%Y-%m-%d'))),
+            _key("participations:{0}:{1}:all".format(experiment_key, self.name)),
+            _key("participations:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y'))),
+            _key("participations:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y-%m'))),
+            _key("participations:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y-%m-%d'))),
         ]
         msetbit(keys=keys, args=([client.sequential_id, 1] * len(keys)))
 
-    def record_conversion(self, client_id):
-        key = _key("conversion:{0}:{1}".format(self.experiment_name, self.name))
-        self.redis.setbit(key, client_id, 1)
+    def record_conversion(self, client):
+        """Record a user's conversion in a test along with a given variation"""
+        date = datetime.now()
+        experiment_key = self.experiment().rawkey()
+
+        keys = [
+            _key("conversions:{0}:_all:users:all".format(experiment_key)),
+            _key("conversions:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y'))),
+            _key("conversions:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y-%m'))),
+            _key("conversions:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y-%m-%d'))),
+            _key("conversions:{0}:{1}:users:all".format(experiment_key, self.name)),
+            _key("conversions:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y'))),
+            _key("conversions:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y-%m'))),
+            _key("conversions:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y-%m-%d'))),
+        ]
+        msetbit(keys=keys, args=([client.sequential_id, 1] * len(keys)))
 
     def conversion_rate():
         pass

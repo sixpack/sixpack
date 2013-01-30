@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<h1>{{ experiment.name }}</h1>
+
+Total Participants: <br/>
+Total Conversions: <br/>
+
+{% for alternative in experiment.alternatives %}
+<h2>{{ alternative.name }}</h2>
+Participants: {{ alternative.participant_count() }}<br/>
+Conversions: {{ alternative.completed_count() }}<br/>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Experiments, Bro.</h1>
+
+<ul>
+{% for experiment in experiments %}
+  <li>
+    <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a>
+  </li>
+{% endfor %}
+</ul>
+
+{% endblock %}
