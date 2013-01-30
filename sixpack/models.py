@@ -90,7 +90,6 @@ class Experiment(object):
         version = self.redis.get(_key("experiments:{0}".format(self.name)))
         return 0 if version is None else int(version)
 
-
     def increment_version(self):
         self.redis.incr(_key('experiments:{0}'.format(self.name)))
 
@@ -126,7 +125,7 @@ class Experiment(object):
             alternative.delete()
 
     def get_alternative(self, client):
-        chosen_alternative = self.get_alternative_by_client_id(client.sequential_id)
+        chosen_alternative = self.get_alternative_by_client_id(client)
         if not chosen_alternative:
             chosen_alternative = self.choose_alternative(client=client)
             chosen_alternative.record_participation(client)
@@ -268,11 +267,11 @@ class Alternative(object):
         return Experiment.find(self.experiment_name, self.redis)
 
     def participant_count(self):
-        key = _key("participations:{0}:{1}".format(self.experiment().rawkey(), self.name))
+        key = _key("participations:{0}:{1}:all".format(self.experiment().rawkey(), self.name))
         return self.redis.bitcount(key)
 
     def completed_count(self):
-        key = _key("conversions:{0}:{1}".format(self.experiment().rawkey(), self.name))
+        key = _key("conversions:{0}:{1}:all".format(self.experiment().rawkey(), self.name))
         return self.redis.bitcount(key)
 
     def record_participation(self, client):
