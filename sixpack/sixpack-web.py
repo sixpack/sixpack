@@ -17,7 +17,8 @@ def hello():
 # Details for experiment
 @app.route("/experiment/<experiment_name>/")
 def details(experiment_name):
-    pass
+    experiment = Experiment.find(experiment_name, db.REDIS)
+    return render_template('details.html', experiment=experiment)
 
 # Set winner for an experiment
 @app.route("/experiment/<experiment_name>/winner/", methods=['POST'])

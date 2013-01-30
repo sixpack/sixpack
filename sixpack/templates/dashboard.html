@@ -4,7 +4,9 @@
 
 <ul>
 {% for experiment in experiments %}
-<li>{{ experiment.name }}</li>
+  <li>
+    <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a>
+  </li>
 {% endfor %}
 </ul>
 
