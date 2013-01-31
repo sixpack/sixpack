@@ -257,17 +257,6 @@ class Alternative(object):
     def __repr__(self):
         return "<Alternative {0} (Experiment {1})".format(self.name, self.experiment_name)
 
-    # TODO KEYSPACE
-    def reset(self):
-        return
-        self.redis.delete(_key("conversion:{0}:{1}".format(self.experiment_name, self.name)))
-        self.redis.delete(_key("participation:{0}:{1}".format(self.experiment_name, self.name)))
-
-        key = "participation:{0}:{1}*".format(self.experiment_name, self.name)
-        participation_keys = self.redis.keys(_key(key))
-        for p_key in participation_keys:
-            self.redis.delete(p_key)
-
     def delete(self):
         self.redis.delete(self.key())
 
