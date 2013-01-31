@@ -73,6 +73,14 @@ class Experiment(object):
     def is_new_record(self):
         return not self.redis.sismember(_key("experiments"), self.name)
 
+    def total_participants(self):
+        key = _key("participations:{0}:_all:all".format(self.rawkey()))
+        return self.redis.bitcount(key)
+
+    def total_conversions(self):
+        key = _key("conversions:{0}:_all:users:all".format(self.rawkey()))
+        return self.redis.bitcount(key)
+
     def delete(self):
         # kill the alts first
         self.delete_alternatives()

@@ -3,13 +3,24 @@
 
 <h1>{{ experiment.name }}</h1>
 
-Total Participants: <br/>
-Total Conversions: <br/>
+Total Participants: {{ experiment.total_participants() }} <br/>
+Total Conversions: {{ experiment.total_conversions() }}<br/>
 
 {% for alternative in experiment.alternatives %}
 <h2>{{ alternative.name }}</h2>
+<div class="alt-controls">
+    <form>
+        <button class="btn btn-small">Use This</button>
+    </form>
+</div>
 Participants: {{ alternative.participant_count() }}<br/>
 Conversions: {{ alternative.completed_count() }}<br/>
 {% endfor %}
+
+<div class="controls" style="margin-top:30px">
+    <button class="btn btn-small">Archive</button>
+    <button class="btn btn-small">Delete</button>
+    <button class="btn btn-small">Add Description</button>
+</div>
 
 {% endblock %}

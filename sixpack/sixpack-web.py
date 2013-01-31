@@ -10,8 +10,6 @@ app = Flask(__name__)
 @app.route("/")
 def hello():
     experiments = Experiment.all(db.REDIS)
-    for experiment in experiments:
-        print dir(experiment)
     return render_template('dashboard.html', experiments=experiments)
 
 # Details for experiment
