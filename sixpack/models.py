@@ -46,24 +46,20 @@ class Experiment(object):
         self.alternatives = Experiment.initialize_alternatives(alternatives, name, redis_conn)
         self.redis = redis_conn
 
+    def __repr__(self):
+        return '<Experiment: {0} (version: {1})>'.format(self.name, self.version())
+
     def save(self):
+        pipe = self.redis.pipeline()
         if self.is_new_record():
-            self.redis.sadd(_key('experiments'), self.name)
-            self.redis.set(_key("experiments:{0}".format(self.name)), 0)
+            pipe.sadd(_key('experiments'), self.name)
+            pipe.set(_key("experiments:{0}".format(self.name)), 0)
 
-        self.redis.hset(self.key(), 'created_at', datetime.now())
+        pipe.hset(self.key(), 'created_at', datetime.now())
         for alternative in reversed(self.alternatives):
-            self.redis.lpush("{0}:alternatives".format(self.key()), alternative.name)
+            pipe.lpush("{0}:alternatives".format(self.key()), alternative.name)
 
-    @staticmethod
-    def all(redis_conn):
-        experiments = []
-        keys = redis_conn.smembers(_key('experiments'))
-        for key in keys:
-            experiments.append(Experiment.find(key, redis_conn))
-        # get keys,
-        # new experiment collection with all the keys
-        return experiments
+        pipe.execute()
 
     def control(self):
         return self.alternatives[0]
@@ -102,23 +98,23 @@ class Experiment(object):
         alternative.record_conversion(client)
 
     def set_winner(self, alternative_name):
-        key = "{0}:winner".format(self.key())
-        self.redis.set(key, alternative_name)
+        self.redis.set(self._winner_key, alternative_name)
 
     def has_winner(self):
-        key = "{0}:winner".format(self.key())
-        return self.redis.exists(key)
+        return self.redis.exists(self._winner_key)
 
     def get_winner(self):
         if self.has_winner():
-            key = "{0}:winner".format(self.key())
-            return self.redis.get(key)
+            return self.redis.get(self._winner_key)
 
         return False
 
     def reset_winner(self):
-        key = "{0}:winner".format(self.key())
-        self.redis.delete(key)
+        self.redis.delete(self._winner_key)
+
+    @property
+    def _winner_key(self):
+        return "{0}:winner".format(self.key())
 
     def delete_alternatives(self):
         for alternative in self.alternatives:
@@ -179,27 +175,38 @@ class Experiment(object):
         if redis_conn.sismember(_key("experiments"), experiment_name):
             # Note during refactor:
             # We're not instanciating a new Experiment, rather than this load_alternatives hackery
-            experiment = Experiment.find(experiment_name, redis_conn)
+            exp = Experiment.find(experiment_name, redis_conn)
 
             # get the existing alternatives
-            current_alternatives = experiment.get_alternative_names()
+            current_alternatives = exp.get_alternative_names()
 
             # Make sure the alternative options are correct.
             # If they are not, then we have to make a new version
             # above `experiment` is then returned eventually
             if sorted(current_alternatives) != sorted(alternatives):
-                experiment.increment_version()
+                exp.increment_version()
 
                 # initialize a new one
                 experiment = cls(experiment_name, alternatives, redis_conn)
                 experiment.save()
-
+            else:
+                experiment = exp
         # completely new experiment
         else:
             experiment = cls(experiment_name, alternatives, redis_conn)
             experiment.save()
 
         return experiment
+
+    @staticmethod
+    def all(redis_conn):
+        experiments = []
+        keys = redis_conn.smembers(_key('experiments'))
+        for key in keys:
+            experiments.append(Experiment.find(key, redis_conn))
+        # get keys,
+        # new experiment collection with all the keys
+        return experiments
 
     @staticmethod
     def load_alternatives(experiment_name, redis_conn):
@@ -247,8 +254,12 @@ class Alternative(object):
         self.experiment_name = experiment_name
         self.redis = redis_conn
 
+    def __repr__(self):
+        return "<Alternative {0} (Experiment {1})".format(self.name, self.experiment_name)
+
     # TODO KEYSPACE
     def reset(self):
+        return
         self.redis.delete(_key("conversion:{0}:{1}".format(self.experiment_name, self.name)))
         self.redis.delete(_key("participation:{0}:{1}".format(self.experiment_name, self.name)))
 
