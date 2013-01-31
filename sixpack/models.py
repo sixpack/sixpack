@@ -75,7 +75,7 @@ class Experiment(object):
         return [alt.name for alt in self.alternatives]
 
     def is_new_record(self):
-        return not self.redis.exists(self.key())
+        return not self.redis.sismember(_key("experiments"), self.name)
 
     def delete(self):
         # kill the alts first
