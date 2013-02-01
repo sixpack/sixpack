@@ -51,7 +51,7 @@ class TestExperimentModel(unittest.TestCase):
     def test_is_new_record(self):
         exp = Experiment('show-something', self.alternatives, self.redis)
         exp.is_new_record()
-        self.redis.exists.assert_called_once_with(exp.key())
+        self.redis.sismember.assert_called_once_with(_key('experiments'), exp.name)
 
     def test_next_alternative(self):
         pass

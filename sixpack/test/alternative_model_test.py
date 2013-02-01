@@ -1,9 +1,8 @@
 import unittest
-from numbers import Number
 from mock import MagicMock
-from sixpack.db import REDIS, _key
+from sixpack.db import REDIS
 
-from sixpack.models import Alternative, Client
+from sixpack.models import Alternative
 
 class TestAlternativeModel(unittest.TestCase):
 
@@ -37,12 +36,6 @@ class TestAlternativeModel(unittest.TestCase):
 
         not_valid = Alternative.is_valid('&123name')
         self.assertFalse(not_valid)
-
-    def test_reset(self):
-        alt = Alternative('yes', 'show-something', self.redis)
-        alt.reset()
-        self.redis.delete.assert_any_call(_key("conversion:{0}:{1}".format(alt.experiment_name, alt.name)))
-        self.redis.delete.assert_any_call(_key("participation:{0}:{1}".format(alt.experiment_name, alt.name)))
 
     def test_delete(self):
         alt = Alternative('yes', 'show-something', self.redis)
