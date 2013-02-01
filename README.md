@@ -11,27 +11,27 @@ Travis
 Notes
 =====
 
-gunicorn --access-logfile - -w 8 --worker-class=gevent server:start
+    gunicorn --access-logfile - -w 8 --worker-class=gevent server:start
 
 Starting Sixpack (Developement)
 ===============================
 
-$ cd sixpack
-(virtualenv here, if you want)
-$ pip install -r requirements.txt
-$ cd sixpack
-$ python server.py
+    $ cd sixpack
+    (virtualenv here, if you want)
+    $ pip install -r requirements.txt
+    $ cd sixpack
+    $ python server.py
 
-server will be on localhost:5000
+server will be on `localhost:5000`
 
 To seed some random data
-$ python seed.py (with above server running)
+    $ python seed.py (with above server running)
 
 Starting Sixpack-Web (Development)
 ==================================
 
-$ cd sixpack
-$ python sixpack-web.py
+    $ cd sixpack
+    $ python sixpack-web.py
 
-server will be on localhost:5001
+server will be on `localhost:5001`
 
