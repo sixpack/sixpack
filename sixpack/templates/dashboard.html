@@ -1,11 +1,32 @@
 {% extends "layout.html" %}
 {% block body %}
-<h1>Experiments, Bro.</h1>
 
-<ul>
+<ul class="experiments">
 {% for experiment in experiments %}
   <li>
-    <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a>
+    <h3 class="name"><a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a></h3>
+    <!-- BEGIN: Dummy data -->
+    <table>
+    	<tr>
+    		<th>Case</th>
+    		<th>Participants</th>
+    		<th>Conv Rate</th>
+    		<th>Confidence</th>
+    	</tr>
+    	<tr>
+    		<td>With blink tag <span class="note">control</span></td>
+    		<td>17,546</td>
+    		<td>6.45%</td>
+    		<td>N/A</td>
+		</tr>
+		<tr>
+			<td>Without blink tag</td>
+    		<td>17,497</td>
+    		<td>5.78%</td>
+    		<td>99%</td>
+		</tr>
+    </table>
+    <!-- END: Dummy data -->
   </li>
 {% endfor %}
 </ul>
