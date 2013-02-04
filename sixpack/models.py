@@ -355,8 +355,11 @@ class Alternative(object):
         ]
         msetbit(keys=keys, args=([client.sequential_id, 1] * len(keys)))
 
-    def conversion_rate():
-        pass
+    def conversion_rate(self):
+        if self.participant_count() == 0:
+            return 0
+        else:
+            return self.completed_count() / self.participant_count()
 
     def z_score():
         pass

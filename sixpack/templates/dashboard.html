@@ -13,18 +13,14 @@
     		<th>Conv Rate</th>
     		<th>Confidence</th>
     	</tr>
+        {% for alt in experiment.alternatives %}
     	<tr>
-    		<td>With blink tag <span class="note">control</span></td>
-    		<td>17,546</td>
-    		<td>6.45%</td>
+    		<td>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %}</td>
+    		<td>{{ alt.participant_count() }}</td>
+    		<td>{{ alt.conversion_rate() }}%</td>
     		<td>N/A</td>
 		</tr>
-		<tr>
-			<td>Without blink tag</td>
-    		<td>17,497</td>
-    		<td>5.78%</td>
-    		<td>99%</td>
-		</tr>
+        {% endfor %}
     </table>
     <!-- END: Dummy data -->
   </li>
