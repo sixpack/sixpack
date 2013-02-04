@@ -81,6 +81,12 @@ class Experiment(object):
         key = _key("conversions:{0}:_all:users:all".format(self.rawkey()))
         return self.redis.bitcount(key)
 
+    def reset(self):
+        self.increment_version()
+
+        experiment = Experiment(self.name, self.get_alternative_names(), self.redis)
+        experiment.save()
+
     def delete(self):
         # kill the alts first
         self.delete_alternatives()
