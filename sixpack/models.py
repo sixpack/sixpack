@@ -53,9 +53,15 @@ class Experiment(object):
         pipe = self.redis.pipeline()
         if self.is_new_record():
             pipe.sadd(_key('experiments'), self.name)
+
+            # Set version to zero
             pipe.set(_key("experiments:{0}".format(self.name)), 0)
 
+            # Empty desc by default
+            pipe.hset(self.key(), 'description', '')
+
         pipe.hset(self.key(), 'created_at', datetime.now())
+        # reverse here and use lpush to keep consistent with using lrange
         for alternative in reversed(self.alternatives):
             pipe.lpush("{0}:alternatives".format(self.key()), alternative.name)
 
@@ -65,6 +71,7 @@ class Experiment(object):
         return self.alternatives[0]
 
     def created_at(self):
+        # TODO Date object
         return self.redis.hget(self.key(), 'created_at')
 
     def get_alternative_names(self):
@@ -81,6 +88,12 @@ class Experiment(object):
         key = _key("conversions:{0}:_all:users:all".format(self.rawkey()))
         return self.redis.bitcount(key)
 
+    def update_description(self, description=''):
+        self.redis.hset(self.key(), 'description', description)
+
+    def get_description(self):
+        return self.redis.hget(self.key(), 'description')
+
     def reset(self):
         self.increment_version()
 
@@ -94,6 +107,7 @@ class Experiment(object):
         pipe.delete(_key(self.rawkey()))
         pipe.delete(_key('experiments:{0}'.format(self.name)))
 
+        # Consider a 'non-keys' implementation of this
         keys = self.redis.keys('*{0}*'.format(self.rawkey()))
         for key in keys:
             pipe.delete(key)

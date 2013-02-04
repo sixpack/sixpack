@@ -34,7 +34,6 @@ def reset_experiment(experiment_name):
 
     return redirect(url_for('details', experiment_name=experiment.name))
 
-
 # Reset experiment winner
 @app.route("/experiment/<experiment_name>/winner/reset/", methods=['POST'])
 def reset_winner(experiment_name):
@@ -51,16 +50,21 @@ def delete_experiment(experiment_name):
 
     return redirect(url_for('hello'))
 
-
 # Archive experiment
 @app.route("/experiment/<experiment_name>/archive", methods=['POST'])
-def archive_experiment(archive_experiment):
-    pass
+def archive_experiment(experiment_name):
+    experiment = find_or_404(experiment_name)
+    experiment.archive()
+
+    return redirect(url_for('details', experiment_name=experiment.name))
 
 @app.route("/experiment/<experiment_name>/description", methods=['POST'])
 def update_experiment_description(experiment_name):
     experiment = find_or_404(experiment_name)
-    print experiment
+
+    experiment.update_description(request.form['description'])
+
+    return redirect(url_for('details', experiment_name=experiment.name))
 
 @app.route('/favicon.ico')
 def favicon():
