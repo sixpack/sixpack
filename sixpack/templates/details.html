@@ -9,9 +9,15 @@ Total Conversions: {{ experiment.total_conversions() }}<br/>
 {% for alternative in experiment.alternatives %}
 <h2>{{ alternative.name }}</h2>
 <div class="alt-controls">
-    <form>
-        <button class="btn btn-small">Use This</button>
+    {% if alternative.is_winner() %}
+        <p>This test won!</p>
+    {% else %}
+    <form action="{{ url_for('set_winner', experiment_name=experiment.name) }}" method="post">
+        <input type='hidden' name="alternative_name" value="{{ alternative.name }}" />
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-small">Use This</button>
     </form>
+    {% endif %}
 </div>
 Participants: {{ alternative.participant_count() }}<br/>
 Conversions: {{ alternative.completed_count() }}<br/>
@@ -21,6 +27,12 @@ Conversions: {{ alternative.completed_count() }}<br/>
     <button class="btn btn-small">Archive</button>
     <button class="btn btn-small">Delete</button>
     <button class="btn btn-small">Add Description</button>
+    {% if experiment.has_winner() %}
+        <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-small" type="submit">Reset Winner</button>
+        </form>
+    {% endif %}
 </div>
 
 {% endblock %}
