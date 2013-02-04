@@ -88,13 +88,18 @@ class Experiment(object):
         experiment.save()
 
     def delete(self):
-        # kill the alts first
-        self.delete_alternatives()
-        self.reset_winner()
+        pipe = self.redis.pipeline()
+        pipe.srem(_key('experiments'), self.name)
+        pipe.delete(self.key())
+        pipe.delete(_key(self.rawkey()))
+        pipe.delete(_key('experiments:{0}'.format(self.name)))
 
-        self.redis.srem(_key('experiments'), self.name)
-        self.redis.delete(self.key())
-        self.increment_version()
+
+        keys = self.redis.keys('*{0}*'.format(self.rawkey()))
+        for key in keys:
+            pipe.delete(key)
+
+        pipe.execute()
 
     def version(self):
         version = self.redis.get(_key("experiments:{0}".format(self.name)))
