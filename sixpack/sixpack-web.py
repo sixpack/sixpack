@@ -3,8 +3,8 @@ import db
 from models import Experiment
 
 app = Flask(__name__)
-
-
+from flask.ext.seasurf import SeaSurf
+csrf = SeaSurf(app)
 
 # List of experiments
 @app.route("/")
