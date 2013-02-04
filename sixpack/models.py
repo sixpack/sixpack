@@ -271,6 +271,9 @@ class Alternative(object):
     def is_control():
         pass
 
+    def is_winner(self):
+        return self.experiment().has_winner() and self.experiment().get_winner() == self.name
+
     def experiment(self):
         return Experiment.find(self.experiment_name, self.redis)
 
