@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, abort, request, url_for, redirect
 import db
 from models import Experiment
 
@@ -46,6 +46,9 @@ def archive_experiment(archive_experiment):
 @app.route('/favicon.ico')
 def favicon():
     return ''
+
+# You should change this
+app.secret_key = 'OQvHQgJfyNT$lC3K89/!#CJ4RLqAqH3QMIq5LXfW4eh'
 
 if __name__ == "__main__":
     app.run(port=5001, debug=True)
