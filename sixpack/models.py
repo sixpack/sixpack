@@ -162,6 +162,9 @@ class Experiment(object):
             alternative.delete()
 
     def get_alternative(self, client):
+        if self.is_archived():
+            return self.control()
+
         chosen_alternative = self.get_alternative_by_client_id(client)
         if not chosen_alternative:
             chosen_alternative = self.choose_alternative(client=client)
