@@ -94,12 +94,20 @@ class Experiment(object):
         pipe.delete(_key(self.rawkey()))
         pipe.delete(_key('experiments:{0}'.format(self.name)))
 
-
         keys = self.redis.keys('*{0}*'.format(self.rawkey()))
         for key in keys:
             pipe.delete(key)
 
         pipe.execute()
+
+    def archive(self):
+        self.redis.hset(self.key(), 'archived', 1)
+
+    def unarchive(self):
+        self.redis.hdel(self.key(), 'archived')
+
+    def is_archived(self):
+        return self.redis.hexists(self.key(), 'archived')
 
     def version(self):
         version = self.redis.get(_key("experiments:{0}".format(self.name)))
@@ -218,11 +226,14 @@ class Experiment(object):
         return experiment
 
     @staticmethod
-    def all(redis_conn):
+    def all(redis_conn, exclude_archived=True):
         experiments = []
         keys = redis_conn.smembers(_key('experiments'))
+
         for key in keys:
-            experiments.append(Experiment.find(key, redis_conn))
+            experiment = Experiment.find(key, redis_conn)
+            if exclude_archived and not experiment.is_archived():
+                experiments.append(Experiment.find(key, redis_conn))
         # get keys,
         # new experiment collection with all the keys
         return experiments
