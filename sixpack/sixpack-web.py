@@ -52,9 +52,12 @@ def delete_experiment(experiment_name):
 
 # Archive experiment
 @app.route("/experiment/<experiment_name>/archive", methods=['POST'])
-def archive_experiment(experiment_name):
+def toggle_experiment_archive(experiment_name):
     experiment = find_or_404(experiment_name)
-    experiment.archive()
+    if experiment.is_archived():
+        experiment.unarchive()
+    else:
+        experiment.archive()
 
     return redirect(url_for('details', experiment_name=experiment.name))
 

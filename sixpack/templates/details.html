@@ -37,8 +37,15 @@ Total Conversions: {{ experiment.total_conversions() }}<br/>
         <button class="btn btn-small">Delete</button>
     </form>
 
-    <button class="btn btn-small">Archive</button>
-    <button class="btn btn-small" data-toggle="modal" data-target="#desc-modal">Update Description</button>
+
+    <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-small">{% if experiment.is_archived() %}Un-{% endif %}Archive</button>
+    </form>
+
+    <form>
+        <button class="btn btn-small" data-toggle="modal" data-target="#desc-modal">Update Description</button>
+    </form>
     {% if experiment.has_winner() %}
         <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
