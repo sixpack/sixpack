@@ -304,8 +304,8 @@ class Alternative(object):
     def delete(self):
         self.redis.delete(self.key())
 
-    def is_control():
-        pass
+    def is_control(self):
+        return self.experiment().control().name == self.name
 
     def is_winner(self):
         return self.experiment().has_winner() and self.experiment().get_winner() == self.name
