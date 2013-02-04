@@ -114,6 +114,7 @@ class Sixpack(object):
         client = Client(client_id, self.redis)
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
 
+        # Wondering if this logic should be moved into the model
         if force and force in alts:
             alternative = force
         elif experiment.has_winner():
