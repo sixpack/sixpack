@@ -215,11 +215,12 @@ class Experiment(object):
         return max(stats.iteritems(), key=operator.itemgetter(1))[0]
 
     def _arm_guess(self, participant_count, completed_count):
+        fairness_score = 7
         a = max([participant_count, 0])
 
         b = max([participant_count - completed_count, 0])
 
-        return random.betavariate(a + 7, b + 7)
+        return random.betavariate(a + fairness_score, b + fairness_score)
 
     def rawkey(self):
         return "{0}/{1}".format(self.name, self.version())
