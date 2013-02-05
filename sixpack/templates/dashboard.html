@@ -5,11 +5,11 @@
 {% for experiment in experiments %}
   <li>
     <h3 class="name"><a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a></h3>
-    <!-- BEGIN: Dummy data -->
     <table>
     	<tr>
     		<th>Case</th>
     		<th>Participants</th>
+            <th>Completions</th>
     		<th>Conv Rate</th>
     		<th>Confidence</th>
     	</tr>
@@ -17,12 +17,12 @@
     	<tr>
     		<td>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %}</td>
     		<td>{{ alt.participant_count() }}</td>
+            <td>{{ alt.completed_count() }}</td>
     		<td>{{ alt.conversion_rate()|number_to_percent }}%</td>
     		<td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
 		</tr>
         {% endfor %}
     </table>
-    <!-- END: Dummy data -->
   </li>
 {% endfor %}
 </ul>

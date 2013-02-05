@@ -360,7 +360,7 @@ class Alternative(object):
 
     def conversion_rate(self):
         try:
-            return self.completed_count() / self.participant_count()
+            return self.completed_count() / float(self.participant_count())
         except ZeroDivisionError:
             return 0
 
@@ -378,11 +378,10 @@ class Alternative(object):
         c = control.participant_count()
 
         try:
-            std_dev = ((ctr_e / ctr_c**3) * ((e*ctr_e)+(c*ctr_c)-(ctr_c*ctr_e)*(c+e))/(c*e)) ** 0.5
+            std_dev = pow(((ctr_e / pow(ctr_c, 3)) * ((e*ctr_e)+(c*ctr_c)-(ctr_c*ctr_e)*(c+e))/(c*e)), 0.5)
+            return ((ctr_e / ctr_c) - 1) / std_dev
         except ZeroDivisionError:
             return 0
-
-        return ((ctr_e / ctr_c) - 1) / std_dev
 
     def confidence_level(self):
         z_score = self.z_score()
@@ -395,13 +394,13 @@ class Alternative(object):
         if z_score == 0.0:
             ret = 'No Change'
         elif z_score < 1.645:
-            ret = 'no confidence'
+            ret = 'No Confidence'
         elif z_score < 1.96:
-            ret = '95% confidence'
+            ret = '95% Confidence'
         elif z_score < 2.57:
-            ret = '99% confidence'
+            ret = '99% Confidence'
         else:
-            ret = '99.9% confidence'
+            ret = '99.9% Confidence'
 
         return ret
 
