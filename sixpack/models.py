@@ -321,7 +321,7 @@ class Alternative(object):
         return self.redis.bitcount(key)
 
     def completed_count(self):
-        key = _key("conversions:{0}:{1}:all".format(self.experiment().rawkey(), self.name))
+        key = _key("conversions:{0}:{1}:users:all".format(self.experiment().rawkey(), self.name))
         return self.redis.bitcount(key)
 
     def record_participation(self, client):
