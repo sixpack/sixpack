@@ -20,7 +20,7 @@ def service_unavailable_on_connection_error(fn):
         try:
             return fn(*args, **kwargs)
         except redis.ConnectionError:
-            return json_resp({"message": "Service Unavailable"}, 503)
+            return json_resp({"message": "Service Unavailable"}, None, 503)
     return impl
 
 
@@ -58,7 +58,7 @@ class Sixpack(object):
     @service_unavailable_on_connection_error
     def on_status(self, request):
         self.redis.ping()
-        return json_resp({"message": "ok"})
+        return json_resp({"message": "ok"}, request)
 
     def on_home(self, request):
         dales = """
@@ -86,16 +86,16 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None:
-            return json_resp({'status': 'missing arguments'}, 400)
+            return json_resp({'status': 'missing arguments'}, request, 400)
 
         if should_exclude_visitor(request):
-            return json_resp({'status': 'ok'})
+            return json_resp({'status': 'ok'}, request)
 
         client = Client(client_id, self.redis)
         experiment = Experiment.find(experiment_name, self.redis)
         experiment.convert(client)
 
-        return json_resp({'status': 'ok'})
+        return json_resp({'status': 'ok'}, request)
 
     @service_unavailable_on_connection_error
     def on_participate(self, request):
@@ -105,10 +105,10 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None or alts is None:
-            return json_resp({'status': 'missing arguments'}, 400)
+            return json_resp({'status': 'missing arguments'}, request, 400)
 
         if should_exclude_visitor(request):
-            return json_resp({'alternative': alts[0]})
+            return json_resp({'alternative': alts[0]}, request)
 
         # Get the experiment ready for action
         client = Client(client_id, self.redis)
@@ -132,7 +132,7 @@ class Sixpack(object):
             'status': 'ok'
         }
 
-        return json_resp(resp)
+        return json_resp(resp, request)
 
 
 def should_exclude_visitor(request):
@@ -160,9 +160,14 @@ def is_ignored_ip(ip_address):
     return unquote(ip_address) in cfg.get('ignored_ip_addresses')
 
 
-def json_resp(in_dict, status=None):
+def json_resp(in_dict, request, status=None):
     headers = {'Content-Type': 'application/json'}
-    return Response(json.dumps(in_dict), status=status, headers=headers)
+    data = json.dumps(in_dict)
+    callback = request and request.args.get('callback')
+    if callback and re.match("^\w[\w'\-\.]*$", callback):
+        headers["Content-Type"] = "application/javascript"
+        data = "%s(%s)" % (callback, data)
+    return Response(data, status=status, headers=headers)
 
 
 # Move these to bin/sixpack

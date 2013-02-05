@@ -29,5 +29,13 @@ class TestServer(unittest.TestCase):
         res = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=seatgeek.cb")
         self.assertEqual(200, res.status_code)
         self.assertEqual("application/javascript", dict(res.headers)["Content-Type"])
-        self.assert_(res.data.startswith("foo({"))
+        self.assert_(res.data.startswith("seatgeek.cb({"))
         self.assert_(res.data.endswith("})"))
+
+    def test_with_bad_callback(self):
+        # TODO error out here instead?
+        res = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=alert();foo")
+        self.assertEqual(200, res.status_code)
+        self.assertEqual("application/json", dict(res.headers)["Content-Type"])
+        self.assert_(res.data.startswith("{"))
+        self.assert_(res.data.endswith("}"))
