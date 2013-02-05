@@ -67,18 +67,25 @@ class TestExperimentModel(unittest.TestCase):
         exp.save()
         self.assertFalse(exp.is_new_record())
 
-
-    def test_next_alternative(self):
-        pass
-
     def test_reset(self):
         alt_count = len(self.alternatives)
         print alt_count
         pass
 
-
     def test_delete(self):
-        pass
+        exp = Experiment('delete-me', self.alternatives, self.redis)
+        exp.save()
+
+        exp.delete()
+        with self.assertRaises(Exception):
+            Experiment.find('delete-me', self.alternatives, self.redis)
+
+    def test_archive(self):
+        self.assertFalse(self.exp_1.is_archived())
+        self.exp_1.archive()
+        self.assertTrue(self.exp_1.is_archived())
+        self.exp_1.unarchive()
+        self.assertFalse(self.exp_1.is_archived())
 
     def test_version(self):
         pass

@@ -1,6 +1,7 @@
 import unittest
 from sixpack.server import is_robot
 
+
 class TestServerLogic(unittest.TestCase):
 
     unit = True
@@ -15,3 +16,4 @@ class TestServerLogic(unittest.TestCase):
 
         ret = is_robot(None)
         self.assertFalse(ret)
+

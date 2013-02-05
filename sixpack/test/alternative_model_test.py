@@ -1,7 +1,8 @@
 import unittest
 import fakeredis
 
-from sixpack.models import Alternative
+from sixpack.models import Alternative, Experiment
+
 
 class TestAlternativeModel(unittest.TestCase):
 
@@ -10,7 +11,6 @@ class TestAlternativeModel(unittest.TestCase):
     def setUp(self):
         self.redis = fakeredis.FakeStrictRedis()
         self.client_id = 381
-
 
     def test_key(self):
         alt = Alternative('yes', 'show-something', self.redis)
@@ -38,10 +38,20 @@ class TestAlternativeModel(unittest.TestCase):
         self.assertFalse(not_valid)
 
     def test_is_control(self):
-        pass
+        exp = Experiment('trololo', ['yes', 'no'], self.redis)
+        exp.save()
+
+        alt = Alternative('yes', 'trololo', self.redis)
+        self.assertTrue(alt.is_control())
+        exp.delete()
 
     def test_experiment(self):
-        pass
+        exp = Experiment('trololo', ['yes', 'no'], self.redis)
+        exp.save()
+
+        alt = Alternative('yes', 'trololo', self.redis)
+        self.assertTrue(alt.is_control())
+
 
     def test_participant_count(self):
         pass
