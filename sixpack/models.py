@@ -1,4 +1,5 @@
-import random, operator
+import random
+import operator
 from datetime import datetime
 import re
 
@@ -6,6 +7,7 @@ from db import _key, msetbit, sequential_id
 
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
+
 
 class Client(object):
 
@@ -17,7 +19,9 @@ class Client(object):
     @property
     def sequential_id(self):
         if self._sequential_id is None:
-            self._sequential_id = sequential_id('internal_user_ids', self.client_id)
+            self._sequential_id = sequential_id(
+                'internal_user_ids',
+                self.client_id)
         return self._sequential_id
 
 
@@ -43,7 +47,10 @@ class Experiment(object):
 
     def __init__(self, name, alternatives, redis_conn):
         self.name = name
-        self.alternatives = Experiment.initialize_alternatives(alternatives, name, redis_conn)
+        self.alternatives = Experiment.initialize_alternatives(
+            alternatives,
+            name,
+            redis_conn)
         self.redis = redis_conn
 
     def __repr__(self):
@@ -133,7 +140,7 @@ class Experiment(object):
     def convert(self, client):
         alternative = self.get_alternative_by_client_id(client)
 
-        if not alternative: # TODO or has already converted?
+        if not alternative:  # TODO or has already converted?
             raise Exception('this client was not participaing')
 
         alternative.record_conversion(client)
@@ -298,7 +305,7 @@ class Experiment(object):
 
     @staticmethod
     def is_valid(experiment_name):
-        return (isinstance(experiment_name, basestring) and \
+        return (isinstance(experiment_name, basestring) and
             VALID_EXPERIMENT_ALTERNATIVE_RE.match(experiment_name) is not None)
 
 
@@ -439,5 +446,5 @@ class Alternative(object):
 
     @staticmethod
     def is_valid(alternative_name):
-        return (isinstance(alternative_name, basestring) and \
+        return (isinstance(alternative_name, basestring) and
             VALID_EXPERIMENT_ALTERNATIVE_RE.match(alternative_name) is not None)

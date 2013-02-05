@@ -20,7 +20,7 @@ def service_unavailable_on_connection_error(fn):
         try:
             return fn(*args, **kwargs)
         except redis.ConnectionError:
-            return json_resp({"message":"Service Unavailable"}, 503)
+            return json_resp({"message": "Service Unavailable"}, 503)
     return impl
 
 
@@ -133,27 +133,31 @@ class Sixpack(object):
 
         return json_resp(resp)
 
+
 def should_exclude_visitor(request):
     user_agent = request.args.get('user_agent')
     ip_address = request.args.get('ip_address')
 
     return is_robot(user_agent) or is_ignored_ip(ip_address)
 
+
 def is_robot(user_agent):
     try:
         regex = re.compile(r"{0}".format(cfg.get('robot_regex')), re.I)
         return regex.match(unquote(user_agent))
     except:
-        return False # TODO Not sure if default should be true or false
+        return False  # TODO Not sure if default should be true or false
+
 
 def is_ignored_ip(ip_address):
     # Ignore invalid/local IP addresses
     try:
         inet_aton(unquote(ip_address))
     except:
-        return False # TODO Same as above not sure of default
+        return False  # TODO Same as above not sure of default
 
     return unquote(ip_address) in cfg.get('ignored_ip_addresses')
+
 
 def json_resp(in_dict, status=None):
     headers = {'Context-Type': 'application/json'}
@@ -166,10 +170,12 @@ def create_app():
 
     return app
 
+
 def start(environ, start_response):
     app = Sixpack(db.REDIS)
 
     return app(environ, start_response)
+
 
 if __name__ == '__main__':
     from werkzeug.serving import run_simple
