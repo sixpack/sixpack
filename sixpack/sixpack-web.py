@@ -1,6 +1,8 @@
 from flask import Flask, render_template, abort, request, url_for, redirect
 import db
+
 from models import Experiment
+from models import Alternative
 
 app = Flask(__name__)
 from flask.ext.seasurf import SeaSurf
@@ -82,6 +84,8 @@ def find_or_404(experiment_name):
 
 # You should change this
 app.secret_key = 'OQvHQgJfyNT$lC3K89/!#CJ4RLqAqH3QMIq5LXfW4eh'
+
+app.jinja_env.filters['number_to_percent'] = Alternative.number_to_percent
 
 if __name__ == "__main__":
     app.run(port=5001, debug=True)

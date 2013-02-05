@@ -17,8 +17,8 @@
     	<tr>
     		<td>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %}</td>
     		<td>{{ alt.participant_count() }}</td>
-    		<td>{{ alt.conversion_rate() }}%</td>
-    		<td>N/A</td>
+    		<td>{{ alt.conversion_rate()|number_to_percent }}%</td>
+    		<td>{{ alt.confidence_level() }}</td>
 		</tr>
         {% endfor %}
     </table>

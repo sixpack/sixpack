@@ -364,11 +364,53 @@ class Alternative(object):
         else:
             return self.completed_count() / self.participant_count()
 
-    def z_score():
-        pass
+    # Hacky z-score from https://github.com/andrew/split/blob/master/lib/split/alternative.rb
+    def z_score(self):
+
+        if self.is_control():
+            return 'N/A'
+
+        control = self.experiment().control()
+        ctr_e = self.conversion_rate()
+        ctr_c = control.conversion_rate()
+
+        e = self.participant_count()
+        c = control.participant_count()
+
+        try:
+            std_dev = ((ctr_e / ctr_c**3) * ((e*ctr_e)+(c*ctr_c)-(ctr_c*ctr_e)*(c+e))/(c*e)) ** 0.5
+        except ZeroDivisionError:
+            return 0
+
+        return ((ctr_e / ctr_c) - 1) / std_dev
+
+    def confidence_level(self):
+        z_score = self.z_score()
+        if z_score == 'N/A':
+            return z_score
+
+        z_score = abs(round(z_score, 3))
+
+        ret = ''
+        if z_score == 0.0:
+            ret = 'No Change'
+        elif z_score < 1.645:
+            ret = 'no confidence'
+        elif z_score < 1.96:
+            ret = '95% confidence'
+        elif z_score < 2.57:
+            ret = '99% confidence'
+        else:
+            ret = '99.9% confidence'
+
+        return ret
 
     def key(self):
         return _key("{0}:{1}".format(self.experiment_name, self.name))
+
+    @staticmethod
+    def number_to_percent(number, precision=2):
+        return round(number * 100, precision)
 
     @staticmethod
     def is_valid(alternative_name):
