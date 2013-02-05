@@ -211,7 +211,7 @@ class Experiment(object):
             participant_count = alternative.participant_count()
             completed_count = alternative.completed_count()
             stats[alternative.name] = self._arm_guess(participant_count, completed_count)
-        print stats
+
         return max(stats.iteritems(), key=operator.itemgetter(1))[0]
 
     def _arm_guess(self, participant_count, completed_count):
