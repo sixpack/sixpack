@@ -128,7 +128,8 @@ class Sixpack(object):
                 'name': experiment.name,
                 'version': experiment.version()
             },
-            'client_id': client_id
+            'client_id': client_id,
+            'status': 'ok'
         }
 
         return json_resp(resp)
