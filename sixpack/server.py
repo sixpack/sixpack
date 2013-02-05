@@ -161,7 +161,7 @@ def is_ignored_ip(ip_address):
 
 
 def json_resp(in_dict, status=None):
-    headers = {'Context-Type': 'application/json'}
+    headers = {'Content-Type': 'application/json'}
     return Response(json.dumps(in_dict), status=status, headers=headers)
 
 
