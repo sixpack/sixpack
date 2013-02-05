@@ -359,10 +359,10 @@ class Alternative(object):
         msetbit(keys=keys, args=([client.sequential_id, 1] * len(keys)))
 
     def conversion_rate(self):
-        if self.participant_count() == 0:
-            return 0
-        else:
+        try:
             return self.completed_count() / self.participant_count()
+        except ZeroDivisionError:
+            return 0
 
     # Hacky z-score from https://github.com/andrew/split/blob/master/lib/split/alternative.rb
     def z_score(self):
