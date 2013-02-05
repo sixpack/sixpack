@@ -146,6 +146,9 @@ class Experiment(object):
         alternative.record_conversion(client)
 
     def set_winner(self, alternative_name):
+        if alternative_name not in self.get_alternative_names():
+            raise ValueError('this alternative is not in this experiment')
+
         self.redis.set(self._winner_key, alternative_name)
 
     def has_winner(self):
@@ -223,8 +226,8 @@ class Experiment(object):
 
     def _arm_guess(self, participant_count, completed_count):
         fairness_score = 7
-        a = max([participant_count, 0])
 
+        a = max([participant_count, 0])
         b = max([participant_count - completed_count, 0])
 
         return random.betavariate(a + fairness_score, b + fairness_score)
@@ -336,9 +339,6 @@ class Alternative(object):
 
     def __repr__(self):
         return "<Alternative {0} (Experiment {1})".format(self.name, self.experiment_name)
-
-    def delete(self):
-        self.redis.delete(self.key())
 
     def is_control(self):
         return self.experiment().control().name == self.name
