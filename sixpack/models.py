@@ -1,4 +1,4 @@
-import random
+import random, operator
 from datetime import datetime
 import re
 
@@ -194,7 +194,32 @@ class Experiment(object):
 
     def choose_alternative(self, client=None):
         # This will be hooked up with some fun math-guy-steve stuff later
+        # return self._random_choice()
+        if random.random() < .2:
+            return self._random_choice()
+        else:
+            return Alternative(self._whiplash(), self.name, self.redis)
+
+    def _random_choice(self):
         return random.choice(self.alternatives)
+
+    # my best attempt at implementing whiplash/multi-armed-bandit
+    # math guy steve, help!
+    def _whiplash(self):
+        stats = {}
+        for alternative in self.alternatives:
+            participant_count = alternative.participant_count()
+            completed_count = alternative.completed_count()
+            stats[alternative.name] = self._arm_guess(participant_count, completed_count)
+        print stats
+        return max(stats.iteritems(), key=operator.itemgetter(1))[0]
+
+    def _arm_guess(self, participant_count, completed_count):
+        a = max([participant_count, 0])
+
+        b = max([participant_count - completed_count, 0])
+
+        return random.betavariate(a + 7, b + 7)
 
     def rawkey(self):
         return "{0}/{1}".format(self.name, self.version())
