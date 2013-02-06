@@ -6,6 +6,7 @@ from werkzeug.wrappers import BaseResponse
 
 from sixpack.server import create_app
 
+
 class TestServer(unittest.TestCase):
 
     def setUp(self):
