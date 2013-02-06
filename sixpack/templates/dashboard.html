@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<script src="/static/js/chart.js"></script>
 <ul class="experiments">
 {% for experiment in experiments %}
   <li>
@@ -22,6 +21,7 @@
 		</tr>
         {% endfor %}
     </table>
+    <div class="graph"></div>
   </li>
 {% endfor %}
 </ul>

@@ -75,6 +75,7 @@ h3.name a:hover {
 ul.experiments li table {
 	width: 590px;
 	margin-left: -20px;
+	float: left;
 }
 ul.experiments li table tr:first-child {
 	font-weight: 300;
@@ -179,4 +180,24 @@ ul.experiments li table tr th, ul.experiments li table tr td {
 }
 ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
 	text-align: left;
+}
+div.graph {
+	float: right;
+	width: 325px;
+	margin-right: 30px;
+	margin-top: -57px;
+	margin-left: 15px;
+}
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.x.axis path {
+  display: none;
+}
+.line {
+  fill: none;
+  stroke: #9d5012;
+  stroke-width: 2.2px;
 }
