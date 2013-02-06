@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 
+<script src="/static/js/chart.js"></script>
 <ul class="experiments">
 {% for experiment in experiments %}
   <li>
@@ -9,15 +10,13 @@
     	<tr>
     		<th>Case</th>
     		<th>Participants</th>
-            <th>Completions</th>
     		<th>Conv Rate</th>
     		<th>Confidence</th>
     	</tr>
         {% for alt in experiment.alternatives %}
     	<tr>
-    		<td>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %}</td>
+    		<td><span class="circle"></span>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %}</td>
     		<td>{{ alt.participant_count() }}</td>
-            <td>{{ alt.completed_count() }}</td>
     		<td>{{ alt.conversion_rate()|number_to_percent }}%</td>
     		<td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
 		</tr>
