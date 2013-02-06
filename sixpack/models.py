@@ -7,7 +7,7 @@ from db import _key, msetbit, sequential_id
 
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
-
+RANDOM_SAMPLE = .2
 
 class Client(object):
 
@@ -55,6 +55,7 @@ class Experiment(object):
             alternatives,
             redis_conn)
         self.redis = redis_conn
+        self.random_sample = RANDOM_SAMPLE
 
     def __repr__(self):
         return '<Experiment: {0} (version: {1})>'.format(self.name, self.version())
@@ -203,7 +204,7 @@ class Experiment(object):
     def choose_alternative(self, client=None):
         # This will be hooked up with some fun math-guy-steve stuff later
         # return self._random_choice()
-        if random.random() < .2:
+        if random.random() < self.random_sample:
             return self._random_choice()
         else:
             return Alternative(self._whiplash(), self.name, self.redis)
