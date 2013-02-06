@@ -41,7 +41,7 @@ class TestServer(unittest.TestCase):
 
     def test_ok_participate(self):
         resp = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two")
-        data = json.loads(resp.data )
+        data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
         self.assertTrue('alternative' in data)
         self.assertTrue('experiment' in data)
@@ -51,7 +51,7 @@ class TestServer(unittest.TestCase):
 
     def test_useragent_filter(self):
         resp = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&user_agent=fetch")
-        data = json.loads(resp.data )
+        data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
         self.assertTrue('alternative' in data)
         self.assertFalse('experiment' in data)
@@ -61,14 +61,14 @@ class TestServer(unittest.TestCase):
     def test_convert(self):
         self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=seatgeek.cb")
         resp = self.client.get("/convert?experiment=dummy&client_id=foo")
-        data = json.loads(resp.data )
+        data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
         self.assertTrue('status' in data)
         self.assertEqual(data['status'], 'ok')
 
     def test_convert_fail(self):
         resp = self.client.get("/convert?experiment=baz&client_id=bar")
-        data = json.loads(resp.data )
+        data = json.loads(resp.data)
         self.assertEqual(400, resp.status_code)
         self.assertTrue('status' in data)
         self.assertEqual(data['status'], 'failure')

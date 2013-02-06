@@ -16,4 +16,3 @@ class TestServerLogic(unittest.TestCase):
 
         ret = is_robot(None)
         self.assertFalse(ret)
-

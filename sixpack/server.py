@@ -21,6 +21,7 @@ def service_unavailable_on_connection_error(f, *args, **kwargs):
     except redis.ConnectionError:
         return json_resp({"message": "Service Unavilable"}, None, 503)
 
+
 class Sixpack(object):
 
     def __init__(self, redis_conn):

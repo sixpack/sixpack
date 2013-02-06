@@ -59,7 +59,6 @@ class TestAlternativeModel(unittest.TestCase):
         alt = Alternative('yes', 'trololo', self.redis)
         self.assertTrue(alt.is_control())
 
-
     def test_participant_count(self):
         pass
         # self.redis.bitcount.return_value = 0

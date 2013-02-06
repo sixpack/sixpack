@@ -9,6 +9,7 @@ from db import _key, msetbit, sequential_id
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 RANDOM_SAMPLE = .2
 
+
 class Client(object):
 
     def __init__(self, client_id, redis_conn):

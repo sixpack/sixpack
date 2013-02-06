@@ -82,7 +82,6 @@ class TestExperimentModel(unittest.TestCase):
         with self.assertRaises(Exception):
             Experiment.find('delete-me', self.alternatives, self.redis)
 
-
     def test_archive(self):
         self.assertFalse(self.exp_1.is_archived())
         self.exp_1.archive()
@@ -108,7 +107,6 @@ class TestExperimentModel(unittest.TestCase):
 
     def test_convert(self):
         pass
-
 
     def test_set_winner(self):
         exp = Experiment('test-winner', ['1', '2'], self.redis)
@@ -287,4 +285,3 @@ class TestExperimentModel(unittest.TestCase):
 
         not_valid = Experiment.is_valid('&123name')
         self.assertFalse(not_valid)
-
