@@ -2,7 +2,7 @@ import re
 from urllib import unquote
 from socket import inet_aton
 import json
-import functools
+import decorator
 
 import db
 from werkzeug.wrappers import Request, Response
@@ -14,15 +14,12 @@ from models import Experiment, Client
 from config import CONFIG as cfg
 
 
-def service_unavailable_on_connection_error(fn):
-    @functools.wraps(fn)
-    def impl(*args, **kwargs):
-        try:
-            return fn(*args, **kwargs)
-        except redis.ConnectionError:
-            return json_resp({"message": "Service Unavailable"}, None, 503)
-    return impl
-
+@decorator.decorator
+def service_unavailable_on_connection_error(f, *args, **kwargs):
+    try:
+        return f(*args, **kwargs)
+    except redis.ConnectionError:
+        return json_resp({"message": "Service Unavilable"}, None, 503)
 
 class Sixpack(object):
 
