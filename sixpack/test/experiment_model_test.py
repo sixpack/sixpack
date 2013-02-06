@@ -61,11 +61,12 @@ class TestExperimentModel(unittest.TestCase):
     def _test_total_conversions(self):
         pass
 
-    def test_update_description(self):
-        pass
+    def test_description(self):
+        exp = Experiment.find_or_create('never-gonna', ['give', 'you', 'up'], self.redis)
+        self.assertEqual(exp.get_description(), '')
 
-    def test_get_description(self):
-        pass
+        exp.update_description('hallo')
+        self.assertEqual(exp.get_description(), 'hallo')
 
     def test_reset(self):
         pass
