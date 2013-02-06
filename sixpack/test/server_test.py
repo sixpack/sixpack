@@ -58,6 +58,7 @@ class TestServer(unittest.TestCase):
         self.assertFalse('status' in data)
 
     def test_convert(self):
+        self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=seatgeek.cb")
         resp = self.client.get("/convert?experiment=dummy&client_id=foo")
         data = json.loads(resp.data )
         self.assertEqual(200, resp.status_code)
