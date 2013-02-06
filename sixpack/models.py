@@ -46,10 +46,13 @@ class ExperimentCollection(object):
 class Experiment(object):
 
     def __init__(self, name, alternatives, redis_conn):
+        if len(alternatives) < 2:
+            raise ValueError('Experiments require at least two alternatives')
+
         self.name = name
         self.alternatives = Experiment.initialize_alternatives(
-            alternatives,
             name,
+            alternatives,
             redis_conn)
         self.redis = redis_conn
 
@@ -78,7 +81,6 @@ class Experiment(object):
         return self.alternatives[0]
 
     def created_at(self):
-        # TODO Date object
         return self.redis.hget(self.key(), 'created_at')
 
     def get_alternative_names(self):
@@ -167,10 +169,6 @@ class Experiment(object):
     def _winner_key(self):
         return "{0}:winner".format(self.key())
 
-    def delete_alternatives(self):
-        for alternative in self.alternatives:
-            alternative.delete()
-
     def get_alternative(self, client):
         if self.is_archived():
             return self.control()
@@ -249,7 +247,7 @@ class Experiment(object):
     @classmethod
     def find_or_create(cls, experiment_name, alternatives, redis_conn):
         if len(alternatives) < 2:
-            raise Exception('Must provide at least two alternatives')
+            raise ValueError('Experiments require at least two alternatives')
 
         # We don't use the class method key here
         if redis_conn.sismember(_key("experiments"), experiment_name):
@@ -285,10 +283,10 @@ class Experiment(object):
 
         for key in keys:
             experiment = Experiment.find(key, redis_conn)
-            if exclude_archived and not experiment.is_archived():
-                experiments.append(Experiment.find(key, redis_conn))
-        # get keys,
-        # new experiment collection with all the keys
+            if experiment.is_archived() and exclude_archived:
+                continue
+            experiments.append(Experiment.find(key, redis_conn))
+
         return experiments
 
     @staticmethod
@@ -299,7 +297,7 @@ class Experiment(object):
         return redis_conn.lrange(key, 0, -1)
 
     @staticmethod
-    def initialize_alternatives(alternatives, experiment_name, redis_conn):
+    def initialize_alternatives(experiment_name, alternatives, redis_conn):
         for alternative_name in alternatives:
             if not Alternative.is_valid(alternative_name):
                 raise Exception('Invalid alternative name')
