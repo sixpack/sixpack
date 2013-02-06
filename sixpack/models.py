@@ -99,8 +99,8 @@ class Experiment(object):
         key = _key("conversions:{0}:_all:users:all".format(self.rawkey()))
         return self.redis.bitcount(key)
 
-    def update_description(self, description=''):
-        self.redis.hset(self.key(), 'description', description)
+    def update_description(self, description=None):
+        self.redis.hset(self.key(), 'description', description or '')
 
     def get_description(self):
         return self.redis.hget(self.key(), 'description')
