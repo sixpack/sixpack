@@ -26,6 +26,8 @@ monotonic_zadd = REDIS.register_script("""
     end
     return sequential_id
 """)
+
+
 def sequential_id(k, identifier):
     """Map an arbitrary string identifier to a set of sequential ids"""
     key = _key(k)

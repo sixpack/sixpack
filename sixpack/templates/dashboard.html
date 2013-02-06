@@ -5,28 +5,24 @@
 {% for experiment in experiments %}
   <li>
     <h3 class="name"><a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a></h3>
-    <!-- BEGIN: Dummy data -->
     <table>
     	<tr>
     		<th>Case</th>
     		<th>Participants</th>
+            <th>Completions</th>
     		<th>Conv Rate</th>
     		<th>Confidence</th>
     	</tr>
+        {% for alt in experiment.alternatives %}
     	<tr>
-    		<td>With blink tag <span class="note">control</span></td>
-    		<td>17,546</td>
-    		<td>6.45%</td>
-    		<td>N/A</td>
+    		<td>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %}</td>
+    		<td>{{ alt.participant_count() }}</td>
+            <td>{{ alt.completed_count() }}</td>
+    		<td>{{ alt.conversion_rate()|number_to_percent }}%</td>
+    		<td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
 		</tr>
-		<tr>
-			<td>Without blink tag</td>
-    		<td>17,497</td>
-    		<td>5.78%</td>
-    		<td>99%</td>
-		</tr>
+        {% endfor %}
     </table>
-    <!-- END: Dummy data -->
   </li>
 {% endfor %}
 </ul>

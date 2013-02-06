@@ -1,15 +1,15 @@
 import unittest
-from mock import MagicMock
-from sixpack.db import REDIS
+import fakeredis
 
-from sixpack.models import Alternative
+from sixpack.models import Alternative, Experiment
+
 
 class TestAlternativeModel(unittest.TestCase):
 
     unit = True
 
     def setUp(self):
-        self.redis = MagicMock(REDIS)
+        self.redis = fakeredis.FakeStrictRedis()
         self.client_id = 381
 
     def test_key(self):
@@ -37,16 +37,21 @@ class TestAlternativeModel(unittest.TestCase):
         not_valid = Alternative.is_valid('&123name')
         self.assertFalse(not_valid)
 
-    def test_delete(self):
-        alt = Alternative('yes', 'show-something', self.redis)
-        alt.delete()
-        self.redis.delete.assert_called_once_with(alt.key())
-
     def test_is_control(self):
-        pass
+        exp = Experiment('trololo', ['yes', 'no'], self.redis)
+        exp.save()
+
+        alt = Alternative('yes', 'trololo', self.redis)
+        self.assertTrue(alt.is_control())
+        exp.delete()
 
     def test_experiment(self):
-        pass
+        exp = Experiment('trololo', ['yes', 'no'], self.redis)
+        exp.save()
+
+        alt = Alternative('yes', 'trololo', self.redis)
+        self.assertTrue(alt.is_control())
+
 
     def test_participant_count(self):
         pass
