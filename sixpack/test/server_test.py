@@ -1,12 +1,10 @@
 import unittest
+import json
 
-import fakeredis
 from werkzeug.test import Client
 from werkzeug.wrappers import BaseResponse
 
-from sixpack.server import (create_app,
-                            Sixpack)
-
+from sixpack.server import create_app
 
 class TestServer(unittest.TestCase):
 
@@ -39,3 +37,43 @@ class TestServer(unittest.TestCase):
         self.assertEqual("application/json", dict(res.headers)["Content-Type"])
         self.assert_(res.data.startswith("{"))
         self.assert_(res.data.endswith("}"))
+
+    def test_ok_participate(self):
+        resp = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two")
+        data = json.loads(resp.data )
+        self.assertEqual(200, resp.status_code)
+        self.assertTrue('alternative' in data)
+        self.assertTrue('experiment' in data)
+        self.assertTrue('client_id' in data)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'ok')
+
+    def test_useragent_filter(self):
+        resp = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&user_agent=fetch")
+        data = json.loads(resp.data )
+        self.assertEqual(200, resp.status_code)
+        self.assertTrue('alternative' in data)
+        self.assertFalse('experiment' in data)
+        self.assertFalse('client_id' in data)
+        self.assertFalse('status' in data)
+
+    def test_convert(self):
+        resp = self.client.get("/convert?experiment=dummy&client_id=foo")
+        data = json.loads(resp.data )
+        self.assertEqual(200, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'ok')
+
+    def test_convert_fail(self):
+        resp = self.client.get("/convert?experiment=baz&client_id=bar")
+        data = json.loads(resp.data )
+        self.assertEqual(400, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'failure')
+
+    def test_client_id(self):
+        resp = self.client.get("/participate?experiment=dummy&alternatives=one&alternatives=two")
+        data = json.loads(resp.data)
+        self.assertEqual(400, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'missing arguments')

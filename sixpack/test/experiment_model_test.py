@@ -5,7 +5,7 @@ from datetime import datetime
 
 import fakeredis
 
-from sixpack.models import Experiment, Alternative
+from sixpack.models import Experiment, Alternative, Client
 
 
 class TestExperimentModel(unittest.TestCase):
@@ -69,7 +69,10 @@ class TestExperimentModel(unittest.TestCase):
         self.assertEqual(exp.get_description(), 'hallo')
 
     def test_reset(self):
-        pass
+        exp = Experiment.find_or_create('never-gonna-x', ['let', 'you', 'down'], self.redis)
+        exp.reset()
+
+        self.assertEqual(exp.version(), 1)
 
     def test_delete(self):
         exp = Experiment('delete-me', self.alternatives, self.redis)
@@ -92,9 +95,6 @@ class TestExperimentModel(unittest.TestCase):
         self.assertTrue(self.exp_1.is_archived())
         self.exp_1.unarchive()
         self.assertFalse(self.exp_1.is_archived())
-
-    def test_is_archived(self):
-        pass
 
     def test_version(self):
         pass
@@ -124,7 +124,11 @@ class TestExperimentModel(unittest.TestCase):
         self.assertFalse(exp.has_winner())
 
     def test_get_winner(self):
-        pass
+        exp = Experiment.find_or_create('test-get-winner', ['1', '2'], self.redis)
+        self.assertFalse(exp.get_winner())
+
+        exp.set_winner('1')
+        self.assertEqual(exp.get_winner(), '1')
 
     def test_reset_winner(self):
         exp = Experiment('show-something-reset-winner', self.alternatives, self.redis)
@@ -137,28 +141,52 @@ class TestExperimentModel(unittest.TestCase):
         self.assertFalse(exp.has_winner())
 
     def test_winner_key(self):
-        pass
+        exp = Experiment.find_or_create('winner-key', ['win', 'lose'], self.redis)
+        self.assertEqual(exp._winner_key, "{0}:winner".format(exp.key()))
 
     def test_get_alternative(self):
+        client = Client(10, self.redis)
+        client._sequential_id = 100
+
+        exp = Experiment.find_or_create('archived-control', ['w', 'l'], self.redis)
+        exp.archive()
+
+        # should return control on archived test with no winner
+        alt = exp.get_alternative(client)
+        self.assertEqual(alt.name, 'w')
+
+        # should return current participation
+        exp.unarchive()
+        ### HACK TO SKIP WHIPLASH TESTS
+        exp.random_sample = 1
+        ### HACK TO SKIP WHIPLASH TESTS
+
+        selected_for_client = exp.get_alternative(client)
+        self.assertIn(selected_for_client.name, ['w', 'l'])
+
+        # should check to see if client is participating and only return the same alt
+        # unsure how to currently test since fakeredis obviously doesn't parse lua
+        # most likely integration tests
+
+    # See above note for the next 5 tests
+    def _test_get_alternative_by_client_id(self):
         pass
 
-    def test_get_alternative_by_client_id(self):
+    def _test_has_converted_by_client(self):
         pass
 
-    def test_has_converted_by_client(self):
+    def _test_choose_alternative(self):
         pass
 
-    def test_choose_alternative(self):
+    def _test_random_choice(self):
         pass
 
-    def test_random_choice(self):
-        pass
-
-    def test_whiplash(self):
+    def _test_whiplash(self):
         pass
 
     def test_raw_key(self):
-        pass
+        exp = Experiment.find_or_create('monkey', ['patch', 'banana'], self.redis)
+        self.assertEqual(exp.rawkey(), 'monkey/0')
 
     def test_key(self):
         key = self.exp_1.key()
