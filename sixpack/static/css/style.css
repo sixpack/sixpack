@@ -185,8 +185,10 @@ div.graph {
 	float: right;
 	width: 325px;
 	margin-right: 30px;
-	margin-top: -57px;
+	margin-top: -77px;
 	margin-left: 15px;
+	position: relative;
+	top: 36px;
 }
 .axis path, .axis line {
   fill: none;
@@ -200,4 +202,20 @@ div.graph {
   fill: none;
   stroke: #9d5012;
   stroke-width: 2.2px;
+}
+.graph g.tick text {
+ 	font-weight: 400;
+ 	font-size: 12px;
+ 	fill: #3e4547;
+}
+.grid .tick {
+    stroke: #2e3335;
+}
+.grid path {
+      stroke-width: 0;
+}
+.area {
+    fill: #fff;
+    opacity: 0.02;
+    stroke-width: 0;
 }
