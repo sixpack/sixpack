@@ -1,6 +1,7 @@
 from flask import Flask, render_template, abort, request, url_for, redirect
 from flask.ext.seasurf import SeaSurf
 
+from config import CONFIG as cfg
 from db import REDIS
 from models import Experiment
 from models import Alternative
@@ -93,7 +94,7 @@ def find_or_404(experiment_name):
 
 
 # You should change this
-app.secret_key = 'OQvHQgJfyNT$lC3K89/!#CJ4RLqAqH3QMIq5LXfW4eh'
+app.secret_key = cfg.get('secret_key')
 
 app.jinja_env.filters['number_to_percent'] = Alternative.number_to_percent
 

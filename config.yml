@@ -11,3 +11,5 @@ robot_regex: $^|trivial|facebook|MetaURI|butterfly|google|amazon|goldfire|sleuth
 ignored_ip_addresses: []
 control_on_db_failure: True
 allow_multiple_experiments: False
+
+secret_key: 'OQvHQgJfyNT$lC3K89/!#CJ4RLqAqH3QMIq5LXfW4eh'
