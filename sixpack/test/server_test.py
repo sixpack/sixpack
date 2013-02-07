@@ -61,9 +61,9 @@ class TestServer(unittest.TestCase):
         data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
         self.assertTrue('alternative' in data)
-        self.assertFalse('experiment' in data)
-        self.assertFalse('client_id' in data)
-        self.assertFalse('status' in data)
+        self.assertTrue('experiment' in data)
+        self.assertTrue('client_id' in data)
+        self.assertTrue('status' in data)
 
     def test_convert(self):
         self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=seatgeek.cb")

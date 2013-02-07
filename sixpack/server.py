@@ -112,9 +112,6 @@ class Sixpack(object):
         if client_id is None or experiment_name is None or alts is None:
             return json_resp({'status': "failure", 'message': 'missing arguments'}, request, 400)
 
-        if should_exclude_visitor(request):
-            return json_resp({'alternative': alts[0]}, request)
-
         # Get the experiment ready for action
         client = Client(client_id, self.redis)
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
@@ -122,6 +119,8 @@ class Sixpack(object):
         # Wondering if this logic should be moved into the model
         if force and force in alts:
             alternative = force
+        elif should_exclude_visitor(request):
+            alternative = alts[0]
         elif experiment.has_winner():
             alternative = experiment.get_winner().name
         else:
