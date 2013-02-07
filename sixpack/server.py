@@ -93,7 +93,7 @@ class Sixpack(object):
 
         try:
             experiment = Experiment.find(experiment_name, self.redis)
-        except Exception as e:
+        except ValueError as e:
             return json_resp({'status': 'failure', 'message': str(e)}, request, 400)
 
         experiment.convert(client)

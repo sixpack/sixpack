@@ -79,8 +79,8 @@ class TestExperimentModel(unittest.TestCase):
         exp.save()
 
         exp.delete()
-        with self.assertRaises(Exception):
-            Experiment.find('delete-me', self.alternatives, self.redis)
+        with self.assertRaises(ValueError):
+            Experiment.find('delete-me', self.redis)
 
     def test_archive(self):
         self.assertFalse(self.exp_1.is_archived())
@@ -123,7 +123,7 @@ class TestExperimentModel(unittest.TestCase):
 
     def test_get_winner(self):
         exp = Experiment.find_or_create('test-get-winner', ['1', '2'], self.redis)
-        self.assertNone(exp.get_winner())
+        self.assertIsNone(exp.get_winner())
 
         exp.set_winner('1')
         self.assertEqual(exp.get_winner(), '1')
@@ -204,8 +204,8 @@ class TestExperimentModel(unittest.TestCase):
 
         self.assertEqual(exp.version(), 0)
 
-        with self.assertRaises(Exception):
-            Experiment.find('this-does-not-exist')
+        with self.assertRaises(ValueError):
+            Experiment.find('this-does-not-exist', self.redis)
 
         try:
             Experiment.find('crunches-situps', self.redis)
@@ -213,13 +213,16 @@ class TestExperimentModel(unittest.TestCase):
             self.fail('known exp not found')
 
     def test_find_or_create(self):
-        # should throw an exception if alters are valid
+        # should throw a ValueError if alters are invalid
         with self.assertRaises(ValueError):
             Experiment.find_or_create('party-time', ['1'], self.redis)
 
+        with self.assertRaises(ValueError):
+            Experiment.find_or_create('party-time', ['1', '*****'], self.redis)
+
         # should create a -NEW- experiment if experiment has never been used
-        with self.assertRaises(Exception):
-            Experiment.find('dance-dance')
+        with self.assertRaises(ValueError):
+            Experiment.find('dance-dance', self.redis)
 
         exp_1 = Experiment.find_or_create('dance-dance', ['1', '2'], self.redis)
         self.assertEqual(exp_1.version(), 0)
@@ -263,8 +266,8 @@ class TestExperimentModel(unittest.TestCase):
         self.assertEqual(sorted(alts), sorted(['yes', 'no']))
 
     def _test_initialize_alternatives(self):
-        # Should throw necessary exceptions
-        with self.assertRaises(Exception):
+        # Should throw ValueError
+        with self.assertRaises(ValueError):
             Experiment.initialize_alternatives('n', ['*'], self.redis)
 
         # each item in list should be Alternative Instance

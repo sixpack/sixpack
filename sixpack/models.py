@@ -145,7 +145,7 @@ class Experiment(object):
         alternative = self.get_alternative_by_client_id(client)
 
         if not alternative:  # TODO or has already converted?
-            raise Exception('this client was not participaing')
+            raise ValueError('this client was not participaing')
 
         alternative.record_conversion(client)
 
@@ -244,7 +244,7 @@ class Experiment(object):
         if redis_conn.sismember(_key("experiments"), experiment_name):
             return cls(experiment_name, Experiment.load_alternatives(experiment_name, redis_conn), redis_conn)
         else:
-            raise Exception('Experiment does not exist')
+            raise ValueError('Experiment does not exist')
 
     @classmethod
     def find_or_create(cls, experiment_name, alternatives, redis_conn):
@@ -302,7 +302,7 @@ class Experiment(object):
     def initialize_alternatives(experiment_name, alternatives, redis_conn):
         for alternative_name in alternatives:
             if not Alternative.is_valid(alternative_name):
-                raise Exception('Invalid alternative name')
+                raise ValueError('Invalid alternative name')
 
         return [Alternative(n, experiment_name, redis_conn) for n in alternatives]
 
