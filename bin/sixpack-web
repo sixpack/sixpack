@@ -1,1 +1,6 @@
 #!/usr/bin/env python
+
+import os
+from sixpack.web import app
+
+app.run(port=os.environ.get('SIXPACK_WEB_PORT', 5001), debug=True)

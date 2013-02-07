@@ -1,0 +1,4 @@
+recursive-include sixpack/static
+include *.rst
+include *.yml
+include *.txt

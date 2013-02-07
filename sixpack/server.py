@@ -187,9 +187,3 @@ def start(environ, start_response):
     app = Sixpack(db.REDIS)
 
     return app(environ, start_response)
-
-
-if __name__ == '__main__':
-    from werkzeug.serving import run_simple
-    app = create_app()
-    run_simple('0.0.0.0', 5000, app, use_debugger=True, use_reloader=True)

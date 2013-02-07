@@ -93,10 +93,8 @@ def find_or_404(experiment_name):
         abort(404)
 
 
-# You should change this
 app.secret_key = cfg.get('secret_key')
-
 app.jinja_env.filters['number_to_percent'] = Alternative.number_to_percent
 
-if __name__ == "__main__":
-    app.run(port=5001, debug=True)
+def start(environ, start_response):
+    return app(environ, start_response)

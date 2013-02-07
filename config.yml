@@ -3,7 +3,7 @@ enabled: True
 redis_port: 6379
 redis_host: localhost
 redis_prefix: sixpack
-redis_db: 0
+redis_db: 15
 
 full_response: True
 
@@ -12,4 +12,4 @@ ignored_ip_addresses: []
 control_on_db_failure: True
 allow_multiple_experiments: False
 
-secret_key: 'OQvHQgJfyNT$lC3K89/!#CJ4RLqAqH3QMIq5LXfW4eh'
+secret_key: '<your secret key here>'
