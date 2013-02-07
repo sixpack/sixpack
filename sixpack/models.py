@@ -1,6 +1,6 @@
-import random
-import operator
 from datetime import datetime
+import operator
+import random
 import re
 
 from db import _key, msetbit, sequential_id
