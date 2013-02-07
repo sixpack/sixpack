@@ -78,7 +78,7 @@ class TestServer(unittest.TestCase):
         data = json.loads(resp.data)
         self.assertEqual(400, resp.status_code)
         self.assertTrue('status' in data)
-        self.assertEqual(data['status'], 'failure')
+        self.assertEqual(data['status'], 'failed')
         self.assertEqual(data['message'], 'experiment does not exist')
 
     def test_client_id(self):
@@ -86,5 +86,5 @@ class TestServer(unittest.TestCase):
         data = json.loads(resp.data)
         self.assertEqual(400, resp.status_code)
         self.assertTrue('status' in data)
-        self.assertEqual(data['status'], 'failure')
+        self.assertEqual(data['status'], 'failed')
         self.assertEqual(data['message'], 'missing arguments')
