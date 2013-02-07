@@ -51,9 +51,9 @@ class Sixpack(object):
             endpoint, values = adapter.match()
             return getattr(self, 'on_' + endpoint)(request, **values)
         except NotFound:
-            return json_resp({'status': 'failure', "message": "not found"}, request, 404)
+            return json_resp({'status': 'failed', "message": "not found"}, request, 404)
         except HTTPException:
-            return json_resp({'status': 'failure', "message": "an internal error has occurred"}, request, 500)
+            return json_resp({'status': 'failed', "message": "an internal error has occurred"}, request, 500)
 
     @service_unavailable_on_connection_error
     def on_status(self, request):
@@ -86,7 +86,7 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None:
-            return json_resp({'status': 'failure', 'message': 'missing arguments'}, request, 400)
+            return json_resp({'status': 'failed', 'message': 'missing arguments'}, request, 400)
 
         if should_exclude_visitor(request):
             return json_resp({'status': 'ok'}, request)
@@ -95,10 +95,9 @@ class Sixpack(object):
 
         try:
             experiment = Experiment.find(experiment_name, self.redis)
+            experiment.convert(client)
         except ValueError as e:
-            return json_resp({'status': 'failure', 'message': str(e)}, request, 400)
-
-        experiment.convert(client)
+            return json_resp({'status': 'failed', 'message': str(e)}, request, 400)
 
         return json_resp({'status': 'ok'}, request)
 
@@ -110,17 +109,20 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None or alts is None:
-            return json_resp({'status': "failure", 'message': 'missing arguments'}, request, 400)
+            return json_resp({'status': "failed", 'message': 'missing arguments'}, request, 400)
 
         # Get the experiment ready for action
         client = Client(client_id, self.redis)
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
+
+        resp = {}
 
         # Wondering if this logic should be moved into the model
         if force and force in alts:
             alternative = force
         elif should_exclude_visitor(request):
             alternative = alts[0]
+            resp['excluded'] = True
         elif experiment.has_winner():
             alternative = experiment.get_winner().name
         else:
@@ -190,4 +192,4 @@ def start(environ, start_response):
 if __name__ == '__main__':
     from werkzeug.serving import run_simple
     app = create_app()
-    run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
+    run_simple('0.0.0.0', 5000, app, use_debugger=True, use_reloader=True)
