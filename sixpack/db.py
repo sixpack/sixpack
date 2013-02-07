@@ -1,7 +1,7 @@
 import redis
 from redis.connection import ConnectionPool, PythonParser
 
-from config import CONFIG as cfg
+from .config import CONFIG as cfg
 
 # Because of a bug (https://github.com/andymccurdy/redis-py/issues/318) with
 # script reloading in `redis-py, we need to force the `PythonParser` to prevent
