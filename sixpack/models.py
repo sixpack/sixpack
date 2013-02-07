@@ -136,7 +136,7 @@ class Experiment(object):
 
     def version(self):
         version = self.redis.get(_key("experiments:{0}".format(self.name)))
-        return 0 if version is None else int(version)
+        return int(version) if version else 0
 
     def increment_version(self):
         self.redis.incr(_key('experiments:{0}'.format(self.name)))
