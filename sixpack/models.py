@@ -162,7 +162,7 @@ class Experiment(object):
         if self.has_winner():
             return self.redis.get(self._winner_key)
 
-        return False
+        return None
 
     def reset_winner(self):
         self.redis.delete(self._winner_key)

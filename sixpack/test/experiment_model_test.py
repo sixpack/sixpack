@@ -123,7 +123,7 @@ class TestExperimentModel(unittest.TestCase):
 
     def test_get_winner(self):
         exp = Experiment.find_or_create('test-get-winner', ['1', '2'], self.redis)
-        self.assertFalse(exp.get_winner())
+        self.assertNone(exp.get_winner())
 
         exp.set_winner('1')
         self.assertEqual(exp.get_winner(), '1')
