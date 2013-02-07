@@ -48,7 +48,7 @@ class Experiment(object):
 
     def __init__(self, name, alternatives, redis_conn):
         if len(alternatives) < 2:
-            raise ValueError('Experiments require at least two alternatives')
+            raise ValueError('experiments require at least two alternatives')
 
         self.name = name
         self.alternatives = Experiment.initialize_alternatives(
@@ -244,12 +244,12 @@ class Experiment(object):
         if redis_conn.sismember(_key("experiments"), experiment_name):
             return cls(experiment_name, Experiment.load_alternatives(experiment_name, redis_conn), redis_conn)
         else:
-            raise ValueError('Experiment does not exist')
+            raise ValueError('experiment does not exist')
 
     @classmethod
     def find_or_create(cls, experiment_name, alternatives, redis_conn):
         if len(alternatives) < 2:
-            raise ValueError('Experiments require at least two alternatives')
+            raise ValueError('experiments require at least two alternatives')
 
         # We don't use the class method key here
         if redis_conn.sismember(_key("experiments"), experiment_name):
@@ -302,7 +302,7 @@ class Experiment(object):
     def initialize_alternatives(experiment_name, alternatives, redis_conn):
         for alternative_name in alternatives:
             if not Alternative.is_valid(alternative_name):
-                raise ValueError('Invalid alternative name')
+                raise ValueError('invalid alternative name')
 
         return [Alternative(n, experiment_name, redis_conn) for n in alternatives]
 
