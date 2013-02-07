@@ -1,7 +1,7 @@
 from flask import Flask, render_template, abort, request, url_for, redirect
 from flask.ext.seasurf import SeaSurf
 
-import db
+from db import REDIS
 from models import Experiment
 from models import Alternative
 
@@ -12,7 +12,7 @@ csrf = SeaSurf(app)
 # List of experiments
 @app.route("/")
 def hello():
-    experiments = Experiment.all(db.REDIS)
+    experiments = Experiment.all(REDIS)
     return render_template('dashboard.html', experiments=experiments)
 
 
@@ -87,7 +87,7 @@ def favicon():
 
 def find_or_404(experiment_name):
     try:
-        return Experiment.find(experiment_name, db.REDIS)
+        return Experiment.find(experiment_name, REDIS)
     except:
         abort(404)
 
