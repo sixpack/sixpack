@@ -50,10 +50,10 @@ class Sixpack(object):
         try:
             endpoint, values = adapter.match()
             return getattr(self, 'on_' + endpoint)(request, **values)
-        except NotFound, e:
+        except NotFound:
             return json_resp({'status': 'failure', "message": "not found"}, request, 404)
-        except HTTPException, e:
-            return e
+        except HTTPException:
+            return json_resp({'status': 'failure', "message": "an internal error has occurred"}, request, 500)
 
     @service_unavailable_on_connection_error
     def on_status(self, request):
