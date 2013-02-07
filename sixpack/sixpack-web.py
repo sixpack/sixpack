@@ -1,11 +1,11 @@
 from flask import Flask, render_template, abort, request, url_for, redirect
-import db
+from flask.ext.seasurf import SeaSurf
 
+import db
 from models import Experiment
 from models import Alternative
 
 app = Flask(__name__)
-from flask.ext.seasurf import SeaSurf
 csrf = SeaSurf(app)
 
 

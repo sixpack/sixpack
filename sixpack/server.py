@@ -1,17 +1,17 @@
-import re
-from urllib import unquote
-from socket import inet_aton
 import json
-import decorator
+import re
+from socket import inet_aton
+from urllib import unquote
 
-import db
+import redis
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException
-import redis
 
-from models import Experiment, Client
+import decorator
 from config import CONFIG as cfg
+import db
+from models import Experiment, Client
 
 
 @decorator.decorator
