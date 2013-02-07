@@ -17,6 +17,13 @@ class TestServer(unittest.TestCase):
     def test_base(self):
         self.assertEqual(200, self.client.get("/").status_code)
 
+    def test_404(self):
+        res = self.client.get("/i-would-walk-five-thousand-miles")
+        data = json.loads(res.data)
+        self.assertEqual(404, res.status_code)
+        self.assertTrue('message' in data)
+        self.assertEqual('not found', data['message'])
+
     def test_sans_callback(self):
         res = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two")
         self.assertEqual(200, res.status_code)
@@ -72,10 +79,12 @@ class TestServer(unittest.TestCase):
         self.assertEqual(400, resp.status_code)
         self.assertTrue('status' in data)
         self.assertEqual(data['status'], 'failure')
+        self.assertEqual(data['message'], 'experiment does not exist')
 
     def test_client_id(self):
         resp = self.client.get("/participate?experiment=dummy&alternatives=one&alternatives=two")
         data = json.loads(resp.data)
         self.assertEqual(400, resp.status_code)
         self.assertTrue('status' in data)
-        self.assertEqual(data['status'], 'missing arguments')
+        self.assertEqual(data['status'], 'failure')
+        self.assertEqual(data['message'], 'missing arguments')

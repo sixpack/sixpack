@@ -6,7 +6,7 @@ from urllib import unquote
 import redis
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
-from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import HTTPException, NotFound
 
 import decorator
 from config import CONFIG as cfg
@@ -50,6 +50,8 @@ class Sixpack(object):
         try:
             endpoint, values = adapter.match()
             return getattr(self, 'on_' + endpoint)(request, **values)
+        except NotFound, e:
+            return json_resp({'status': 'failure', "message": "not found"}, request, 404)
         except HTTPException, e:
             return e
 
@@ -84,7 +86,7 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None:
-            return json_resp({'status': 'missing arguments'}, request, 400)
+            return json_resp({'status': 'failure', 'message': 'missing arguments'}, request, 400)
 
         if should_exclude_visitor(request):
             return json_resp({'status': 'ok'}, request)
@@ -108,7 +110,7 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None or alts is None:
-            return json_resp({'status': 'missing arguments'}, request, 400)
+            return json_resp({'status': "failure", 'message': 'missing arguments'}, request, 400)
 
         if should_exclude_visitor(request):
             return json_resp({'alternative': alts[0]}, request)
