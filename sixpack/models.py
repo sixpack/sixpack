@@ -428,11 +428,11 @@ class Alternative(object):
         ret = ''
         if z_score == 0.0:
             ret = 'No Change'
-        elif z_score < 1.645:
-            ret = 'No Confidence'
         elif z_score < 1.96:
-            ret = '95% Confidence'
+            ret = 'No Confidence'
         elif z_score < 2.57:
+            ret = '95% Confidence'
+        elif z_score < 3.27:
             ret = '99% Confidence'
         else:
             ret = '99.9% Confidence'
