@@ -411,8 +411,10 @@ class Alternative(object):
         c = control.participant_count()
 
         try:
-            std_dev = pow(((ctr_e / pow(ctr_c, 3)) * ((e*ctr_e)+(c*ctr_c)-(ctr_c*ctr_e)*(c+e))/(c*e)), 0.5)
-            return ((ctr_e / ctr_c) - 1) / std_dev
+            std_dev = pow((ctr_e*(1-ctr_e)/e + ctr_c*(1-ctr_c)/c),.5)
+            return (ctr_e - ctr_c) / std_dev
+            # old std dev
+            # std_dev = pow(((ctr_e / pow(ctr_c, 3)) * ((e*ctr_e)+(c*ctr_c)-(ctr_c*ctr_e)*(c+e))/(c*e)), 0.5)
         except ZeroDivisionError:
             return 0
 
@@ -426,11 +428,11 @@ class Alternative(object):
         ret = ''
         if z_score == 0.0:
             ret = 'No Change'
-        elif z_score < 1.645:
-            ret = 'No Confidence'
         elif z_score < 1.96:
-            ret = '95% Confidence'
+            ret = 'No Confidence'
         elif z_score < 2.57:
+            ret = '95% Confidence'
+        elif z_score < 3.27:
             ret = '99% Confidence'
         else:
             ret = '99.9% Confidence'
