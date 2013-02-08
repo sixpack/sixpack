@@ -81,15 +81,15 @@ class Sixpack(object):
 
     @service_unavailable_on_connection_error
     def on_convert(self, request):
+        if should_exclude_visitor(request):
+            return json_resp({'status': 'ok'}, request)
+
         experiment_name = request.args.get('experiment')
 
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None:
             return json_resp({'status': 'failed', 'message': 'missing arguments'}, request, 400)
-
-        if should_exclude_visitor(request):
-            return json_resp({'status': 'ok'}, request)
 
         client = Client(client_id, self.redis)
 
