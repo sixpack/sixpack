@@ -104,22 +104,22 @@ ul.experiments li table tr th:nth-child(1), ul.experiments li table tr td:nth-ch
 	width: 138px;
 }
 ul.experiments li table tr:first-child th:nth-child(2) {
-	width: 103px;
+	width: 108px;
 }
 ul.experiments li table tr td:nth-child(2) {
-	width: 104px;
+	width: 109px;
 }
 ul.experiments li table tr:first-child th:nth-child(3) {
-	width: 93px;
+	width: 98px;
 }
 ul.experiments li table tr td:nth-child(3) {
-	width: 94px;
+	width: 99px;
 }
 ul.experiments li table tr:first-child th:nth-child(4) {
-	width: 140px;
+	width: 133px;
 }
 ul.experiments li table tr td:nth-child(4) {
-	width: 142px;
+	width: 134px;
 }
 /*End Chrome bug workaround*/
 
