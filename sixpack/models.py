@@ -411,8 +411,10 @@ class Alternative(object):
         c = control.participant_count()
 
         try:
-            std_dev = pow(((ctr_e / pow(ctr_c, 3)) * ((e*ctr_e)+(c*ctr_c)-(ctr_c*ctr_e)*(c+e))/(c*e)), 0.5)
-            return ((ctr_e / ctr_c) - 1) / std_dev
+            std_dev = pow((ctr_e*(1-ctr_e)/e + ctr_c*(1-ctr_c)/c),.5)
+            return (ctr_e - ctr_c) / std_dev            
+            # std_dev = pow(((ctr_e / pow(ctr_c, 3)) * ((e*ctr_e)+(c*ctr_c)-(ctr_c*ctr_e)*(c+e))/(c*e)), 0.5)
+            # return ((ctr_e / ctr_c) - 1) / std_dev
         except ZeroDivisionError:
             return 0
 
