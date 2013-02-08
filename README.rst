@@ -34,7 +34,7 @@ To seed some random data::
     cd sixpack
     # create a virtualenv here, if you want
     pip install -r requirements.txt
-    python seed.py # (with above server running)
+    bin/sixpack-seed # (with above server running)
 
 Starting Sixpack-Web (Development)
 ==================================

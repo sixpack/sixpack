@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
+import os
+import random
 import requests
 import string
-import random
 
 experiments = {
     'show-bieber': ['yes', 'no'],
@@ -10,6 +13,8 @@ experiments = {
     'solo-cup': ['red', 'green'],
     'jose': ['troll', 'no-troll']
 }
+
+SIXPACK_BASE = 'http://localhost:{0}'.format(os.environ.get('SIXPACK_PORT', 5000))
 
 # generate 20 client ids
 client_ids = []
@@ -28,7 +33,7 @@ for x in range(1, 10):
         client_exp.append((_id, experiment))
 
         payload = {'experiment': experiment, 'alternatives': alternatives, 'client_id': _id}
-        ret = requests.get('http://localhost:5000/participate', params=payload)
+        ret = requests.get('{0}/participate'.format(SIXPACK_BASE), params=payload)
         print ret.headers
 
 for key, tup in enumerate(client_exp):
@@ -38,5 +43,5 @@ for key, tup in enumerate(client_exp):
             'experiment': exp,
             'client_id': client_id
         }
-        ret = requests.get('http://localhost:5000/convert', params=payload)
+        ret = requests.get('{0}/convert'.format(SIXPACK_BASE), params=payload)
         print ret.headers
