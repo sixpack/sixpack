@@ -1,37 +1,51 @@
 Sixpack
 =======
 
+.. image:: https://travis-ci.org/seatgeek/sixpack.png?branch=master
+        :target: https://travis-ci.org/seatgeek/sixpack
+
 Sixpack is a language-agnostic A/B testing framework under active development at [SeatGeek](http://seatgeek.com/)..
 
-Travis
-======
+Production Notes
+================
 
-[![Build Status](https://travis-ci.org/seatgeek/sixpack.png)](https://travis-ci.org/seatgeek/sixpack)
+To run the sixpack server using gunicorn/gevent - a separate installation - you can run the following::
 
-Notes
-=====
+    gunicorn --access-logfile - -w 8 --worker-class=gevent sixpack.server:start
 
-    gunicorn --access-logfile - -w 8 --worker-class=gevent server:start
+To run the sixpack server using gunicorn/gevent - a separate installation - you can run the following::
+
+    gunicorn --access-logfile - -w 2 --worker-class=gevent sixpack.web:start
 
 Starting Sixpack (Developement)
 ===============================
 
-    $ cd sixpack
-    (virtualenv here, if you want)
-    $ pip install -r requirements.txt
-    $ cd sixpack
-    $ python server.py
+To start the sixpack server in development mode::
 
-server will be on `localhost:5000`
+    cd sixpack
+    # virtualenv here, if you want
+    pip install -r requirements.txt
+    SIXPACK_CONFIG=config.yml bin/sixpack
 
-To seed some random data
-    $ python seed.py (with above server running)
+The sixpack server will be accessible at ``localhost:5000``
+
+To seed some random data::
+
+    cd sixpack
+    # create a virtualenv here, if you want
+    pip install -r requirements.txt
+    python seed.py # (with above server running)
 
 Starting Sixpack-Web (Development)
 ==================================
 
-    $ cd sixpack
-    $ python sixpack-web.py
+To start the sixpack web dashboard in development mode::
 
-server will be on `localhost:5001`
+    cd sixpack
+    # virtualenv here, if you want
+    pip install -r requirements.txt
+    SIXPACK_CONFIG=config.yml bin/sixpack-web
+
+
+The sixpack web dashboard will be accessible at ``localhost:5001``
 
