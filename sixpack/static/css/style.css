@@ -1,20 +1,20 @@
 body {
 	padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-	background: url('../img/background-tile.png') repeat;
-	font-family: 'Lato', sans-serif;
-	font-weight: 100;
+	background: url('../img/background-tile.png') repeat;	
+	font-family: 'Helvetica Neue',Helvetica,Arial Geneva,sans-serif;
+	font-weight: 300;
 	color: #FAF3EE;
-	font-size: 17px;
+	font-size: 14px;
 }
 .navbar-inverse .navbar-inner {
-	background-color: #ac5911;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(172, 89, 17)), to(rgb(162, 79, 15)));
-	background-image: -webkit-linear-gradient(top, rgb(172, 89, 17), rgb(162, 79, 15));
-	background-image: -moz-linear-gradient(top, rgb(172, 89, 17), rgb(162, 79, 15));
-	background-image: -o-linear-gradient(top, rgb(172, 89, 17), rgb(162, 79, 15));
-	background-image: -ms-linear-gradient(top, rgb(172, 89, 17), rgb(162, 79, 15));
-	background-image: linear-gradient(top, rgb(172, 89, 17), rgb(162, 79, 15));
-	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ac5911', EndColorStr='#a24f0f');
+background-color: rgba(0,0,0,0);
+background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(172, 89, 17, 0.93)), to(rgba(162, 79, 15, 0.93)));
+background-image: -webkit-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
+background-image: -moz-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
+background-image: -o-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
+background-image: -ms-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
+background-image: linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
+filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ac5911', EndColorStr='#a24f0f');
 	border: none;
 	box-shadow: 1px 0 4px rgba(0,0,0,0.06);
 }
@@ -27,7 +27,7 @@ body {
 	background-image: url('../img/logo.png');
 	padding: 0;
 	margin-top: 14px;
-	margin-left: 0;
+	margin-left: 5px;;
 }
 .top-gradient {
 	background: url('../img/background-gradient.png') repeat-x;
@@ -44,9 +44,9 @@ ul.experiments {
 }
 ul.experiments li {
 	float: left;
-	width: 960px;
-	padding: 10px 32px 20px;
-	border-radius: 4px;
+	width: 948px;
+	padding: 10px 38px 0;
+	border-radius: 5px;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.02)), to(rgba(255, 255, 255, 0.03)));
 	background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
 	background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
@@ -62,7 +62,8 @@ ul.experiments li {
 }
 h3.name a {
 	color: #faf3ee;
-	font-size: 26px;
+	font-size: 30px;
+	font-family: 'Lato', sans-serif;
 	font-weight: 100;
 	transition: all 0.3s linear 0s;
 }
@@ -72,15 +73,149 @@ h3.name a:hover {
 	color: #fff;
 }
 ul.experiments li table {
-	width: 660px;
+	width: 590px;
+	margin-left: -20px;
+	float: left;
+}
+ul.experiments li table tr:first-child {
+	font-weight: 300;
+	color: #eeeae6;
+	border-bottom: 1px solid #1b1a1a;
+	-moz-border-radius: 5px 5px 0 0;
+	-webkit-border-radius: 5px 5px 0 0;
+	border-radius: 5px 5px 0 0;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+	box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(43, 44, 45, 0.40)), to(rgba(37, 38, 39, 0.40)));
+	background-image: -webkit-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+	background-image: -moz-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+	background-image: -o-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+	background-image: -ms-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+	background-image: linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#2b2c2d', EndColorStr='#252627');
+}
+ul.experiments li table tr {
+	border-bottom: 1px solid #1e1f20;
+	-webkit-box-shadow: 0px 1px 0px rgba(255, 255, 255, .04);
+	-moz-box-shadow: 0px 1px 0px rgba(255, 255, 255, .04);
+	box-shadow: 0px 1px 0px rgba(255, 255, 255, .04);
+}
+ul.experiments li table tr:last-child {
+	border-bottom: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
+ul.experiments li table tr:last-child td {
+	padding-bottom: 16px;
+}
+ul.experiments li table tr:nth-child(2) td {
+	padding-top: 9px;
 }
 ul.experiments li table tr th {
-	font-weight: 400;
+	font-weight: 300;
+	line-height: 31px;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.03);	
+}
+ul.experiments li table tr th:nth-child(even) {
+	background: rgba(255,255,255,0.01);
+}
+ul.experiments li table tr th:last-child {
+	border-right: 0;
+	box-shadow: none;
+}
+ul.experiments li table tr td {
+	color: #C2BDB9;
+	font-weight: 300;
+	font-size: 14px;
+	padding: 7px 0 11px;
+}
+ul.experiments li table tr td span.circle {
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	display: inline-block;
+	position: relative;
+	top: 3px;
+	margin-right: 7px;
+}
+ul.experiments li table tr:nth-child(2) td span.circle {
+	background: #9d5012;
+}
+ul.experiments li table tr:nth-child(3) td span.circle {
+	background: #33716f;
+}
+ul.experiments li table tr:nth-child(4) td span.circle {
+	background: #823131;
+}
+ul.experiments li table tr:nth-child(5) td span.circle {
+	background: #3a85ac;
+}
+ul.experiments li table tr:nth-child(6) td span.circle {
+	background: #86856f;
+}
+ul.experiments li table tr th, ul.experiments li table tr td {
+	padding-right: 22px;
+}
+ul.experiments li table tr td:nth-child(even) {
+	background: rgba(255,255,255,0.01);
+   	border-left: 1px solid rgba(0, 0, 0, 0.16);
+    border-right: 1px solid rgba(0, 0, 0, 0.16);
+   	box-shadow: 1px 0 0 rgba(255, 255, 255, 0.02), 1px 0 0 rgba(255, 255, 255, 0.02) inset;
+}
+ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
+	padding-left: 20px;
+}
+ul.experiments li table tr th:last-child, ul.experiments li table tr td:last-child {
+	padding-right: 20px;
+}
+ul.experiments li table tr td:last-child {
+	border-right: 0;
+	box-shadow: 1px 0 0 rgba(255, 255, 255, 0.02) inset;
 }
 ul.experiments li table tr th, ul.experiments li table tr td {
 	text-align: right;
 }
 ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
 	text-align: left;
-	padding-bottom: 8px;
+}
+div.graph {
+	float: right;
+	width: 325px;
+	margin-right: 30px;
+	margin-top: -77px;
+	margin-left: 15px;
+	position: relative;
+	top: 36px;
+}
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.x.axis path {
+  display: none;
+}
+.line {
+  fill: none;
+  stroke: #9d5012;
+  stroke-width: 2.2px;
+}
+.graph g.tick text {
+ 	font-weight: 400;
+ 	font-size: 12px;
+ 	fill: #3e4547;
+}
+.grid .tick {
+    stroke: #2e3335;
+}
+.grid path {
+      stroke-width: 0;
+}
+.area {
+    fill: #fff;
+    opacity: 0.02;
+    stroke-width: 0;
 }
