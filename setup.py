@@ -25,4 +25,5 @@ setup(
     tests_require=['nose'],
     test_suite='nose.collector',
     install_requires=open('requirements.txt').readlines(),
+    include_package_data=True,
 )

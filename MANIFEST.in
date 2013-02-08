@@ -1,4 +1,5 @@
-recursive-include sixpack/static
+recursive-include sixpack/static *
+recursive-include sixpack/templates *
 include *.rst
 include *.yml
 include *.txt
