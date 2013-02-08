@@ -95,6 +95,34 @@ ul.experiments li table tr:first-child {
 	background-image: linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
 	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#2b2c2d', EndColorStr='#252627');
 }
+
+/*The following lines are to combat a Chrome bug: http://code.google.com/p/chromium/issues/detail?id=62445*/
+ul.experiments li table tr {
+	display: block;
+}
+ul.experiments li table tr th:nth-child(1), ul.experiments li table tr td:nth-child(1) {
+	width: 138px;
+}
+ul.experiments li table tr:first-child th:nth-child(2) {
+	width: 103px;
+}
+ul.experiments li table tr td:nth-child(2) {
+	width: 104px;
+}
+ul.experiments li table tr:first-child th:nth-child(3) {
+	width: 93px;
+}
+ul.experiments li table tr td:nth-child(3) {
+	width: 94px;
+}
+ul.experiments li table tr:first-child th:nth-child(4) {
+	width: 140px;
+}
+ul.experiments li table tr td:nth-child(4) {
+	width: 142px;
+}
+/*End Chrome bug workaround*/
+
 ul.experiments li table tr {
 	border-bottom: 1px solid #1e1f20;
 	-webkit-box-shadow: 0px 1px 0px rgba(255, 255, 255, .04);
@@ -117,7 +145,7 @@ ul.experiments li table tr th {
 	font-weight: 300;
 	line-height: 31px;
     border-right: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.03);	
+    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.03);
 }
 ul.experiments li table tr th:nth-child(even) {
 	background: rgba(255,255,255,0.01);
