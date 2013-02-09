@@ -100,26 +100,30 @@ ul.experiments li table tr:first-child {
 ul.experiments li table tr {
 	display: block;
 }
-ul.experiments li table tr th:nth-child(1), ul.experiments li table tr td:nth-child(1) {
-	width: 138px;
+ul.experiments li table tr th:nth-child(1) {
+	width: 137px;
+}
+ul.experiments li table tr td:nth-child(1) {
+	width: 136px;
+	border-left: none;
 }
 ul.experiments li table tr:first-child th:nth-child(2) {
-	width: 108px;
-}
-ul.experiments li table tr td:nth-child(2) {
 	width: 109px;
 }
-ul.experiments li table tr:first-child th:nth-child(3) {
-	width: 98px;
+ul.experiments li table tr td:nth-child(2) {
+	width: 110px;
 }
-ul.experiments li table tr td:nth-child(3) {
+ul.experiments li table tr:first-child th:nth-child(3) {
 	width: 99px;
 }
+ul.experiments li table tr td:nth-child(3) {
+	width: 100px;
+}
 ul.experiments li table tr:first-child th:nth-child(4) {
-	width: 133px;
+	width: 134px;
 }
 ul.experiments li table tr td:nth-child(4) {
-	width: 134px;
+	width: 133px;
 }
 /*End Chrome bug workaround*/
 
@@ -144,21 +148,23 @@ ul.experiments li table tr:nth-child(2) td {
 ul.experiments li table tr th {
 	font-weight: 300;
 	line-height: 31px;
-    border-right: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.03);
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.03) inset;
 }
 ul.experiments li table tr th:nth-child(even) {
-	background: rgba(255,255,255,0.01);
+	background: rgba(255,255,255,0.015);
 }
 ul.experiments li table tr th:last-child {
 	border-right: 0;
-	box-shadow: none;
 }
 ul.experiments li table tr td {
 	color: #C2BDB9;
 	font-weight: 300;
 	font-size: 14px;
 	padding: 7px 0 11px;
+   	box-shadow: 1px 0 0 rgba(255, 255, 255, .02) inset;
+	border-left: 1px solid rgba(0, 0, 0, 0.16);
+
 }
 ul.experiments li table tr td span.circle {
 	width: 14px;
@@ -188,10 +194,7 @@ ul.experiments li table tr th, ul.experiments li table tr td {
 	padding-right: 22px;
 }
 ul.experiments li table tr td:nth-child(even) {
-	background: rgba(255,255,255,0.01);
-   	border-left: 1px solid rgba(0, 0, 0, 0.16);
-    border-right: 1px solid rgba(0, 0, 0, 0.16);
-   	box-shadow: 1px 0 0 rgba(255, 255, 255, 0.02), 1px 0 0 rgba(255, 255, 255, 0.02) inset;
+	background: rgba(255,255,255,0.015);
 }
 ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
 	padding-left: 20px;
@@ -201,13 +204,14 @@ ul.experiments li table tr th:last-child, ul.experiments li table tr td:last-chi
 }
 ul.experiments li table tr td:last-child {
 	border-right: 0;
-	box-shadow: 1px 0 0 rgba(255, 255, 255, 0.02) inset;
 }
 ul.experiments li table tr th, ul.experiments li table tr td {
 	text-align: right;
 }
 ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
 	text-align: left;
+	box-shadow: none;
+	border-left: none;
 }
 div.graph {
 	float: right;
