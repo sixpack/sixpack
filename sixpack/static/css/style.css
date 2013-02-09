@@ -148,7 +148,7 @@ ul.experiments li table tr:nth-child(2) td {
 ul.experiments li table tr th {
 	font-weight: 300;
 	line-height: 31px;
-    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    border-left: 1px solid #1e1f20;
     box-shadow: 1px 0 0 rgba(255, 255, 255, 0.03) inset;
 }
 ul.experiments li table tr th:nth-child(even) {
@@ -163,7 +163,7 @@ ul.experiments li table tr td {
 	font-size: 14px;
 	padding: 7px 0 11px;
    	box-shadow: 1px 0 0 rgba(255, 255, 255, .02) inset;
-	border-left: 1px solid rgba(0, 0, 0, 0.16);
+	border-left: 1px solid #1e1f20;
 }
 ul.experiments li table tr td span.circle {
 	width: 14px;
@@ -193,7 +193,7 @@ ul.experiments li table tr th, ul.experiments li table tr td {
 	padding-right: 22px;
 }
 ul.experiments li table tr td:nth-child(even) {
-	background: rgba(255,255,255,0.01);
+	background: none repeat scroll 0 0 rgba(170, 170, 170, 0.02);
 }
 ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
 	padding-left: 20px;
