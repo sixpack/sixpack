@@ -4,10 +4,20 @@ Sixpack
 .. image:: https://travis-ci.org/seatgeek/sixpack.png?branch=master
         :target: https://travis-ci.org/seatgeek/sixpack
 
-Sixpack is a language-agnostic A/B testing framework under active development at [SeatGeek](http://seatgeek.com/)..
+Sixpack is a tool to help solve the problem of A/B testing across multiple programming languages. It does this by exposing a very simple API that a client library in virtually any language can make requests against.
+
+
+Requirements
+============
+
+* Redis
+* Python >= 2.7 (3.0 Untested, Pull Requests welcome)
+
+Running the Services
+====================
 
 Production Notes
-================
+----------------
 
 To run the sixpack server using gunicorn/gevent - a separate installation - you can run the following::
 
@@ -18,7 +28,7 @@ To run the sixpack web dashboard using gunicorn/gevent - a separate installation
     gunicorn --access-logfile - -w 2 --worker-class=gevent sixpack.web:start
 
 Starting Sixpack (Developement)
-===============================
+-------------------------------
 
 To start the sixpack server in development mode::
 
@@ -37,7 +47,7 @@ To seed some random data::
     bin/sixpack-seed # (with above server running)
 
 Starting Sixpack-Web (Development)
-==================================
+----------------------------------
 
 To start the sixpack web dashboard in development mode::
 

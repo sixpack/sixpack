@@ -1,0 +1,7 @@
+Clients are responsibile for the following:
+
+
+* Generating or accepting a unique client id
+* Making requests to the Sixpack server
+* Testing for server failure
+* If
