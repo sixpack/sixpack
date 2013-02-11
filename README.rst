@@ -25,7 +25,7 @@ To start the sixpack server in development mode::
     cd sixpack
     # virtualenv here, if you want
     pip install -r requirements.txt
-    SIXPACK_CONFIG=config.yml bin/sixpack
+    PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack
 
 The sixpack server will be accessible at ``localhost:5000``
 
@@ -44,8 +44,7 @@ To start the sixpack web dashboard in development mode::
     cd sixpack
     # virtualenv here, if you want
     pip install -r requirements.txt
-    SIXPACK_CONFIG=config.yml bin/sixpack-web
+    PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack-web
 
 
 The sixpack web dashboard will be accessible at ``localhost:5001``
-
