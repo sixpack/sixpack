@@ -172,6 +172,7 @@ def json_error(resp, request, status=None):
 
     return _json_resp(resp, request, status)
 
+
 def json_success(resp, request):
     default = {'status': 'ok'}
     resp = dict(default.items() + resp.items())
@@ -195,6 +196,7 @@ def create_app():
     app = Sixpack(db.REDIS)
 
     return app
+
 
 # Method to run with gunicorn
 def start(environ, start_response):

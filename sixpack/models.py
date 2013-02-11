@@ -309,7 +309,7 @@ class Experiment(object):
     @staticmethod
     def is_valid(experiment_name):
         return (isinstance(experiment_name, basestring) and
-            VALID_EXPERIMENT_ALTERNATIVE_RE.match(experiment_name) is not None)
+                VALID_EXPERIMENT_ALTERNATIVE_RE.match(experiment_name) is not None)
 
 
 class AlternativeCollection(object):
@@ -410,7 +410,7 @@ class Alternative(object):
         c = control.participant_count()
 
         try:
-            std_dev = pow((ctr_e*(1-ctr_e)/e + ctr_c*(1-ctr_c)/c),.5)
+            std_dev = pow((ctr_e * (1 - ctr_e) / e + ctr_c * (1 - ctr_c) / c), .5)
             return (ctr_e - ctr_c) / std_dev
         except ZeroDivisionError:
             return 0
@@ -442,4 +442,4 @@ class Alternative(object):
     @staticmethod
     def is_valid(alternative_name):
         return (isinstance(alternative_name, basestring) and
-            VALID_EXPERIMENT_ALTERNATIVE_RE.match(alternative_name) is not None)
+                VALID_EXPERIMENT_ALTERNATIVE_RE.match(alternative_name) is not None)
