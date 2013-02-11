@@ -13,8 +13,17 @@ Requirements
 * Redis
 * Python >= 2.7 (3.0 Untested, Pull Requests welcome)
 
-Running the Services
-====================
+Getting Started
+===============
+
+To get going create (or don't, but you really should) a new virtualenv for your sixpack installation. Follow that up with a `pip install`
+
+`$ pip install sixpack`
+
+
+
+Deployment
+==========
 
 Production Notes
 ----------------
