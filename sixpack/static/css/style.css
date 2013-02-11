@@ -1,252 +1,270 @@
-body {
-	padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-	background: url('../img/background-tile.png') repeat;	
-	font-family: 'Helvetica Neue',Helvetica,Arial Geneva,sans-serif;
-	font-weight: 300;
-	color: #FAF3EE;
-	font-size: 14px;
-}
-.navbar-inverse .navbar-inner {
-background-color: rgba(0,0,0,0);
-background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(172, 89, 17, 0.93)), to(rgba(162, 79, 15, 0.93)));
-background-image: -webkit-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
-background-image: -moz-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
-background-image: -o-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
-background-image: -ms-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
-background-image: linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
-filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ac5911', EndColorStr='#a24f0f');
-	border: none;
-	box-shadow: 1px 0 4px rgba(0,0,0,0.06);
-}
-.navbar-inner {
-	height: 56px;
-}
-.navbar-inverse .brand {
-	width: 130px;
-	height: 25px;
-	background-image: url('../img/logo.png');
-	padding: 0;
-	margin-top: 14px;
-	margin-left: 5px;;
-}
-.top-gradient {
-	background: url('../img/background-gradient.png') repeat-x;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 350px;
-	z-index: -99;
-}
-ul.experiments {
-	list-style: none;
-	margin: 36px 0 0 -29px;
-}
-ul.experiments li {
-	float: left;
-	width: 948px;
-	padding: 10px 38px 0;
-	border-radius: 5px;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.02)), to(rgba(255, 255, 255, 0.03)));
-	background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
-	background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
-	background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
-	background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
-	background-image: linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
-	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ffffff', EndColorStr='#ffffff');
-	margin-bottom: 45px;
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
-}
-.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-	width: 994px;
-}
-h3.name a {
-	color: #faf3ee;
-	font-size: 30px;
-	font-family: 'Lato', sans-serif;
-	font-weight: 100;
-	transition: all 0.3s linear 0s;
-}
-h3.name a:hover {
-	text-decoration: underline;
-	text-shadow: 0 0 2px #fff;
-	color: #fff;
-}
-ul.experiments li table {
-	width: 590px;
-	margin-left: -20px;
-	float: left;
-}
-ul.experiments li table tr:first-child {
-	font-weight: 300;
-	color: #eeeae6;
-	border-bottom: 1px solid #1b1a1a;
-	-moz-border-radius: 5px 5px 0 0;
-	-webkit-border-radius: 5px 5px 0 0;
-	border-radius: 5px 5px 0 0;
-	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
-	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
-	box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
-	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(43, 44, 45, 0.40)), to(rgba(37, 38, 39, 0.40)));
-	background-image: -webkit-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-	background-image: -moz-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-	background-image: -o-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-	background-image: -ms-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-	background-image: linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#2b2c2d', EndColorStr='#252627');
-}
+/* BEGIN: Background */
+  body {
+    padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+    background: url('../img/background-tile.png') repeat;
+    font-family: 'Helvetica Neue',Helvetica,Arial Geneva,sans-serif;
+    font-weight: 300;
+    color: #FAF3EE;
+    font-size: 14px;
+  }
+  .top-gradient {
+    background: url('../img/background-gradient.png') repeat-x;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 350px;
+    z-index: -99;
+  }
+/* END: Background */
 
-/*The following lines are to combat a Chrome bug: http://code.google.com/p/chromium/issues/detail?id=62445*/
-ul.experiments li table tr {
-	display: block;
-}
-ul.experiments li table tr th:nth-child(1) {
-	width: 137px;
-}
-ul.experiments li table tr td:nth-child(1) {
-	width: 136px;
-	border-left: none;
-}
-ul.experiments li table tr:first-child th:nth-child(2) {
-	width: 109px;
-}
-ul.experiments li table tr td:nth-child(2) {
-	width: 110px;
-}
-ul.experiments li table tr:first-child th:nth-child(3) {
-	width: 99px;
-}
-ul.experiments li table tr td:nth-child(3) {
-	width: 100px;
-}
-ul.experiments li table tr:first-child th:nth-child(4) {
-	width: 134px;
-}
-ul.experiments li table tr td:nth-child(4) {
-	width: 135px;
-}
-/*End Chrome bug workaround*/
+/* BEGIN: Navbar */
+  .navbar-inverse .navbar-inner {
+    background-color: rgba(0,0,0,0);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(172, 89, 17, 0.93)), to(rgba(162, 79, 15, 0.93)));
+    background-image: -webkit-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
+    background-image: -moz-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
+    background-image: -o-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
+    background-image: -ms-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
+    background-image: linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ac5911', EndColorStr='#a24f0f');
+    border: none;
+    box-shadow: 1px 0 4px rgba(0,0,0,0.06);
+  }
+  .navbar-inner {
+    height: 56px
+  }
+  .navbar-inverse .brand {
+    width: 130px;
+    height: 25px;
+    background-image: url('../img/logo.png');
+    padding: 0;
+    margin-top: 14px;
+    margin-left: 5px;
+  }
+  .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+    width: 994px
+  }
+/* END: Navbar */
 
-ul.experiments li table tr {
-	border-bottom: 1px solid #1e1f20;
-	-webkit-box-shadow: 0px 1px 0px rgba(255, 255, 255, .04);
-	-moz-box-shadow: 0px 1px 0px rgba(255, 255, 255, .04);
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, .04);
-}
-ul.experiments li table tr:last-child {
-	border-bottom: none;
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;
-}
-ul.experiments li table tr:last-child td {
-	padding-bottom: 16px;
-}
-ul.experiments li table tr:nth-child(2) td {
-	padding-top: 9px;
-}
-ul.experiments li table tr th {
-	font-weight: 300;
-	line-height: 31px;
+/* BEGIN: Experiments */
+  ul.experiments {
+    list-style: none;
+    margin: 36px 0 0 -29px;
+  }
+  ul.experiments li {
+    float: left;
+    width: 948px;
+    padding: 10px 38px 0;
+    margin-bottom: 45px;
+    border-radius: 5px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.02)), to(rgba(255, 255, 255, 0.03)));
+    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
+    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
+    background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
+    background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
+    background-image: linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ffffff', EndColorStr='#ffffff');
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
+    -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
+    -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
+  }
+  ul.experiments li table {
+    width: 590px;
+    margin-left: -20px;
+    float: left;
+  }
+  ul.experiments h3.name a {
+    color: #faf3ee;
+    font-size: 30px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 100;
+    transition: all .5s;
+    -moz-transition: all .5s;
+    -webkit-transition: all .5s;
+  }
+  h3.name h3.name a:hover {
+    text-decoration: underline;
+    text-shadow: 0 0 2px #fff;
+    color: #fff;
+  }
+  ul.experiments li table tr th, ul.experiments li table tr td {
+    padding-right: 22px;
+    font-weight: 300;
+    text-align: right;
     border-left: 1px solid #1e1f20;
+  }
+  ul.experiments li table tr {
+    border-bottom: 1px solid #1e1f20;
+    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, .04);
+    -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, .04);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .04);
+  }
+  /* Styles for the header row */
+  ul.experiments li table tr:first-child {
+    font-weight: 300;
+    color: #eeeae6;
+    border-bottom: 1px solid #1b1a1a;
+    -moz-border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+    box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(43, 44, 45, 0.40)), to(rgba(37, 38, 39, 0.40)));
+    background-image: -webkit-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+    background-image: -moz-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+    background-image: -o-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+    background-image: -ms-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+    background-image: linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#2b2c2d', EndColorStr='#252627');
+  }
+  /* Row directly under header needs some extra padding */
+  ul.experiments li table tr:nth-child(2) td {
+    padding-top: 9px
+  }
+  ul.experiments li table tr:last-child {
+    border-bottom: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+  ul.experiments li table tr:last-child td {
+    padding-bottom: 16px
+  }
+  ul.experiments li table tr th {
+    line-height: 31px;
     box-shadow: 1px 0 0 rgba(255, 255, 255, 0.03) inset;
+  }
+  ul.experiments li table tr th:last-child {
+    border-right: 0;
+  }
+  ul.experiments li table tr td {
+    color: #C2BDB9;
+    padding-top: 7px;
+    padding-bottom: 11px;
+    padding-left: 0;
+    box-shadow: 1px 0 0 rgba(255, 255, 255, .02) inset;
+  }
+  ul.experiments li table tr td span.circle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    top: 3px;
+    margin-right: 7px;
+  }
+  ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
+    padding-left: 20px;
+  }
+  ul.experiments li table tr th:last-child, ul.experiments li table tr td:last-child {
+    padding-right: 20px;
+  }
+  ul.experiments li table tr td:last-child {
+    border-right: 0;
+  }
+  ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
+    text-align: left;
+    box-shadow: none;
+    border-left: none;
+  }
+
+  /* Styles for alternating column shading */
+  ul.experiments li table tr th:nth-child(even) {
+    background: none repeat scroll 0 0 rgba(170, 170, 170, 0.02);
+  }
+  ul.experiments li table tr td:nth-child(even) {
+    background: none repeat scroll 0 0 rgba(170, 170, 170, 0.02);
+  }
+
+  /* The following lines are to combat a Chrome bug: http://code.google.com/p/chromium/issues/detail?id=62445 */
+  ul.experiments li table tr {
+    display: block
+  }
+  ul.experiments li table tr th:nth-child(1) {
+    width: 137px
+  }
+  ul.experiments li table tr td:nth-child(1) {
+    width: 136px;
+    border-left: none;
+  }
+  ul.experiments li table tr:first-child th:nth-child(2) {
+    width: 109px
+  }
+  ul.experiments li table tr td:nth-child(2) {
+    width: 110px
+  }
+  ul.experiments li table tr:first-child th:nth-child(3) {
+    width: 99px
+  }
+  ul.experiments li table tr td:nth-child(3) {
+    width: 100px
+  }
+  ul.experiments li table tr:first-child th:nth-child(4) {
+    width: 134px
+  }
+  ul.experiments li table tr td:nth-child(4) {
+    width: 135px
+  }
+  /*End Chrome bug workaround*/
+
+  /*Dummy color values.  These should be replaced.*/
+  ul.experiments li table tr:nth-child(2) td span.circle {
+    background: #9d5012
+  }
+  ul.experiments li table tr:nth-child(3) td span.circle {
+    background: #33716f
+  }
+  ul.experiments li table tr:nth-child(4) td span.circle {
+    background: #823131
+  }
+  ul.experiments li table tr:nth-child(5) td span.circle {
+    background: #3a85ac
+  }
+  ul.experiments li table tr:nth-child(6) td span.circle {
+    background: #86856f
+  }
+  /* End color dummy values */
+/* END: Experiments */
+
+/* BEGIN: Placeholder rules for D3 graph */
+.graph {
+  float: right;
+  width: 325px;
+  margin-right: 30px;
+  margin-top: -77px;
+  margin-left: 15px;
+  position: relative;
+  top: 36px;
 }
-ul.experiments li table tr th:nth-child(even) {
-	background: rgba(255,255,255,0.01);
-}
-ul.experiments li table tr th:last-child {
-	border-right: 0;
-}
-ul.experiments li table tr td {
-	color: #C2BDB9;
-	font-weight: 300;
-	font-size: 14px;
-	padding: 7px 0 11px;
-   	box-shadow: 1px 0 0 rgba(255, 255, 255, .02) inset;
-	border-left: 1px solid #1e1f20;
-}
-ul.experiments li table tr td span.circle {
-	width: 14px;
-	height: 14px;
-	border-radius: 50%;
-	display: inline-block;
-	position: relative;
-	top: 3px;
-	margin-right: 7px;
-}
-ul.experiments li table tr:nth-child(2) td span.circle {
-	background: #9d5012;
-}
-ul.experiments li table tr:nth-child(3) td span.circle {
-	background: #33716f;
-}
-ul.experiments li table tr:nth-child(4) td span.circle {
-	background: #823131;
-}
-ul.experiments li table tr:nth-child(5) td span.circle {
-	background: #3a85ac;
-}
-ul.experiments li table tr:nth-child(6) td span.circle {
-	background: #86856f;
-}
-ul.experiments li table tr th, ul.experiments li table tr td {
-	padding-right: 22px;
-}
-ul.experiments li table tr td:nth-child(even) {
-	background: none repeat scroll 0 0 rgba(170, 170, 170, 0.02);
-}
-ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
-	padding-left: 20px;
-}
-ul.experiments li table tr th:last-child, ul.experiments li table tr td:last-child {
-	padding-right: 20px;
-}
-ul.experiments li table tr td:last-child {
-	border-right: 0;
-}
-ul.experiments li table tr th, ul.experiments li table tr td {
-	text-align: right;
-}
-ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
-	text-align: left;
-	box-shadow: none;
-	border-left: none;
-}
-div.graph {
-	float: right;
-	width: 325px;
-	margin-right: 30px;
-	margin-top: -77px;
-	margin-left: 15px;
-	position: relative;
-	top: 36px;
-}
-.axis path, .axis line {
+.graph .axis path, .graph .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
-.x.axis path {
-  display: none;
+.graph .x.axis path {
+  display: none
 }
-.line {
+.graph .line {
   fill: none;
   stroke: #9d5012;
   stroke-width: 2.2px;
 }
 .graph g.tick text {
- 	font-weight: 400;
- 	font-size: 12px;
- 	fill: #3e4547;
+  font-weight: 400;
+  font-size: 12px;
+  fill: #3e4547;
 }
-.grid .tick {
-    stroke: #2e3335;
+.graph .grid .tick {
+  stroke: #2e3335
 }
-.grid path {
-      stroke-width: 0;
+.graph .grid path {
+  stroke-width: 0
 }
-.area {
-    fill: #fff;
-    opacity: 0.02;
-    stroke-width: 0;
+.graph .area {
+  fill: #fff;
+  opacity: 0.02;
+  stroke-width: 0;
 }
+/* END: Placeholder rules for D3 graph */
