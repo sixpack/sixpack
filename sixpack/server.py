@@ -19,7 +19,7 @@ def service_unavailable_on_connection_error(f, *args, **kwargs):
     try:
         return f(*args, **kwargs)
     except redis.ConnectionError:
-        return json_resp({"message": "Service Unavilable"}, None, 503)
+        return json_error({"message": "Service Unavilable"}, None, 503)
 
 
 class Sixpack(object):
@@ -51,14 +51,14 @@ class Sixpack(object):
             endpoint, values = adapter.match()
             return getattr(self, 'on_' + endpoint)(request, **values)
         except NotFound:
-            return json_resp({'status': 'failed', "message": "not found"}, request, 404)
+            return json_error({"message": "not found"}, request, 404)
         except HTTPException:
-            return json_resp({'status': 'failed', "message": "an internal error has occurred"}, request, 500)
+            return json_error({"message": "an internal error has occurred"}, request, 500)
 
     @service_unavailable_on_connection_error
     def on_status(self, request):
         self.redis.ping()
-        return json_resp({"message": "ok"}, request)
+        return json_success({}, request)
 
     def on_home(self, request):
         dales = """
@@ -82,14 +82,14 @@ class Sixpack(object):
     @service_unavailable_on_connection_error
     def on_convert(self, request):
         if should_exclude_visitor(request):
-            return json_resp({'status': 'ok'}, request)
+            return json_success({'message': 'excluded visitor'}, request)
 
         experiment_name = request.args.get('experiment')
 
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None:
-            return json_resp({'status': 'failed', 'message': 'missing arguments'}, request, 400)
+            return json_error({'message': 'missing arguments'}, request, 400)
 
         client = Client(client_id, self.redis)
 
@@ -97,9 +97,9 @@ class Sixpack(object):
             experiment = Experiment.find(experiment_name, self.redis)
             experiment.convert(client)
         except ValueError as e:
-            return json_resp({'status': 'failed', 'message': str(e)}, request, 400)
+            return json_error({'message': str(e)}, request, 400)
 
-        return json_resp({'status': 'ok'}, request)
+        return json_success({}, request)
 
     @service_unavailable_on_connection_error
     def on_participate(self, request):
@@ -109,7 +109,7 @@ class Sixpack(object):
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None or alts is None:
-            return json_resp({'status': "failed", 'message': 'missing arguments'}, request, 400)
+            return json_error({'message': 'missing arguments'}, request, 400)
 
         # Get the experiment ready for action
         client = Client(client_id, self.redis)
@@ -138,7 +138,7 @@ class Sixpack(object):
             'status': 'ok'
         }
 
-        return json_resp(resp, request)
+        return json_success(resp, request)
 
 
 def should_exclude_visitor(request):
@@ -166,13 +166,27 @@ def is_ignored_ip(ip_address):
     return unquote(ip_address) in cfg.get('ignored_ip_addresses')
 
 
-def json_resp(in_dict, request, status=None):
+def json_error(resp, request, status=None):
+    default = {'status': 'failed'}
+    resp = dict(default.items() + resp.items())
+
+    return _json_resp(resp, request, status)
+
+def json_success(resp, request):
+    default = {'status': 'ok'}
+    resp = dict(default.items() + resp.items())
+
+    return _json_resp(resp, request, 200)  # Always a 200 when success is called
+
+
+def _json_resp(in_dict, request, status=None):
     headers = {'Content-Type': 'application/json'}
     data = json.dumps(in_dict)
     callback = request and request.args.get('callback')
     if callback and re.match("^\w[\w'\-\.]*$", callback):
         headers["Content-Type"] = "application/javascript"
         data = "%s(%s)" % (callback, data)
+
     return Response(data, status=status, headers=headers)
 
 
