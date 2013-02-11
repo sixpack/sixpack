@@ -10,31 +10,32 @@
                 <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a>
             </h3>
             <div class="controls">
-                <form action="{{ url_for('reset_experiment', experiment_name=experiment.name) }}" method="post">
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                    <button class="btn btn-small">Reset</button>
-                </form>
-
-                <form action="{{ url_for('delete_experiment', experiment_name=experiment.name) }}" method="post">
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                    <button class="btn btn-small">Delete</button>
-                </form>
-
 
                 <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                    <button class="btn btn-small">{% if experiment.is_archived() %}Un-{% endif %}Archive</button>
+                    <button class="btn btn-small btn-inverse">{% if experiment.is_archived() %}Un-{% endif %}Archive</button>
                 </form>
 
                 <form>
-                    <button class="btn btn-small" data-toggle="modal" data-target="#desc-modal">Update Description</button>
+                    <button class="btn btn-small btn-inverse" data-toggle="modal" data-target="#desc-modal">Update Description</button>
                 </form>
                 {% if experiment.has_winner() %}
                     <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                        <button class="btn btn-small" type="submit">Reset Winner</button>
+                        <button class="btn btn-small btn-warning" type="submit">Reset Winner</button>
                     </form>
                 {% endif %}
+
+                <form action="{{ url_for('reset_experiment', experiment_name=experiment.name) }}" method="post">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-small btn-warning">Reset</button>
+                </form>
+
+                <form action="{{ url_for('delete_experiment', experiment_name=experiment.name) }}" method="post">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-small btn-danger">Delete</button>
+                </form>
+
             </div>
         </div> 
             <div class="clearfix"></div>
@@ -66,7 +67,7 @@
                             <form action="{{ url_for('set_winner', experiment_name=experiment.name) }}" method="post">
                                 <input type='hidden' name="alternative_name" value="{{ alt.name }}" />
                                 <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit" class="btn btn-small">Use This</button>
+                                <button type="submit" class="btn btn-small btn-inverse">Use This</button>
                             </form>
                             {% endif %}
                         </div>
