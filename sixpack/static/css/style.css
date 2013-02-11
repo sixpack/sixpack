@@ -53,7 +53,7 @@
     margin: 36px 0 0 -29px;
   }
   ul.experiments li {
-    float: left;
+    position: relative;
     width: 948px;
     padding: 10px 38px 0;
     margin-bottom: 45px;
@@ -70,9 +70,8 @@
     -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
   }
   ul.experiments li table {
-    width: 590px;
+    width: 735px;
     margin-left: -20px;
-    float: left;
   }
   ul.experiments h3.name a {
     color: #faf3ee;
@@ -183,10 +182,10 @@
     display: block
   }
   ul.experiments li table tr th:nth-child(1) {
-    width: 137px
+    width: 151px
   }
   ul.experiments li table tr td:nth-child(1) {
-    width: 136px;
+    width: 149px;
     border-left: none;
   }
   ul.experiments li table tr:first-child th:nth-child(2) {
@@ -206,6 +205,12 @@
   }
   ul.experiments li table tr td:nth-child(4) {
     width: 135px
+  }
+  ul.experiments li table tr:first-child th:nth-child(5) {
+    width: 109px;
+  }
+  ul.experiments li table tr td:nth-child(5) {
+    width: 110px
   }
   /*End Chrome bug workaround*/
 
@@ -230,13 +235,9 @@
 
 /* BEGIN: Placeholder rules for D3 graph */
 .graph {
-  float: right;
-  width: 325px;
-  margin-right: 30px;
-  margin-top: -77px;
-  margin-left: 15px;
-  position: relative;
-  top: 36px;
+  position: absolute;
+  top: 90px;
+  right: 0;
 }
 .graph .axis path, .graph .axis line {
   fill: none;
@@ -268,3 +269,34 @@
   stroke-width: 0;
 }
 /* END: Placeholder rules for D3 graph */
+div.header button {
+  float: left;
+  margin-left: 5px;
+}
+div.header h3, div.header .modal {
+  float: left;
+}
+div.header form, div.alt-controls form {
+  margin: 0;
+  display: inline-block;
+}
+div.header .controls {
+  margin-top: 20px;
+  float: right;
+}
+div.header h3 {
+  margin-right:25px;
+}
+ul.experiments table tbody td span.label {
+  float: right;
+  margin-top: 2px;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+span.circle i.icon-ok {
+  margin-top: -2px;
+  margin-left: 1px;
+}
+ul.experiments h4 {
+  margin-top: 0;
+}

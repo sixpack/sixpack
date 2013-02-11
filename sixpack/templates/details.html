@@ -1,58 +1,86 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<h1>{{ experiment.name }}</h1>
-{% if experiment.get_description() %}
-<h3>{{ experiment.get_description() }}</h3>
-{% endif %}
 
-Total Participants: {{ experiment.total_participants() }} <br/>
-Total Conversions: {{ experiment.total_conversions() }}<br/>
 
-{% for alternative in experiment.alternatives %}
-    <h2>{{ alternative.name }}</h2>
-    <div class="alt-controls">
-        {% if alternative.is_winner() %}
-            <p>This test won!</p>
-        {% else %}
-        <form action="{{ url_for('set_winner', experiment_name=experiment.name) }}" method="post">
-            <input type='hidden' name="alternative_name" value="{{ alternative.name }}" />
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" class="btn btn-small">Use This</button>
-        </form>
+<ul class="experiments">
+    <li>
+        <div class="header">
+            <h3 class="name">
+                <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a>
+            </h3>
+            <div class="controls">
+                <form action="{{ url_for('reset_experiment', experiment_name=experiment.name) }}" method="post">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-small">Reset</button>
+                </form>
+
+                <form action="{{ url_for('delete_experiment', experiment_name=experiment.name) }}" method="post">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-small">Delete</button>
+                </form>
+
+
+                <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-small">{% if experiment.is_archived() %}Un-{% endif %}Archive</button>
+                </form>
+
+                <form>
+                    <button class="btn btn-small" data-toggle="modal" data-target="#desc-modal">Update Description</button>
+                </form>
+                {% if experiment.has_winner() %}
+                    <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-small" type="submit">Reset Winner</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div> 
+            <div class="clearfix"></div>
+
+        {% if experiment.get_description() %}
+            <h4>{{ experiment.get_description() }}</h4>
         {% endif %}
-    </div>
-    Participants: {{ alternative.participant_count() }}<br/>
-    Conversions: {{ alternative.completed_count() }}<br/>
-{% endfor %}
 
-<div class="controls" style="margin-top:30px">
-    <form action="{{ url_for('reset_experiment', experiment_name=experiment.name) }}" method="post">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-small">Reset</button>
-    </form>
+        <table>
+            <tbody>
+                <tr>
+                    <th>Case</th>
+                    <th>Participants</th>
+                    <th>Conv Rate</th>
+                    <th>Confidence</th>
+                    <th>Winner</th>
+                </tr>
+                {% for alt in experiment.alternatives %}
+                <tr>
+                    <td><span class="circle">{% if alt.is_winner() %}<i class="icon-ok"></i>{% endif %}</span>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %} </td>
+                    <td>{{ alt.participant_count()|number_format }}</td>
+                    <td>{{ alt.conversion_rate()|number_to_percent }}%</td>
+                    <td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
+                    <td>
+                        <div class="alt-controls">
+                            {% if alt.is_winner() %}
+                                <span class="label label-success">This test won!</label>
+                            {% else %}
+                            <form action="{{ url_for('set_winner', experiment_name=experiment.name) }}" method="post">
+                                <input type='hidden' name="alternative_name" value="{{ alt.name }}" />
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-small">Use This</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <form action="{{ url_for('delete_experiment', experiment_name=experiment.name) }}" method="post">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-small">Delete</button>
-    </form>
+        <div class="graph"></div>
+    </li>
+</ul>
 
 
-    <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-small">{% if experiment.is_archived() %}Un-{% endif %}Archive</button>
-    </form>
-
-    <form>
-        <button class="btn btn-small" data-toggle="modal" data-target="#desc-modal">Update Description</button>
-    </form>
-    {% if experiment.has_winner() %}
-        <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-            <button class="btn btn-small" type="submit">Reset Winner</button>
-        </form>
-    {% endif %}
-</div>
 
 
 <div class="modal hide fade" id="desc-modal">
