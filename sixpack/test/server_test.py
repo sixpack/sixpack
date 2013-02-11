@@ -17,12 +17,21 @@ class TestServer(unittest.TestCase):
     def test_base(self):
         self.assertEqual(200, self.client.get("/").status_code)
 
+    def test_status(self):
+        res = self.client.get("/_status")
+        data = json.loads(res.data)
+        self.assertEqual(200, res.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual('ok', data['status'])
+
     def test_404(self):
         res = self.client.get("/i-would-walk-five-thousand-miles")
         data = json.loads(res.data)
         self.assertEqual(404, res.status_code)
         self.assertTrue('message' in data)
         self.assertEqual('not found', data['message'])
+        self.assertTrue('status' in data)
+        self.assertEqual('failed', data['status'])
 
     def test_sans_callback(self):
         res = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two")
@@ -56,7 +65,7 @@ class TestServer(unittest.TestCase):
         self.assertTrue('status' in data)
         self.assertEqual(data['status'], 'ok')
 
-    def test_useragent_filter(self):
+    def test_participate_useragent_filter(self):
         resp = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&user_agent=fetch")
         data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
@@ -64,6 +73,14 @@ class TestServer(unittest.TestCase):
         self.assertTrue('experiment' in data)
         self.assertTrue('client_id' in data)
         self.assertTrue('status' in data)
+
+    def test_convert_useragent_filter(self):
+        resp = self.client.get("/convert?experiment=dummy&client_id=foo&user_agent=fetch")
+        data = json.loads(resp.data)
+        self.assertEqual(200, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertTrue('excluded' in data)
+        self.assertEqual('true', data['excluded'])
 
     def test_convert(self):
         self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=seatgeek.cb")

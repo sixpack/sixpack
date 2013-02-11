@@ -19,7 +19,7 @@ def service_unavailable_on_connection_error(f, *args, **kwargs):
     try:
         return f(*args, **kwargs)
     except redis.ConnectionError:
-        return json_error({"message": "Service Unavilable"}, None, 503)
+        return json_error({"message": "service unavilable"}, None, 503)
 
 
 class Sixpack(object):
@@ -82,7 +82,7 @@ class Sixpack(object):
     @service_unavailable_on_connection_error
     def on_convert(self, request):
         if should_exclude_visitor(request):
-            return json_success({'message': 'excluded visitor'}, request)
+            return json_success({'excluded': 'true'}, request)
 
         experiment_name = request.args.get('experiment')
 
@@ -190,13 +190,13 @@ def _json_resp(in_dict, request, status=None):
     return Response(data, status=status, headers=headers)
 
 
-# Move these to bin/sixpack
+# Method to run with built-in server
 def create_app():
     app = Sixpack(db.REDIS)
 
     return app
 
-
+# Method to run with gunicorn
 def start(environ, start_response):
     app = Sixpack(db.REDIS)
 
