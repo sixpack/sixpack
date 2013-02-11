@@ -1,29 +1,35 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<ul class="experiments">
-{% for experiment in experiments %}
-  <li>
-    <h3 class="name"><a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a></h3>
-    <table>
-    	<tr>
-    		<th>Case</th>
-    		<th>Participants</th>
-    		<th>Conv Rate</th>
-    		<th>Confidence</th>
-    	</tr>
-        {% for alt in experiment.alternatives %}
-    	<tr>
-    		<td><span class="circle"></span>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %}</td>
-    		<td>{{ alt.participant_count()|number_format }}</td>
-    		<td>{{ alt.conversion_rate()|number_to_percent }}%</td>
-    		<td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
-		</tr>
-        {% endfor %}
-    </table>
-    <div class="graph"></div>
-  </li>
-{% endfor %}
-</ul>
+{% if experiments|length %}
+    <ul class="experiments">
+    {% for experiment in experiments %}
+      <li>
+        <h3 class="name"><a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a></h3>
+        <table>
+            <tr>
+                <th>Case</th>
+                <th>Participants</th>
+                <th>Conv Rate</th>
+                <th>Confidence</th>
+            </tr>
+            {% for alt in experiment.alternatives %}
+            <tr>
+                <td><span class="circle"></span>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %}</td>
+                <td>{{ alt.participant_count()|number_format }}</td>
+                <td>{{ alt.conversion_rate()|number_to_percent }}%</td>
+                <td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="graph"></div>
+      </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <h2>Oh No.</h2>
+    <p>It seems you haven't created any experiments, yet. To do this simply make a <code>GET</code> request to your sixpack server's 'participate' endpoint.</p>
+    <pre><code>$ curl http://localhost:5000/participate?experiment=new-header&amp;alternatives=red&amp;alternatives=blue&amp;client_id=&lt;A UNIQUIE CLIENT ID&gt;</code></pre>
+{% endif %}
 
 {% endblock %}
