@@ -4,7 +4,7 @@ from flask.ext.seasurf import SeaSurf
 from config import CONFIG as cfg
 from db import REDIS
 from models import Experiment
-from models import Alternative
+import utils
 
 app = Flask(__name__)
 csrf = SeaSurf(app)
@@ -94,7 +94,9 @@ def find_or_404(experiment_name):
 
 
 app.secret_key = cfg.get('secret_key')
-app.jinja_env.filters['number_to_percent'] = Alternative.number_to_percent
+app.jinja_env.filters['number_to_percent'] = utils.number_to_percent
+app.jinja_env.filters['number_format'] = utils.number_format
+
 
 def start(environ, start_response):
     return app(environ, start_response)

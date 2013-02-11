@@ -24,13 +24,6 @@ class TestAlternativeModel(unittest.TestCase):
         unicode_valid = Alternative.is_valid(u'valid')
         self.assertTrue(unicode_valid)
 
-    def test_number_to_percent(self):
-        number = Alternative.number_to_percent(0.09)
-        self.assertEqual(number, 9.00)
-
-        number = Alternative.number_to_percent(0.001)
-        self.assertEqual(number, 0.10)
-
     def test_is_not_valid(self):
         not_valid = Alternative.is_valid(1)
         self.assertFalse(not_valid)

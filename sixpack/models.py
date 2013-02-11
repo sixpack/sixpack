@@ -443,10 +443,6 @@ class Alternative(object):
         return _key("{0}:{1}".format(self.experiment_name, self.name))
 
     @staticmethod
-    def number_to_percent(number, precision=2):
-        return round(number * 100, precision)
-
-    @staticmethod
     def is_valid(alternative_name):
         return (isinstance(alternative_name, basestring) and
             VALID_EXPERIMENT_ALTERNATIVE_RE.match(alternative_name) is not None)
