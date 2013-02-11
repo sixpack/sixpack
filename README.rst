@@ -13,7 +13,7 @@ To run the sixpack server using gunicorn/gevent - a separate installation - you 
 
     gunicorn --access-logfile - -w 8 --worker-class=gevent sixpack.server:start
 
-To run the sixpack server using gunicorn/gevent - a separate installation - you can run the following::
+To run the sixpack web dashboard using gunicorn/gevent - a separate installation - you can run the following::
 
     gunicorn --access-logfile - -w 2 --worker-class=gevent sixpack.web:start
 
