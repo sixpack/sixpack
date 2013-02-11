@@ -52,6 +52,7 @@
     margin: 36px 0 0 -29px;
   }
   ul.experiments li {
+    min-height: 220px;
     position: relative;
     width: 948px;
     padding: 10px 38px 0;
@@ -304,19 +305,19 @@ ul.experiments h4 {
 }
 .modal-header {
   border-bottom: 1px solid #1b1a1a;
--moz-border-radius: 5px 5px 0 0;
--webkit-border-radius: 5px 5px 0 0;
-border-radius: 5px 5px 0 0;
--webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
--moz-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
-background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(43, 44, 45, 0.40)), to(rgba(37, 38, 39, 0.40)));
-background-image: -webkit-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-background-image: -moz-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-background-image: -o-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-background-image: -ms-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-background-image: linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#2b2c2d', EndColorStr='#252627');
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(43, 44, 45, 0.40)), to(rgba(37, 38, 39, 0.40)));
+  background-image: -webkit-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image: -moz-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image: -o-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image: -ms-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image: linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#2b2c2d', EndColorStr='#252627');
 }
 .modal-header h3 {
   color: #faf3ee;
@@ -325,6 +326,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr=
   font-weight: 100;
 }
 .modal input {
+  color: #dedede;
   background-color: rgba(170, 170, 170, 0.08);
   border: 1px solid #444;
   box-shadow: rgba(0, 0, 0, 0.0980392) 0px 1px 2px 0px, rgba(255, 255, 255, 0.0470588) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0392157) 1px 0px 0px 0px, rgba(0, 0, 0, 0.0392157) -1px 0px 0px 0px;
@@ -339,4 +341,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr=
 }
 #content {
   padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+ul.experiments h4 {
+  font-weight: lighter;
 }
