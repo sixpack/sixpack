@@ -350,3 +350,17 @@ ul.experiments h4 {
 ul.experiments h4 {
   font-weight: lighter;
 }
+
+/* BEGIN: Responsive rules */
+@media (max-width: 979px) {
+  .navbar-fixed-top {
+    margin-bottom: 0px;
+  }
+  .navbar-fixed-top .navbar-inner {
+    padding: 0;
+  }
+  #content {
+    padding-top: 0;
+  }
+}
+/* END: Responsive rules */
