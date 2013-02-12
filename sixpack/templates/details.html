@@ -88,13 +88,13 @@
   <form action="{{ url_for('update_experiment_description', experiment_name=experiment.name) }}" method="post">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Add Description</h3>
+        <h3>Update Description</h3>
       </div>
       <div class="modal-body">
-        <p><input type="text" name="description" value="{{ experiment.get_description() }}"></p>
+        <textarea type="text" name="description">{{ experiment.get_description() }}</textarea>
       </div>
       <div class="modal-footer">
-        <button href="#" class="btn btn-primary">Save changes</a>
+        <button href="#" class="btn btn-primary">Save description</a>
       </div>
    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
   </form>

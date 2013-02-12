@@ -321,11 +321,16 @@ ul.experiments h4 {
 }
 .modal-header h3 {
   color: #faf3ee;
-  font-size: 30px;
+  font-size: 24px;
   font-family: 'Lato', sans-serif;
   font-weight: 100;
 }
-.modal input {
+.modal textarea {
+  resize: none;
+  margin: 0 auto;
+  width: 500px;
+  height: 125px;
+  display: block;
   color: #dedede;
   background-color: rgba(170, 170, 170, 0.08);
   border: 1px solid #444;
