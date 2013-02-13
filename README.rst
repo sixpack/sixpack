@@ -26,21 +26,23 @@ To get going create (or don't, but you really should) a new virtualenv for your 
 
 Next you're going to need to create a Sixpack configuration file that specificies a few things. Here's the default::
 
-    redis_port: 6379
-    redis_host: localhost
-    redis_prefix: sixpack
-    redis_db: 15
+    redis_port: 6379                        # Redis port
+    redis_host: localhost                   # Redis host
+    redis_prefix: sixpack                   # all Redis keys will be prefixed with this
+    redis_db: 15                            # DB number in redis
 
-    full_response: True
+    full_response: True                     # Not In Use
+    disable_whiplash: True                  # Disable the whiplash/multi-armed bandit choice Algorithm
 
+    # The regex to match for robots
     robot_regex: $^|trivial|facebook|MetaURI|butterfly|google|amazon|goldfire|sleuth|xenu|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|pingdom|bot|yahoo|slurp|java|fetch|spider|url|crawl|oneriot|abby|commentreader|twiceler
-    ignored_ip_addresses: []
-    control_on_db_failure: True
-    allow_multiple_experiments: False
+    ignored_ip_addresses: []                # List of IP
+    control_on_db_failure: True             # Not in use
+    allow_multiple_experiments: False       # Not in Use
 
-    secret_key: '<your secret key here>'
+    secret_key: '<your secret key here>'    # Random key (any string is valid, required for sixpack-web to run)
 
-You can store this file anywhere, we'd like to reccomment ``/etc/sixpack/config.yml``, but where ever you'd like to store it is fine. As long as Redis is running, you should now beable to start the Sixpack servers like this::
+You can store this file anywhere, we'd like to reccommend ``/etc/sixpack/config.yml``, but where ever you'd like to store it is fine. As long as Redis is running, you should now beable to start the Sixpack servers like this::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack
 
@@ -59,9 +61,9 @@ All interaction with Sixpack is done via ``HTTP GET`` requests. Sixpack allows f
 Participating in an Experiment
 ------------------------------
 
-You can participate in an experiment with a ``GET`` request such as::
+You can participate in an experiment with a ``GET`` request to the ``participate`` endpoint::
 
-    $ curl http://localhost:5000/participate?experiment=button_color&alternatives=red&alternatives=blue&alternatives=orange&client_id=user-2
+    $ curl http://localhost:5000/participate?experiment=button_color&alternatives=red&alternatives=blue&alternatives=orange&client_id=12345678-1234-5678-1234-567812345678
 
 If the test does not exist, it will be created automatically.
 
@@ -71,10 +73,34 @@ If the test does not exist, it will be created automatically.
 
 ``client_id`` (required) is the unique id for the user participating in the test.
 
+``user_agent`` (optional) user agent of the user making a request. Used for bot detection
+
+``ip_address`` (optional) ip address of user making a request. Used for bot detection
+
+``force`` (optional) force a specicfic alternative to be returned, example::
+
+    $ curl http://localhost:5000/participate?experiment=button_color&alternatives=red&alternatives=blue&force=red&client_id=12345678-1234-5678-1234-567812345678
+
+In this example, red will always be returned. This is used for testing only.
+
+Convert a user
+--------------
+
+You can convert a use with a ``GET`` request to the ``convert`` endpoint::
+
+    $ curl http://localhost:5000/convert?experiment=button_color&client_id=12345678-1234-5678-1234-567812345678
+
+``experiment`` (required) the name of the experiment you would like to convert on
+
+``client_id`` (request) the client you would like to convert.
+
 Notes
 `````
 
-These are some notes
+You'll notice that the ``convert`` endpoint does not take a ``alternative`` query parameter. This is because Sixpack handles that internally with the ``client_id``.
+
+We've included a 'health-check' endpoint available at ``/_status``. This is helpful for monitoring and alerting if the Sixpack service become unavailable.
+
 
 Production Notes
 ================
@@ -89,3 +115,12 @@ To run the sixpack web dashboard using gunicorn/gevent - a separate installation
 
     gunicorn --access-logfile - -w 2 --worker-class=gevent sixpack.web:start
 
+Contributing
+============
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Added some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
+6. Please avoid changing versions numbers, as we'll take care of that for you
