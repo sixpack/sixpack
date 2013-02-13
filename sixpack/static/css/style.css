@@ -41,20 +41,16 @@
     margin-top: 14px;
     margin-left: 5px;
   }
-  .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-    width: 994px
-  }
 /* END: Navbar */
 
 /* BEGIN: Experiments */
   ul.experiments {
     list-style: none;
-    margin: 36px 0 0 -29px;
+    margin: 0;
   }
   ul.experiments li {
     min-height: 220px;
     position: relative;
-    width: 948px;
     padding: 10px 38px 0;
     margin-bottom: 45px;
     border-radius: 5px;
@@ -345,7 +341,7 @@ ul.experiments h4 {
   margin: 0;
 }
 #content {
-  padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+  padding-top: 90px; 
 }
 ul.experiments h4 {
   font-weight: lighter;
@@ -360,7 +356,7 @@ ul.experiments h4 {
     padding: 0;
   }
   #content {
-    padding-top: 0;
+    padding-top: 40px;
   }
 }
 /* END: Responsive rules */
