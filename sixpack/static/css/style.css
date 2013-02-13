@@ -49,7 +49,7 @@
     margin: 0;
   }
   ul.experiments li {
-    min-height: 220px;
+    min-height: 240px;
     position: relative;
     padding: 10px 38px 0;
     margin-bottom: 45px;
@@ -232,7 +232,7 @@
 /* BEGIN: Placeholder rules for D3 graph */
 .graph {
   position: absolute;
-  top: 90px;
+  top: 10px;
   right: 0;
 }
 .graph .axis path, .graph .axis line {
@@ -347,7 +347,59 @@ ul.experiments h4 {
   font-weight: lighter;
 }
 
+
+#dashboard-page ul.experiments li table {
+  width: auto;
+}
+#dashboard-page ul.experiments li table tr th:nth-child(1) {     
+  width: 137px;
+  min-width: 178px;
+}
+#dashboard-page ul.experiments li table tr td:nth-child(1) { 
+  width: 136px;
+  min-width: 178px;
+}
+#dashboard-page ul.experiments li table tr th:nth-child(2),
+#dashboard-page ul.experiments li table tr th:nth-child(3),
+#dashboard-page ul.experiments li table tr th:nth-child(4) {
+  min-width: 123px;
+}
+
+
+#dashboard-page ul.experiments li table tr td:nth-child(2),
+#dashboard-page ul.experiments li table tr td:nth-child(3),
+#dashboard-page ul.experiments li table tr td:nth-child(4) {
+  min-width: 124px;
+}
 /* BEGIN: Responsive rules */
+@media (max-width: 1200px) {
+  #dashboard-page .graph {
+    display: none;
+  }
+  .container {
+    width: 724px;
+  }
+}
+@media (max-width: 430px) {
+  #dashboard-page ul.experiments li table tr th:nth-child(1) { 
+    max-width: 100px;
+  }
+  #dashboard-page ul.experiments li table tr td:nth-child(1) {
+    max-width: 100px;
+  }
+}
+@media (max-width: 580px) {
+  #dashboard-page ul.experiments li table tr th:nth-child(3),
+  #dashboard-page ul.experiments li table tr td:nth-child(3) {
+    display:none;
+  }
+}
+@media (max-width: 735px) {
+  #dashboard-page ul.experiments li table tr th:nth-child(2),
+  #dashboard-page ul.experiments li table tr td:nth-child(2) {
+    display:none;
+  }
+}
 @media (max-width: 979px) {
   .navbar-fixed-top {
     margin-bottom: 0px;
@@ -357,6 +409,9 @@ ul.experiments h4 {
   }
   #content {
     padding-top: 40px;
+  }
+  .container {
+    width: auto;
   }
 }
 /* END: Responsive rules */

@@ -9,8 +9,8 @@ $(function() {
       ["2012-10-09",0.0586]];
 
   var margin = {top: 20, right: 20, bottom: 30, left: 50},
-      width = 200
-      height = 100
+      width = 400
+      height = 200
 
   function make_x_axis() {
       return d3.svg.axis()
