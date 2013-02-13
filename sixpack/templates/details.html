@@ -29,9 +29,8 @@
             </form>
           {% endif %}
 
-          <form action="{{ url_for('reset_experiment', experiment_name=experiment.name) }}" method="post">
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-            <button class="btn btn-small btn-warning">Reset</button>
+          <form>
+            <button class="btn btn-small btn-warning" data-toggle="modal" data-target="#confirm-reset-modal">Reset</button>
           </form>
 
           <form>
@@ -98,6 +97,25 @@
   </form>
 </div>
 
+
+<div class="modal hide fade" id="confirm-reset-modal">
+  <form action="{{ url_for('reset_experiment', experiment_name=experiment.name) }}" method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Reset Experiment</h3>
+    </div>
+    <div class="modal-body">
+      <p>Are you sure you want to reset the experiment <b>{{ experiment.name }}</b>?</p>
+    </div>
+    <div class="modal-footer">
+      <button data-dismiss="modal" aria-hidden="true" class="btn btn-inverse">No</a>
+      <button class="btn btn-danger">Yes</a>
+    </div>
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+  </form>
+</div>
+
 <div class="modal hide fade" id="confirm-delete-modal">
   <form action="{{ url_for('delete_experiment', experiment_name=experiment.name) }}" method="post">
     <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
@@ -109,7 +127,7 @@
       <p>Are you sure you want to delete the experiment <b>{{ experiment.name }}</b>?</p>
     </div>
     <div class="modal-footer">
-      <button data-dismiss="modal" aria-hidden="true" class="btn btn-primary">No</a>
+      <button data-dismiss="modal" aria-hidden="true" class="btn btn-inverse">No</a>
       <button class="btn btn-danger">Yes</a>
     </div>
     <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
