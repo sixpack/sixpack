@@ -103,6 +103,7 @@ A typical Sixpack participation response will look something like this::
         client_id: "12345678-1234-5678-1234-567812345678"
     }
 
+The most interesting part of this is ``alternative``. This is a representation of the alternative that was chosen for the test and assigned to a ``client_id``. All subsequent reqests to this experiment/client_id combination will be returned the same alternative.
 
 Converting a user
 -----------------
@@ -119,7 +120,7 @@ Arguments
 ``client_id`` (request) the client you would like to convert.
 
 Notes
-`````
+-----
 
 You'll notice that the ``convert`` endpoint does not take a ``alternative`` query parameter. This is because Sixpack handles that internally with the ``client_id``.
 
