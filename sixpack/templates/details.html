@@ -53,14 +53,14 @@
           </tr>
           {% for alt in experiment.alternatives %}
             <tr>
-              <td><span class="circle">{% if alt.is_winner() %}<i class="icon-ok"></i>{% endif %}</span>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %} </td>
+              <td><span class="circle">{% if alt.is_winner() %}<i class="icon-ok"></i>{% endif %}</span>{{ alt.name }} {% if alt.is_control() %}<span class="note control">control</span>{% endif %} </td>
               <td>{{ alt.participant_count()|number_format }}</td>
               <td>{{ alt.conversion_rate()|number_to_percent }}%</td>
               <td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
               <td>
                 <div class="alt-controls">
                   {% if alt.is_winner() %}
-                    <span class="label label-success">This test won!</label>
+                    <span class="label label-success">Winner!</label>
                   {% else %}
                     <form action="{{ url_for('set_winner', experiment_name=experiment.name) }}" method="post">
                       <input type='hidden' name="alternative_name" value="{{ alt.name }}" />
@@ -74,6 +74,10 @@
           {% endfor %}
         </tbody>
       </table>
+
+      <hr>
+
+      <h4>Conversions for <i>control</i></h4>
       <div class="graph"></div>
     </li>
   </ul>

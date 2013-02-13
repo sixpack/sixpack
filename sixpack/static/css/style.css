@@ -292,6 +292,7 @@ ul.experiments table tbody td span.label {
   margin-top: 2px;
   text-transform: uppercase;
   font-size: 10px;
+  padding: 2px 12px;
 }
 span.circle i.icon-ok {
   margin-top: -2px;
@@ -485,4 +486,20 @@ ul.experiments h4 {
 /* END: Responsive rules */
 table {
   max-width: none;
+}
+h4 {
+  color: #faf3ee;
+  font-size: 18px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 100;
+}
+span.note.control {
+  font-size: 11px;
+  color: #4f4f4f;
+  text-transform: uppercase;
+  padding-left: 5px;
+}
+hr {
+  border: none;
+  margin: 40px;
 }
