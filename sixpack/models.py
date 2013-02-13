@@ -3,6 +3,7 @@ import operator
 import random
 import re
 
+from config import CONFIG as cfg
 from db import _key, msetbit, sequential_id
 
 # This is pretty restrictive, but we can always relax it later.
@@ -203,12 +204,13 @@ class Experiment(object):
         return False
 
     def choose_alternative(self, client=None):
-        # This will be hooked up with some fun math-guy-steve stuff later
-        # return self._random_choice()
-        # if random.random() < self.random_sample:
-        return self._random_choice()
-        #else:
-        #    return Alternative(self._whiplash(), self.name, self.redis)
+        if cfg.get('disable_whiplash'):
+            return self._random_choice()
+
+        if random.random() < self.random_sample:
+            return self._random_choice()
+        else:
+           return Alternative(self._whiplash(), self.name, self.redis)
 
     def _random_choice(self):
         return random.choice(self.alternatives)
