@@ -364,6 +364,14 @@ class Alternative(object):
         date = datetime.now()
         experiment_key = self.experiment().rawkey()
 
+        pipe = self.redis.pipeline()
+
+        pipe.sadd("participations:{0}:years".format(experiment_key), date.strftime('%Y'))
+        pipe.sadd("participations:{0}:months".format(experiment_key), date.strftime('%Y-%m'))
+        pipe.sadd("participations:{0}:days".format(experiment_key), date.strftime('%Y-%m-%d'))
+
+        pipe.execute()
+
         keys = [
             _key("participations:{0}:_all:all".format(experiment_key)),
             _key("participations:{0}:_all:{1}".format(experiment_key, date.strftime('%Y'))),
@@ -380,6 +388,14 @@ class Alternative(object):
         """Record a user's conversion in a test along with a given variation"""
         date = datetime.now()
         experiment_key = self.experiment().rawkey()
+
+        pipe = self.redis.pipeline()
+
+        pipe.sadd("conversions:{0}:years".format(experiment_key), date.strftime('%Y'))
+        pipe.sadd("conversions:{0}:months".format(experiment_key), date.strftime('%Y-%m'))
+        pipe.sadd("conversions:{0}:days".format(experiment_key), date.strftime('%Y-%m-%d'))
+
+        pipe.execute()
 
         keys = [
             _key("conversions:{0}:_all:users:all".format(experiment_key)),
