@@ -399,6 +399,9 @@ ul.experiments h4 {
   #dashboard-page ul.experiments li table tr td:nth-child(2) {
     display:none;
   }
+  .container {
+    width: auto;
+  }
 }
 @media (max-width: 979px) {
   .navbar-fixed-top {
@@ -409,9 +412,6 @@ ul.experiments h4 {
   }
   #content {
     padding-top: 40px;
-  }
-  .container {
-    width: auto;
   }
 }
 /* END: Responsive rules */
