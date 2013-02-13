@@ -188,6 +188,8 @@ class Experiment(object):
 
         alternative.record_conversion(client)
 
+        return alternative.name
+
     def set_winner(self, alternative_name):
         if alternative_name not in self.get_alternative_names():
             raise ValueError('this alternative is not in this experiment')
