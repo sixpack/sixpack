@@ -8,6 +8,9 @@
         <h3 class="name">
           <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a>
         </h3>
+        {% if experiment.get_description() %}
+          <h4>{{ experiment.get_description() }}</h4>
+        {% endif %}
         <div class="controls">
 
           <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
@@ -38,10 +41,6 @@
         </div>
       </div> 
       <div class="clearfix"></div>
-
-      {% if experiment.get_description() %}
-        <h4>{{ experiment.get_description() }}</h4>
-      {% endif %}
 
       <table>
         <tbody>

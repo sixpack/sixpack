@@ -260,11 +260,14 @@
   stroke-width: 0;
 }
 /* END: Placeholder rules for D3 graph */
+div.header {
+  position: relative;
+}
 div.header button {
   float: left;
   margin-left: 5px;
 }
-div.header h3, div.header .modal {
+div.header .modal {
   float: left;
 }
 div.header form, div.alt-controls form {
@@ -272,11 +275,16 @@ div.header form, div.alt-controls form {
   display: inline-block;
 }
 div.header .controls {
-  margin-top: 20px;
-  float: right;
+  top: 20px;
+  right: 0;
+  position: absolute;
 }
 div.header h3 {
-  margin-right:25px;
+  margin-right: 25px;
+  margin-bottom: 0;
+}
+div.header h4 {
+  margin-bottom: 15px;
 }
 ul.experiments table tbody td span.label {
   float: right;
@@ -464,12 +472,10 @@ ul.experiments h4 {
   #content {
     padding-top: 40px;
   }
-  #details-page .header h3 {
-    float: none;
-  }
   #details-page .header .controls {
     float: left;
     margin: 0 0 15px -5px;
+    position: static;
   }
   #details-page .header .controls button {
     margin-bottom:5px;
