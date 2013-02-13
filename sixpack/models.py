@@ -96,9 +96,47 @@ class Experiment(object):
         key = _key("participations:{0}:_all:all".format(self.rawkey()))
         return self.redis.bitcount(key)
 
+
+    def participants_by_day(self):
+        return self._get_stats('participations', 'days')
+
+    def participants_by_month(self):
+        return self._get_stats('participations', 'months')
+
+    def participants_by_year(self):
+        return self._get_stats('participations', 'years')
+
     def total_conversions(self):
         key = _key("conversions:{0}:_all:users:all".format(self.rawkey()))
         return self.redis.bitcount(key)
+
+    def conversions_by_day(self):
+        return self._get_stats('conversions', 'days')
+
+    def conversions_by_month(self):
+        return self._get_stats('conversions', 'months')
+
+    def conversions_by_year(self):
+        return self._get_stats('conversions', 'years')
+
+    def _get_stats(self, stat_type, stat_range):
+        if stat_type not in ['participations', 'conversions']:
+            raise ValueError
+
+        if stat_range not in ['days', 'months', 'years']:
+            raise ValueError
+
+        stats = {}
+
+        search_key = _key("{0}:{1}:{2}".format(stat_type, self.rawkey(), stat_range))
+        keys = self.redis.smembers(search_key)
+        for k in keys:
+            mod = '' if stat_type == 'participations' else "users:"
+            range_key = _key("{0}:{1}:_all:{2}{3}".format(stat_type, self.rawkey(), mod, k))
+            print range_key
+            stats[k] = self.redis.bitcount(range_key)
+
+        return stats
 
     def update_description(self, description=None):
         self.redis.hset(self.key(), 'description', description or '')
@@ -149,6 +187,8 @@ class Experiment(object):
             raise ValueError('this client was not participaing')
 
         alternative.record_conversion(client)
+
+        return alternative.name
 
     def set_winner(self, alternative_name):
         if alternative_name not in self.get_alternative_names():
@@ -355,14 +395,60 @@ class Alternative(object):
         key = _key("participations:{0}:{1}:all".format(self.experiment().rawkey(), self.name))
         return self.redis.bitcount(key)
 
+    def participants_by_day(self):
+        return self._get_stats('participations', 'days')
+
+    def participants_by_month(self):
+        return self._get_stats('participations', 'months')
+
+    def participants_by_year(self):
+        return self._get_stats('participations', 'years')
+
     def completed_count(self):
         key = _key("conversions:{0}:{1}:users:all".format(self.experiment().rawkey(), self.name))
         return self.redis.bitcount(key)
 
+    def conversions_by_day(self):
+        return self._get_stats('conversions', 'days')
+
+    def conversions_by_month(self):
+        return self._get_stats('conversions', 'months')
+
+    def conversions_by_year(self):
+        return self._get_stats('conversions', 'years')
+
+    def _get_stats(self, stat_type, stat_range):
+        if stat_type not in ['participations', 'conversions']:
+            raise ValueError
+
+        if stat_range not in ['days', 'months', 'years']:
+            raise ValueError
+
+        stats = {}
+
+        exp_key = self.experiment().rawkey()
+        search_key = _key("{0}:{1}:{2}".format(stat_type, exp_key, stat_range))
+        keys = self.redis.smembers(search_key)
+        for k in keys:
+            name = self.name if stat_type == 'participations' else "{0}:users".format(self.name)
+            range_key = _key("{0}:{1}:{2}:{3}".format(stat_type, exp_key, name, k))
+            stats[k] = self.redis.bitcount(range_key)
+
+        return stats
+
     def record_participation(self, client):
         """Record a user's participation in a test along with a given variation"""
         date = datetime.now()
+
         experiment_key = self.experiment().rawkey()
+
+        pipe = self.redis.pipeline()
+
+        pipe.sadd(_key("participations:{0}:years".format(experiment_key)), date.strftime('%Y'))
+        pipe.sadd(_key("participations:{0}:months".format(experiment_key)), date.strftime('%Y-%m'))
+        pipe.sadd(_key("participations:{0}:days".format(experiment_key)), date.strftime('%Y-%m-%d'))
+
+        pipe.execute()
 
         keys = [
             _key("participations:{0}:_all:all".format(experiment_key)),
@@ -380,6 +466,14 @@ class Alternative(object):
         """Record a user's conversion in a test along with a given variation"""
         date = datetime.now()
         experiment_key = self.experiment().rawkey()
+
+        pipe = self.redis.pipeline()
+
+        pipe.sadd(_key("conversions:{0}:years".format(experiment_key)), date.strftime('%Y'))
+        pipe.sadd(_key("conversions:{0}:months".format(experiment_key)), date.strftime('%Y-%m'))
+        pipe.sadd(_key("conversions:{0}:days".format(experiment_key)), date.strftime('%Y-%m-%d'))
+
+        pipe.execute()
 
         keys = [
             _key("conversions:{0}:_all:users:all".format(experiment_key)),
