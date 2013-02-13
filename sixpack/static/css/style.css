@@ -261,6 +261,7 @@
 }
 /* END: Placeholder rules for D3 graph */
 div.header {
+  min-height: 65px;
   position: relative;
 }
 div.header button {
@@ -275,7 +276,7 @@ div.header form, div.alt-controls form {
   display: inline-block;
 }
 div.header .controls {
-  top: 20px;
+  top: 10px;
   right: 0;
   position: absolute;
 }
