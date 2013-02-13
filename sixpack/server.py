@@ -8,11 +8,11 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
+from . import __version__
 import decorator
 from config import CONFIG as cfg
 import db
 from models import Experiment, Client
-
 
 @decorator.decorator
 def service_unavailable_on_connection_error(f, *args, **kwargs):
@@ -58,7 +58,7 @@ class Sixpack(object):
     @service_unavailable_on_connection_error
     def on_status(self, request):
         self.redis.ping()
-        return json_success({}, request)
+        return json_success({'version': __version__}, request)
 
     def on_home(self, request):
         dales = """
