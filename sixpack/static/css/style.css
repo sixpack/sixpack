@@ -230,11 +230,6 @@
 /* END: Experiments */
 
 /* BEGIN: Placeholder rules for D3 graph */
-.graph {
-  position: absolute;
-  top: 10px;
-  right: 0;
-}
 .graph .axis path, .graph .axis line {
   fill: none;
   stroke: #000;
@@ -395,6 +390,8 @@ ul.experiments h4 {
   }
 }
 @media (max-width: 735px) {
+  #details-page ul.experiments li table tr th:nth-child(2),
+  #details-page ul.experiments li table tr td:nth-child(2),
   #dashboard-page ul.experiments li table tr th:nth-child(2),
   #dashboard-page ul.experiments li table tr td:nth-child(2) {
     display:none;
@@ -415,3 +412,15 @@ ul.experiments h4 {
   }
 }
 /* END: Responsive rules */
+#dashboard-page .graph {
+  position: absolute;
+  top: 10px;
+  right: 70px;
+  width: 400px;
+  height: 200px;
+}
+#details-page .graph {
+  width: 330px;
+  height: 200px;
+  padding-bottom: 40px;
+}
