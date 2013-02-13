@@ -42,7 +42,7 @@ Next you're going to need to create a Sixpack configuration file that specificie
 
     secret_key: '<your secret key here>'    # Random key (any string is valid, required for sixpack-web to run)
 
-You can store this file anywhere, we'd like to reccommend ``/etc/sixpack/config.yml``, but where ever you'd like to store it is fine. As long as Redis is running, you should now beable to start the Sixpack servers like this::
+You can store this file anywhere, we'd like to reccommend ``/etc/sixpack/config.yml``, but where ever you'd like to store it is fine. As long as Redis is running, you should now be able to start the Sixpack servers like this::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack
 
@@ -67,6 +67,9 @@ You can participate in an experiment with a ``GET`` request to the ``participate
 
 If the test does not exist, it will be created automatically.
 
+Arguments
+`````````
+
 ``experiment`` (required) is the name of the test you'd like to start A/B testing. Valid Experiment names must be alphanumeric and can contain ``_`` and ``-``.
 
 ``alternatives`` (required) are the potential responses from Sixpack, and will be the bucket that the ``client_id`` is assigned to.
@@ -83,12 +86,33 @@ If the test does not exist, it will be created automatically.
 
 In this example, red will always be returned. This is used for testing only.
 
-Convert a user
---------------
+Response
+````````
+
+A typical Sixpack participation response will look something like this::
+
+    {
+        status: "ok",
+        alternative: {
+            name: "red"
+        },
+        experiment: {
+            version: 0,
+            name: "button_color"
+        },
+        client_id: "12345678-1234-5678-1234-567812345678"
+    }
+
+
+Converting a user
+-----------------
 
 You can convert a use with a ``GET`` request to the ``convert`` endpoint::
 
     $ curl http://localhost:5000/convert?experiment=button_color&client_id=12345678-1234-5678-1234-567812345678
+
+Arguments
+`````````
 
 ``experiment`` (required) the name of the experiment you would like to convert on
 
