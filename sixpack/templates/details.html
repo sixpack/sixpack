@@ -18,6 +18,7 @@
           <form>
             <button class="btn btn-small btn-inverse" data-toggle="modal" data-target="#desc-modal">Update Description</button>
           </form>
+          <div class="collapse"></div>
           {% if experiment.has_winner() %}
             <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
               <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">

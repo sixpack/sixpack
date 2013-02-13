@@ -388,6 +388,9 @@ ul.experiments h4 {
   #dashboard-page ul.experiments li table tr td:nth-child(3) {
     display:none;
   }
+  #details-page .header .controls .collapse {
+    display:block;
+  }
 }
 @media (max-width: 735px) {
   #details-page ul.experiments li table tr th:nth-child(2),
@@ -410,8 +413,21 @@ ul.experiments h4 {
   #content {
     padding-top: 40px;
   }
+  #details-page .header h3 {
+    float: none;
+  }
+  #details-page .header .controls {
+    float: left;
+    margin: 0 0 15px -5px;
+  }
+  #details-page .header .controls button {
+    margin-bottom:5px;
+  }
 }
 /* END: Responsive rules */
+.header .controls .collapse {
+  display: inline-block;
+}
 #dashboard-page .graph {
   position: absolute;
   top: 10px;
