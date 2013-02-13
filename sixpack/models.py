@@ -98,64 +98,43 @@ class Experiment(object):
 
 
     def participants_by_day(self):
-        stats = {}
-
-        days = self.redis.smembers(_key("participations:{0}:days".format(self.rawkey())))
-        for day in days:
-            key = _key("participations:{0}:_all:{1}".format(self.rawkey(), day))
-            stats[day] = self.redis.bitcount(key)
-
-        return stats
+        return self._get_stats('participations', 'days')
 
     def participants_by_month(self):
-        stats = {}
-
-        months = self.redis.smembers(_key("participations:{0}:months".format(self.rawkey())))
-        for month in months:
-            key = _key("participations:{0}:_all:{1}".format(self.rawkey(), month))
-            stats[month] = self.redis.bitcount(key)
-
-        return stats
+        return self._get_stats('participations', 'months')
 
     def participants_by_year(self):
-        stats = {}
-        years = self.redis.smembers(_key("participations:{0}:years".format(self.rawkey())))
-        for year in years:
-            key = _key("participations:{0}:_all:{1}".format(self.rawkey(), year))
-            stats[year] = self.redis.bitcount(key)
-
-        return stats
+        return self._get_stats('participations', 'years')
 
     def total_conversions(self):
         key = _key("conversions:{0}:_all:users:all".format(self.rawkey()))
         return self.redis.bitcount(key)
 
     def conversions_by_day(self):
-        stats = {}
-
-        days = self.redis.smembers(_key("conversions:{0}:days".format(self.rawkey())))
-        for day in days:
-            key = _key("conversions:{0}:_all:users:{1}".format(self.rawkey(), day))
-            stats[day] = self.redis.bitcount(key)
-
-        return stats
+        return self._get_stats('conversions', 'days')
 
     def conversions_by_month(self):
-        stats = {}
-
-        months = self.redis.smembers(_key("conversions:{0}:months".format(self.rawkey())))
-        for month in months:
-            key = _key("conversions:{0}:_all:users:{1}".format(self.rawkey(), month))
-            stats[month] = self.redis.bitcount(key)
-
-        return stats
+        return self._get_stats('conversions', 'months')
 
     def conversions_by_year(self):
+        return self._get_stats('conversions', 'years')
+
+    def _get_stats(self, stat_type, stat_range):
+        if stat_type not in ['participations', 'conversions']:
+            raise ValueError
+
+        if stat_range not in ['days', 'months', 'years']:
+            raise ValueError
+
         stats = {}
-        years = self.redis.smembers(_key("conversions:{0}:years".format(self.rawkey())))
-        for year in years:
-            key = _key("conversions:{0}:_all:users:{1}".format(self.rawkey(), year))
-            stats[year] = self.redis.bitcount(key)
+
+        search_key = _key("{0}:{1}:{2}".format(stat_type, self.rawkey(), stat_range))
+        keys = self.redis.smembers(search_key)
+        for k in keys:
+            mod = '' if stat_type == 'participations' else "users:"
+            range_key = _key("{0}:{1}:_all:{2}{3}".format(stat_type, self.rawkey(), mod, k))
+            print range_key
+            stats[k] = self.redis.bitcount(range_key)
 
         return stats
 
