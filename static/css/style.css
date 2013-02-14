@@ -9,8 +9,8 @@ h1, h2, h3 {
 	margin: 0;
 }
 #upper {
-	height: 430px;
-	padding-top: 180px;
+	height: 460px;
+	padding-top: 150px;
 	background: url(../img/top-header.jpg) top center no-repeat #fff;
 	width: 100%;
 	position: relative;
@@ -54,10 +54,11 @@ h1, h2, h3 {
     text-align: right;
     text-transform: none;
 }
-#byline img {
+#byline a img {
 	float: right;
 	margin-right: 11px;
 	margin-top: 5px;
+	display: block;
 }
 #logo {
 	width: 320px;
@@ -148,4 +149,32 @@ h2 {
 }
 #clients ul li {
 	margin-bottom: 2px;
+}
+footer {
+	color: #696969;
+    font-weight: 100;
+    margin: 0 auto 30px;
+    width: 910px;
+}
+footer a {
+	color: #696969;
+}
+footer a {
+	text-decoration: none;
+	color: #808080;
+}
+footer a:hover {
+	color: #b7b7b7;
+	text-decoration: none;
+}
+footer .left {
+	float: left;
+	width: 50%;
+	padding-bottom: 40px;
+}
+footer .right {
+	float: right;
+	width: 50%;
+	text-align: right;
+	padding-bottom: 40px;
 }
