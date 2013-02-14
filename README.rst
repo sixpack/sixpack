@@ -7,7 +7,7 @@ Sixpack
 
 Sixpack is a tool to help solve the problem of A/B testing across multiple programming languages. It does this by exposing a very simple API that a client library in virtually any language can make requests against.
 
-Sixpack is comprised of two main parts. The first is Sixpack server which is responsible for responding to web requests, and the second is (an optional) Sixpack-Web which will allow you to access the Sixpack dashboard for seeing and acting on your A/B tests.
+Sixpack is comprised of two main parts. The first is Sixpack-server which is responsible for responding to web requests, and the second is (an optional) Sixpack-web which will allow you to access the Sixpack dashboard for seeing and acting on your A/B tests.
 
 Requirements
 ============
@@ -18,11 +18,11 @@ Requirements
 Getting Started
 ===============
 
-To get going create (or don't, but you really should) a new virtualenv for your sixpack installation. Follow that up with a ``pip install``::
+To get going, create (or don't, but you really should) a new virtualenv for your sixpack installation. Follow that up with a ``pip install``::
 
     $ pip install sixpack
 
-Next you're going to need to create a Sixpack configuration file that specificies a few things. Here's the default::
+Next, you're going to need to create a Sixpack configuration file that specifies a few things. Here's the default::
 
     redis_port: 6379                        # Redis port
     redis_host: localhost                   # Redis host
@@ -40,7 +40,7 @@ Next you're going to need to create a Sixpack configuration file that specificie
 
     secret_key: '<your secret key here>'    # Random key (any string is valid, required for sixpack-web to run)
 
-You can store this file anywhere, we'd like to reccommend ``/etc/sixpack/config.yml``, but where ever you'd like to store it is fine. As long as Redis is running, you should now be able to start the Sixpack servers like this::
+You can store this file anywhere, we'd like to recommend ``/etc/sixpack/config.yml``, but where ever you'd like to store it is fine. As long as Redis is running, you should now be able to start the Sixpack servers like this::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack
 
@@ -48,7 +48,7 @@ and::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack-web
 
-Sixpack Server and Sixpack Web will be listing on ports 5000 and 5001 respectively. For use in a production enviroment, please see the "Production Notes" section below.
+Sixpack-server and Sixpack-web will be listening on ports 5000 and 5001 respectively. For use in a production environment, please see the "Production Notes" section below.
 
 We've also thrown in a small script that will help seed Sixpack with loads of random data, for testing and development on sixpack-web. You can seed Sixpack with the following command::
 
@@ -73,7 +73,7 @@ If the test does not exist, it will be created automatically.
 Arguments
 ---------
 
-``experiment`` (required) is the name of the test you'd like to start A/B testing. Valid Experiment names must be alphanumeric and can contain ``_`` and ``-``.
+``experiment`` (required) is the name of the test you'd like to start A/B testing. Valid experiment names must be alphanumeric and can contain ``_`` and ``-``.
 
 ``alternatives`` (required) are the potential responses from Sixpack, and will be the bucket that the ``client_id`` is assigned to.
 
@@ -83,7 +83,7 @@ Arguments
 
 ``ip_address`` (optional) ip address of user making a request. Used for bot detection
 
-``force`` (optional) force a specicfic alternative to be returned, example::
+``force`` (optional) force a specific alternative to be returned, example::
 
     $ curl http://localhost:5000/participate?experiment=button_color&alternatives=red&alternatives=blue&force=red&client_id=12345678-1234-5678-1234-567812345678
 
@@ -106,7 +106,7 @@ A typical Sixpack participation response will look something like this::
         client_id: "12345678-1234-5678-1234-567812345678"
     }
 
-The most interesting part of this is ``alternative``. This is a representation of the alternative that was chosen for the test and assigned to a ``client_id``. All subsequent reqests to this experiment/client_id combination will be returned the same alternative.
+The most interesting part of this is ``alternative``. This is a representation of the alternative that was chosen for the test and assigned to a ``client_id``. All subsequent requests to this experiment/client_id combination will be returned the same alternative.
 
 Converting a user
 -----------------
@@ -132,7 +132,7 @@ We've included a 'health-check' endpoint available at ``/_status``. This is help
 Clients
 =======
 
-We've already provied clients in four languages. We'd love to have clients in many more languages, so if you feel so inclined, first read the CLIENTSPEC (in the base of this resp). Write your client, then update and pull request this file so we know about it.
+We've already provided clients in four languages. We'd love to have clients in many more languages, so if you feel so inclined, first read the CLIENTSPEC (in the base of this resp). Write your client, then update and pull request this file so we know about it.
 
 - Ruby_
 - Python_
@@ -147,7 +147,7 @@ We've already provied clients in four languages. We'd love to have clients in ma
 Production Notes
 ================
 
-We reccomend running Sixpack on gunicorn in production. You will need to install gunicorn in your virtual environment before running the following.
+We recommend running Sixpack on gunicorn in production. You will need to install gunicorn in your virtual environment before running the following.
 
 To run the sixpack server using gunicorn/gevent - a separate installation - you can run the following::
 
