@@ -54,7 +54,10 @@ h1, h2, h3 {
     text-align: right;
     text-transform: none;
 }
-#byline a img {
+#byline #sg-logo {
+	width: 110px;
+	height: 33px;
+	background: url(../img/sg.png) no-repeat;
 	float: right;
 	margin-right: 11px;
 	margin-top: 5px;
