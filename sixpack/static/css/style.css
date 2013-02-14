@@ -512,3 +512,7 @@ hr {
   max-width: 910px;
   margin: 0 auto;
 }
+.graph p {
+  margin-left: 15px;
+  margin-top: -10px;
+}
