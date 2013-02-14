@@ -39,7 +39,7 @@ h1, h2, h3 {
 #byline {
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0.75);
     border-radius: 6px 0 0 6px;
-    padding: 9px 10px 3px 20px;
+    padding: 9px 5px 1px 20px;
     position: absolute;
     right: 0;
     top: 30px;
@@ -66,33 +66,25 @@ h1, h2, h3 {
 	margin: 0 auto;
 }
 a.large-button {
-	width: 244px;
-	height: 56px;
+	width: 248px;
+	height: 60px;
 	display: block;
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
-	border-radius: 6px;
-	background-color: #e09031;
-	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,.28), inset 0 1px 2px rgba(255,255,255,.35), inset 0 0 1px rgba(255,255,255,.15);
-	-moz-box-shadow: 0 1px 3px rgba(0,0,0,.28), inset 0 1px 2px rgba(255,255,255,.35), inset 0 0 1px rgba(255,255,255,.15);
-	box-shadow: 0 1px 3px rgba(0,0,0,.28), inset 0 1px 2px rgba(255,255,255,.35), inset 0 0 1px rgba(255,255,255,.15);
-	border: solid 1px #a97912;
-	background-image: -webkit-linear-gradient(bottom, rgba(0,0,0,.18), rgba(255,255,255,.18));
-	background-image: -moz-linear-gradient(bottom, rgba(0,0,0,.18), rgba(255,255,255,.18));
-	background-image: -o-linear-gradient(bottom, rgba(0,0,0,.18), rgba(255,255,255,.18));
-	background-image: -ms-linear-gradient(bottom, rgba(0,0,0,.18), rgba(255,255,255,.18));
-	background-image: linear-gradient(to top, rgba(0,0,0,.18), rgba(255,255,255,.18));
+	background: url(../img/button-sprite.png) no-repeat;
 	text-transform: uppercase;
 	margin: 39px auto 33px;
 	color: #2b1906;
 	text-shadow: 0 1px 0 rgba(255,255,255,.26);
 	font-size: 18px;
 	font-family: "HelveticaNeue",​"Helvet...eva",​"Arial",​sans-serif;
-	line-height: 54px;
+	line-height: 59px;
 	font-weight: 600;
 }
 a.large-button:hover {
 	text-decoration: none;
+	background-position: -248px 0;
+}
+a.large-button:active {
+	background-position: -496px 0;
 }
 h2 {
 	font-family: 'Lato', sans-serif;
