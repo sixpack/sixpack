@@ -10,7 +10,7 @@ $(function() {
     });
 
     if (arrData.length <= 2) {
-        $element.append("Not enough data to graph...");
+        $element.append("<p>Not enough data to graph...</p>");
         return;
     }
 
