@@ -9,14 +9,12 @@ Sixpack is a tool to help solve the problem of A/B testing across multiple progr
 
 Sixpack is comprised of two main parts. The first is Sixpack server which is responsible for responding to web requests, and the second is (an optional) Sixpack-Web which will allow you to access the Sixpack dashboard for seeing and acting on your A/B tests.
 
-============
 Requirements
 ============
 
 * Redis
 * Python >= 2.7 (3.0 Untested, Pull Requests welcome)
 
-===============
 Getting Started
 ===============
 
@@ -52,7 +50,6 @@ and::
 
 Sixpack Server and Sixpack Web will be listing on ports 5000 and 5001 respectively. For use in a production enviroment, please see the "Production Notes" section below.
 
-=====
 Usage
 =====
 
