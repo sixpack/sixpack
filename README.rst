@@ -50,6 +50,12 @@ and::
 
 Sixpack Server and Sixpack Web will be listing on ports 5000 and 5001 respectively. For use in a production enviroment, please see the "Production Notes" section below.
 
+We've also thrown in a small script that will help seed Sixpack with loads of random data, for testing and development on sixpack-web. You can seed Sixpack with the following command::
+
+    $ SIXPACK_CONFIG=<path to config.yml> sixpack-seed
+
+This command will make a few dozen requests to the participate and convert endpoints. Feel free to run it multiple times to get a reasonable data set.
+
 Usage
 =====
 
