@@ -1,35 +1,64 @@
 {% extends "layout.html" %}
 {% block body %}
 
-{% if experiments|length %}
-    <ul class="experiments">
-    {% for experiment in experiments %}
-      <li>
-        <h3 class="name"><a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a></h3>
-        <table>
-            <tr>
-                <th>Case</th>
-                <th>Participants</th>
-                <th>Conv Rate</th>
-                <th>Confidence</th>
-            </tr>
-            {% for alt in experiment.alternatives %}
-            <tr>
-                <td><span class="circle"></span>{{ alt.name }} {% if alt.is_control() %}<span class="note">control</span>{% endif %}</td>
-                <td>{{ alt.participant_count()|number_format }}</td>
-                <td>{{ alt.conversion_rate()|number_to_percent }}</td>
-                <td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
-            </tr>
-            {% endfor %}
-        </table>
-        <div class="graph"></div>
-      </li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <h2>Oh No.</h2>
-    <p>It seems you haven't created any experiments, yet. To do this simply make a <code>GET</code> request to your sixpack server's 'participate' endpoint.</p>
-    <pre><code>$ curl http://localhost:5000/participate?experiment=new-header&amp;alternatives=red&amp;alternatives=blue&amp;client_id=&lt;A UNIQUIE CLIENT ID&gt;</code></pre>
-{% endif %}
+
+<script type="text/javascript">
+  var graph_data = {};
+</script>
+
+<div id="dashboard-page">
+    {% if experiments|length %}
+        <ul class="experiments">
+        {% for experiment in experiments %}
+          <li>
+            <h3 class="name"><a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a></h3>
+            <table>
+                <tr>
+                    <th>Case</th>
+                    <th>Participants</th>
+                    <th>Conv Rate</th>
+                    <th>Confidence</th>
+                </tr>
+                {% for alt in experiment.alternatives %}
+                <tr>
+                    <td><span class="circle">{% if alt.is_winner() %}<i class="icon-ok"></i>{% endif %}</span>{{ alt.name }} {% if alt.is_control() %}<span class="note control">control</span>{% endif %}</td>
+                    <td>{{ alt.participant_count()|number_format }}</td>
+                    <td>{{ alt.conversion_rate()|number_to_percent }}%</td>
+                    <td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
+                </tr>
+                {% endfor %}
+            </table>
+              <div id="graph-{{ experiment.name }}" class="graph">  
+                <script type="text/javascript">
+                  graph_data['{{ experiment.name }}'] = {};
+                </script>
+                <script type="text/javascript">
+                   {% for alt in experiment.alternatives %}
+
+                        graph_data['{{ experiment.name }}']['{{ alt.name }}'] = {
+                          'participants_by_day': [
+                            {% for date in alt.participants_by_day()|sort() %}
+                             [ "{{ date }}", {{ alt.participants_by_day()[date] }} ],
+                            {% endfor %}
+                          ],
+                          'conversions_by_day': [
+                            {% for date in alt.conversions_by_day()|sort() %}
+                             [ "{{ date }}", {{ alt.conversions_by_day()[date] }} ],
+                            {% endfor %}
+                          ]
+                        };
+
+                  {% endfor %}
+                </script>
+            </div>
+          </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <h2>Oh No.</h2>
+        <p>It seems you haven't created any experiments, yet. To do this simply make a <code>GET</code> request to your sixpack server's 'participate' endpoint.</p>
+        <pre><code>$ curl <span id="base-domain">http://127.0.0.1:5000</span>/participate?experiment=new-header&amp;alternatives=red&amp;alternatives=blue&amp;client_id=&lt;A UNIQUIE CLIENT ID&gt;</code></pre>
+    {% endif %}
+</div>
 
 {% endblock %}

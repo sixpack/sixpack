@@ -1,6 +1,5 @@
 /* BEGIN: Background */
   body {
-    padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
     background: url('../img/background-tile.png') repeat;
     font-family: 'Helvetica Neue',Helvetica,Arial Geneva,sans-serif;
     font-weight: 300;
@@ -35,27 +34,24 @@
     height: 56px
   }
   .navbar-inverse .brand {
-    width: 130px;
-    height: 25px;
+    width: 109px;
+    height: 31px;
     background-image: url('../img/logo.png');
     padding: 0;
     margin-top: 14px;
-    margin-left: 5px;
-  }
-  .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-    width: 994px
+    margin-left: 35px;
   }
 /* END: Navbar */
 
 /* BEGIN: Experiments */
   ul.experiments {
     list-style: none;
-    margin: 36px 0 0 -29px;
+    margin: 0;
   }
   ul.experiments li {
-    float: left;
-    width: 948px;
-    padding: 10px 38px 0;
+    min-height: 240px;
+    position: relative;
+    padding: 8px 38px 20px;
     margin-bottom: 45px;
     border-radius: 5px;
     background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.02)), to(rgba(255, 255, 255, 0.03)));
@@ -70,9 +66,8 @@
     -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
   }
   ul.experiments li table {
-    width: 590px;
+    width: 735px;
     margin-left: -20px;
-    float: left;
   }
   ul.experiments h3.name a {
     color: #faf3ee;
@@ -183,10 +178,10 @@
     display: block
   }
   ul.experiments li table tr th:nth-child(1) {
-    width: 137px
+    width: 151px
   }
   ul.experiments li table tr td:nth-child(1) {
-    width: 136px;
+    width: 149px;
     border-left: none;
   }
   ul.experiments li table tr:first-child th:nth-child(2) {
@@ -206,6 +201,12 @@
   }
   ul.experiments li table tr td:nth-child(4) {
     width: 135px
+  }
+  ul.experiments li table tr:first-child th:nth-child(5) {
+    width: 109px;
+  }
+  ul.experiments li table tr td:nth-child(5) {
+    width: 110px
   }
   /*End Chrome bug workaround*/
 
@@ -229,15 +230,6 @@
 /* END: Experiments */
 
 /* BEGIN: Placeholder rules for D3 graph */
-.graph {
-  float: right;
-  width: 325px;
-  margin-right: 30px;
-  margin-top: -77px;
-  margin-left: 15px;
-  position: relative;
-  top: 36px;
-}
 .graph .axis path, .graph .axis line {
   fill: none;
   stroke: #000;
@@ -268,3 +260,255 @@
   stroke-width: 0;
 }
 /* END: Placeholder rules for D3 graph */
+div.header {
+  min-height: 65px;
+  position: relative;
+}
+div.header button {
+  float: left;
+  margin-left: 5px;
+}
+div.header .modal {
+  float: left;
+}
+div.header form, div.alt-controls form {
+  margin: 0;
+  display: inline-block;
+}
+div.header .controls {
+  top: 10px;
+  right: 0;
+  position: absolute;
+}
+div.header h3 {
+  margin-right: 25px;
+  margin-bottom: 0;
+}
+div.header h4 {
+  margin-bottom: 15px;
+}
+ul.experiments table tbody td span.label {
+  float: right;
+  margin-top: 2px;
+  text-transform: uppercase;
+  font-size: 10px;
+  padding: 2px 12px;
+}
+span.circle i.icon-ok {
+  margin-top: -2px;
+  margin-left: 1px;
+}
+ul.experiments h4 {
+  margin-top: 0;
+}
+.modal {
+  background: url(/static/img/background-tile.png);
+}
+.modal-header {
+  border-bottom: 1px solid #1b1a1a;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(43, 44, 45, 0.40)), to(rgba(37, 38, 39, 0.40)));
+  background-image: -webkit-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image: -moz-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image: -o-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image: -ms-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image: linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#2b2c2d', EndColorStr='#252627');
+}
+.modal-header h3 {
+  color: #faf3ee;
+  font-size: 24px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 100;
+}
+.modal textarea {
+  resize: none;
+  margin: 0 auto;
+  width: 500px;
+  height: 125px;
+  display: block;
+  color: #dedede;
+  background-color: rgba(170, 170, 170, 0.08);
+  border: 1px solid #444;
+  box-shadow: rgba(0, 0, 0, 0.0980392) 0px 1px 2px 0px, rgba(255, 255, 255, 0.0470588) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0392157) 1px 0px 0px 0px, rgba(0, 0, 0, 0.0392157) -1px 0px 0px 0px;
+}
+.modal-footer {
+  background-color: rgba(170, 170, 170, 0.08);
+  border-top: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
+}
+.modal form {
+  margin: 0;
+}
+#content {
+  padding-top: 90px; 
+}
+ul.experiments h4 {
+  font-weight: lighter;
+}
+
+
+#dashboard-page ul.experiments li table {
+  width: auto;
+}
+#dashboard-page ul.experiments li table tr th:nth-child(1) {     
+  width: 137px;
+  min-width: 178px;
+}
+#dashboard-page ul.experiments li table tr td:nth-child(1) { 
+  width: 136px;
+  min-width: 178px;
+}
+#dashboard-page ul.experiments li table tr th:nth-child(2),
+#dashboard-page ul.experiments li table tr th:nth-child(3),
+#dashboard-page ul.experiments li table tr th:nth-child(4) {
+  min-width: 123px;
+}
+#dashboard-page ul.experiments li table tr td:nth-child(2),
+#dashboard-page ul.experiments li table tr td:nth-child(3),
+#dashboard-page ul.experiments li table tr td:nth-child(4) {
+  min-width: 124px;
+}
+#dashboard-page .graph {
+  position: absolute;
+  bottom: 40px;
+  right: 70px;
+  width: 400px;
+  height: 200px;
+}
+/* BEGIN: Details page */
+#details-page .header .controls .collapse {
+  display: inline-block;
+}
+#details-page .graph {
+  width: 330px;
+  height: 200px;
+  padding-bottom: 40px;
+}
+#details-page ul.experiments li table {
+  width: auto;
+}
+#details-page ul.experiments li table tr th:nth-child(1),
+#details-page ul.experiments li table tr td:nth-child(1) {
+  min-width: 400px;
+}
+#details-page ul.experiments li table tr th:nth-child(2),
+#details-page ul.experiments li table tr th:nth-child(3),
+#details-page ul.experiments li table tr th:nth-child(4),
+#details-page ul.experiments li table tr th:nth-child(5) {
+  min-width:148px;
+}
+#details-page ul.experiments li table tr td:nth-child(2),
+#details-page ul.experiments li table tr td:nth-child(3),
+#details-page ul.experiments li table tr td:nth-child(4),
+#details-page ul.experiments li table tr td:nth-child(5) {
+  min-width: 149px;
+}
+/* BEGIN: Details page */
+
+/* BEGIN: Responsive rules */
+@media (max-width: 1200px) {
+  #dashboard-page .graph {
+    display: none;
+  }
+  .container {
+    width: 724px;
+  }
+  #details-page ul.experiments li table tr th:nth-child(1),
+  #details-page ul.experiments li table tr td:nth-child(1) {
+    min-width: 120px;
+  }
+  #details-page ul.experiments li table tr th:nth-child(2),
+  #details-page ul.experiments li table tr th:nth-child(3),
+  #details-page ul.experiments li table tr th:nth-child(4),
+  #details-page ul.experiments li table tr th:nth-child(5) {
+    min-width: 99px;
+  }
+  #details-page ul.experiments li table tr td:nth-child(2),
+  #details-page ul.experiments li table tr td:nth-child(3),
+  #details-page ul.experiments li table tr td:nth-child(4),
+  #details-page ul.experiments li table tr td:nth-child(5) {
+    min-width: 100px;
+  }
+}
+@media (max-width: 430px) {
+  #dashboard-page ul.experiments li table tr th:nth-child(1),
+  #dashboard-page ul.experiments li table tr td:nth-child(1) {
+    max-width: 100px;
+  }
+}
+@media (max-width: 580px) {
+  #details-page ul.experiments li table tr th:nth-child(3),
+  #details-page ul.experiments li table tr td:nth-child(3),
+  #dashboard-page ul.experiments li table tr th:nth-child(3),
+  #dashboard-page ul.experiments li table tr td:nth-child(3) {
+    display:none;
+  }
+  #details-page .header .controls .collapse {
+    display:block;
+  }
+}
+@media (max-width: 735px) {
+  #details-page ul.experiments li table tr th:nth-child(2),
+  #details-page ul.experiments li table tr td:nth-child(2),
+  #dashboard-page ul.experiments li table tr th:nth-child(2),
+  #dashboard-page ul.experiments li table tr td:nth-child(2) {
+    display:none;
+  }
+  .container {
+    width: auto;
+  }
+}
+@media (max-width: 979px) {
+  .navbar-fixed-top {
+    margin-bottom: 0px;
+  }
+  .navbar-fixed-top .navbar-inner {
+    padding: 0;
+  }
+  #content {
+    padding-top: 40px;
+  }
+  #details-page .header .controls {
+    float: left;
+    margin: 0 0 15px -5px;
+    position: static;
+  }
+  #details-page .header .controls button {
+    margin-bottom:5px;
+  }
+}
+/* END: Responsive rules */
+table {
+  max-width: none;
+}
+h4 {
+  color: #faf3ee;
+  font-size: 18px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 100;
+}
+span.note.control {
+  font-size: 11px;
+  color: #4f4f4f;
+  text-transform: uppercase;
+  padding-left: 5px;
+}
+hr {
+  border: none;
+  margin: 40px;
+}
+#details-page .graph {
+  float:left;
+  padding-bottom: 50px;
+  padding-right: 125px;
+}
+#details-page #graphs {
+  max-width: 910px;
+  margin: 0 auto;
+}
