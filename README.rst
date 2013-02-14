@@ -68,7 +68,7 @@ You can participate in an experiment with a ``GET`` request to the ``participate
 If the test does not exist, it will be created automatically.
 
 Arguments
-`````````
+---------
 
 ``experiment`` (required) is the name of the test you'd like to start A/B testing. Valid Experiment names must be alphanumeric and can contain ``_`` and ``-``.
 
@@ -87,7 +87,7 @@ Arguments
 In this example, red will always be returned. This is used for testing only.
 
 Response
-````````
+--------
 
 A typical Sixpack participation response will look something like this::
 
@@ -113,7 +113,7 @@ You can convert a use with a ``GET`` request to the ``convert`` endpoint::
     $ curl http://localhost:5000/convert?experiment=button_color&client_id=12345678-1234-5678-1234-567812345678
 
 Arguments
-`````````
+---------
 
 ``experiment`` (required) the name of the experiment you would like to convert on
 
