@@ -1,73 +1,181 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<h1>{{ experiment.name }}</h1>
-{% if experiment.get_description() %}
-<h3>{{ experiment.get_description() }}</h3>
-{% endif %}
-
-Total Participants: {{ experiment.total_participants() }} <br/>
-Total Conversions: {{ experiment.total_conversions() }}<br/>
-
-{% for alternative in experiment.alternatives %}
-    <h2>{{ alternative.name }}</h2>
-    <div class="alt-controls">
-        {% if alternative.is_winner() %}
-            <p>This test won!</p>
-        {% else %}
-        <form action="{{ url_for('set_winner', experiment_name=experiment.name) }}" method="post">
-            <input type='hidden' name="alternative_name" value="{{ alternative.name }}" />
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" class="btn btn-small">Use This</button>
-        </form>
+<div id="details-page">
+  <ul class="experiments">
+    <li>
+      <div class="header">
+        <h3 class="name">
+          <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a>
+        </h3>
+        {% if experiment.get_description() %}
+          <h4>{{ experiment.get_description() }}</h4>
         {% endif %}
-    </div>
-    Participants: {{ alternative.participant_count() }}<br/>
-    Conversions: {{ alternative.completed_count() }}<br/>
-{% endfor %}
+        <div class="controls">
 
-<div class="controls" style="margin-top:30px">
-    <form action="{{ url_for('reset_experiment', experiment_name=experiment.name) }}" method="post">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-small">Reset</button>
-    </form>
-
-    <form action="{{ url_for('delete_experiment', experiment_name=experiment.name) }}" method="post">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-small">Delete</button>
-    </form>
-
-
-    <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-small">{% if experiment.is_archived() %}Un-{% endif %}Archive</button>
-    </form>
-
-    <form>
-        <button class="btn btn-small" data-toggle="modal" data-target="#desc-modal">Update Description</button>
-    </form>
-    {% if experiment.has_winner() %}
-        <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
+          <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-            <button class="btn btn-small" type="submit">Reset Winner</button>
-        </form>
-    {% endif %}
-</div>
+            <button class="btn btn-small btn-inverse">{% if experiment.is_archived() %}Un-{% endif %}Archive</button>
+          </form>
 
+          <form>
+            <button class="btn btn-small btn-inverse" data-toggle="modal" data-target="#desc-modal">Update Description</button>
+          </form>
+          <div class="collapse"></div>
+          {% if experiment.has_winner() %}
+            <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-small btn-warning" type="submit">Reset Winner</button>
+            </form>
+          {% endif %}
+
+          <form>
+            <button class="btn btn-small btn-warning" data-toggle="modal" data-target="#confirm-reset-modal">Reset</button>
+          </form>
+
+          <form>
+            <button class="btn btn-small btn-danger" data-toggle="modal" data-target="#confirm-delete-modal">Delete</button>
+          </form>
+        </div>
+      </div> 
+      <div class="clearfix"></div>
+
+      <table>
+        <tbody>
+          <tr>
+            <th>Case</th>
+            <th>Participants</th>
+            <th>Conv Rate</th>
+            <th>Confidence</th>
+            <th>Winner</th>
+          </tr>
+          {% for alt in experiment.alternatives %}
+            <tr>
+              <td><span class="circle">{% if alt.is_winner() %}<i class="icon-ok"></i>{% endif %}</span>{{ alt.name }} {% if alt.is_control() %}<span class="note control">control</span>{% endif %} </td>
+              <td>{{ alt.participant_count()|number_format }}</td>
+              <td>{{ alt.conversion_rate()|number_to_percent }}%</td>
+              <td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
+              <td>
+                <div class="alt-controls">
+                  {% if alt.is_winner() %}
+                    <span class="label label-success">Winner!</label>
+                  {% else %}
+                    <form action="{{ url_for('set_winner', experiment_name=experiment.name) }}" method="post">
+                      <input type='hidden' name="alternative_name" value="{{ alt.name }}" />
+                      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-small btn-inverse">Use This</button>
+                    </form>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <hr>
+
+      <div id="graphs">
+        <script type="text/javascript">
+          var graph_data = {};
+        </script>
+        {% for alt in experiment.alternatives %}
+
+          <div id="graph-{{ alt.name }}" class="graph">  
+            <h4>Conversion Rate / Day for <i>{{ alt.name }}</i></h4>
+            <script type="text/javascript">
+              graph_data['{{ alt.name }}'] = {
+                'participants_by_day': [
+                  {% for date in alt.participants_by_day()|sort() %}
+                   [ "{{ date }}", {{ alt.participants_by_day()[date] }} ],
+                  {% endfor %}
+                ],
+                'participants_by_month': [
+                  {% for date in alt.participants_by_month()|sort() %}
+                   [ "{{ date }}", {{ alt.participants_by_month()[date] }} ],
+                  {% endfor %}
+                ],
+                'participants_by_year': [
+                  {% for date in alt.participants_by_year()|sort() %}
+                   [ "{{ date }}", {{ alt.participants_by_year()[date] }} ],
+                  {% endfor %}
+                ],
+                'conversions_by_day': [
+                  {% for date in alt.conversions_by_day()|sort() %}
+                   [ "{{ date }}", {{ alt.conversions_by_day()[date] }} ],
+                  {% endfor %}
+                ],
+                'conversions_by_month': [
+                  {% for date in alt.conversions_by_month()|sort() %}
+                   [ "{{ date }}", {{ alt.conversions_by_month()[date] }} ],
+                  {% endfor %}
+                ],
+                'conversions_by_year': [
+                  {% for date in alt.conversions_by_year()|sort() %}
+                   [ "{{ date }}", {{ alt.conversions_by_year()[date] }} ],
+                  {% endfor %}
+                ]
+              };
+            </script>
+          </div>
+
+        {% endfor %}
+        <div class="clearfix"></div>
+      </div>
+    </li>
+  </ul>
+</div>
 
 <div class="modal hide fade" id="desc-modal">
   <form action="{{ url_for('update_experiment_description', experiment_name=experiment.name) }}" method="post">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Add Description</h3>
-      </div>
-      <div class="modal-body">
-        <p><input type="text" name="description" value="{{ experiment.get_description() }}"></p>
-      </div>
-      <div class="modal-footer">
-        <button href="#" class="btn btn-primary">Save changes</a>
-      </div>
-   <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Update Description</h3>
+    </div>
+    <div class="modal-body">
+      <textarea type="text" name="description">{{ experiment.get_description() }}</textarea>
+    </div>
+    <div class="modal-footer">
+      <button href="#" class="btn btn-primary">Save description</a>
+    </div>
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+  </form>
+</div>
+
+
+<div class="modal hide fade" id="confirm-reset-modal">
+  <form action="{{ url_for('reset_experiment', experiment_name=experiment.name) }}" method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Reset Experiment</h3>
+    </div>
+    <div class="modal-body">
+      <p>Are you sure you want to reset the experiment <b>{{ experiment.name }}</b>?</p>
+    </div>
+    <div class="modal-footer">
+      <button data-dismiss="modal" aria-hidden="true" class="btn btn-inverse">No</a>
+      <button class="btn btn-danger">Yes</a>
+    </div>
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+  </form>
+</div>
+
+<div class="modal hide fade" id="confirm-delete-modal">
+  <form action="{{ url_for('delete_experiment', experiment_name=experiment.name) }}" method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Delete Experiment</h3>
+    </div>
+    <div class="modal-body">
+      <p>Are you sure you want to delete the experiment <b>{{ experiment.name }}</b>?</p>
+    </div>
+    <div class="modal-footer">
+      <button data-dismiss="modal" aria-hidden="true" class="btn btn-inverse">No</a>
+      <button class="btn btn-danger">Yes</a>
+    </div>
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
   </form>
 </div>
 
