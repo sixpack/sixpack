@@ -9,6 +9,8 @@ Clients:
     * helper methods that make using sixpack extremely easy in a templating language
     * convert and participate methods
 * should gracefull handle server errors and responses
+* should have a short timeout on the web requests
+    * internally we've settled on 250ms, though this might change
 * valid alternative and experiment names as valid strings
     * This is the current regex we're using ^[a-z0-9][a-z0-9\-_ ]*$ and is also enforced on the server
 * should be reasonably tested

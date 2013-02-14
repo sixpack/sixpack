@@ -126,6 +126,20 @@ You'll notice that the ``convert`` endpoint does not take a ``alternative`` quer
 
 We've included a 'health-check' endpoint available at ``/_status``. This is helpful for monitoring and alerting if the Sixpack service become unavailable.
 
+Clients
+=======
+
+We've already provied clients in four languages. We'd love to have clients in many more languages, so if you feel so inclined, first read the CLIENTSPEC (in the base of this resp). Write your client, then update and pull request this file so we know about it.
+
+- Ruby_
+- Python_
+- JavaScript_
+- PHP_
+
+.. _Ruby: http://github.com/seatgeek/sixpack-rb
+.. _Python: http://github.com/seatgeek/sixpack-py
+.. _JavaScript: http://github.com/seatgeek/sixpack-js
+.. _PHP: http://github.com/seatgeek/sixpack-php
 
 Production Notes
 ================
@@ -145,7 +159,8 @@ Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
-6. Please avoid changing versions numbers, as we'll take care of that for you
+3. Write Tests !!!
+4. Commit your changes (`git commit -am 'Added some feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create new Pull Request
+7. Please avoid changing versions numbers, as we'll take care of that for you
