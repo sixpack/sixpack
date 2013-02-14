@@ -7,3 +7,4 @@ Flask==0.9
 Flask-SeaSurf==0.1.13
 fakeredis==0.3.0
 decorator==3.3.2
+requests==0.13.7
