@@ -42,7 +42,7 @@ h1, h2, h3 {
     padding: 9px 5px 1px 20px;
     position: absolute;
     right: 0;
-    width: 261px;
+    width: 264px;
 }
 #upper .side-note p {
     color: #FFFFFF;
@@ -53,6 +53,7 @@ h1, h2, h3 {
     margin-right: 14px;
     text-transform: none;
     text-align: right;
+    padding: 0;
 }
 #upper .side-note p a {
 	color: #fff;
