@@ -81,8 +81,8 @@
         </script>
         {% for alt in experiment.alternatives %}
 
-          <div id="graph-{{ alt.name }}"class="graph">  
-            <h4>Conversions for <i>{{ alt.name }}</i></h4>
+          <div id="graph-{{ alt.name }}" class="graph">  
+            <h4>Conversion Rate / Day for <i>{{ alt.name }}</i></h4>
             <script type="text/javascript">
               graph_data['{{ alt.name }}'] = {
                 'participants_by_day': [

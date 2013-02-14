@@ -503,3 +503,12 @@ hr {
   border: none;
   margin: 40px;
 }
+#details-page .graph {
+  float:left;
+  padding-bottom: 50px;
+  padding-right: 125px;
+}
+#details-page #graphs {
+  max-width: 910px;
+  margin: 0 auto;
+}

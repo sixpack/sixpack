@@ -1,17 +1,13 @@
 var drawChart;
 $(function() {
 
-  drawChart = function (element, data) {
-    var arrData = [
-        ["2012-10-02",0.05],
-        ["2012-10-03",0.056],
-        ["2012-10-04",0.057],
-        ["2012-10-06",0.06],
-        ["2012-10-07",0.0582],
-        ["2012-10-08",0.0584],
-        ["2012-10-09",0.0586]];
+  drawChart = function (element, participants, conversions) {
 
-    var arrData = data || arrData;
+    var arrData = _.map(participants, function (participant, key) {
+        conversion = _.find(conversions, function (conversion) {return conversion[0] === participant[0]});
+        return [participant[0], Number(conversion[1]/participant[1]).toFixed(2)];
+    });
+    console.log(arrData);
     var $element = $(element);
 
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -33,16 +29,26 @@ $(function() {
     var y = d3.scale.linear()
         .range([height, 0]);
 
+    var xValues =_.map(arrData, function(arr) {
+        return _.first(arr);
+    });
+    var yValues =_.map(arrData, function(arr) {
+        return _.last(arr);
+    });
+
+    console.log(yValues.sort());
+    console.log(yValues.length);
     var xAxis = d3.svg.axis()
         .scale(x)
         .ticks(4)
         .tickSize(0)
+        .tickValues(xValues)
         .orient("bottom");
 
     var yAxis = d3.svg.axis()
         .scale(y)
-        .ticks(2)
-        .tickValues([0.055, 0.06])
+        .ticks(yValues.length)
+        .tickValues(yValues)
         .tickSize(0)
         .tickFormat(d3.format(".1%"))
         .orient("left");
@@ -99,8 +105,4 @@ $(function() {
           .attr("class", "area")
           .attr("d", area);
   }
-
-  $('ul.experiments li').each(function (key, val) {
-    drawChart('ul li:nth-child(' + (key + 1) + ') .graph');
-  })
 });
