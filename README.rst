@@ -162,8 +162,17 @@ Contributing
 
 1. Fork it
 2. Start Sixpack with in development mode with
-`$ PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack` and
-`$ PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack-web`
+
+::
+
+    $ PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack
+
+and
+
+::
+
+    $ PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack-web
+
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Write Tests !!!
 4. Commit your changes (`git commit -am 'Added some feature'`)
