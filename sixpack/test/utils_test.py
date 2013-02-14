@@ -8,10 +8,10 @@ class TestServerLogic(unittest.TestCase):
 
     def test_number_to_percent(self):
         number = utils.number_to_percent(0.09)
-        self.assertEqual(number, 9.00)
+        self.assertEqual(number, '9.00%')
 
         number = utils.number_to_percent(0.001)
-        self.assertEqual(number, 0.10)
+        self.assertEqual(number, '0.10%')
 
     def test_number_format(self):
         number = utils.number_format(100)

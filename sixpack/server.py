@@ -8,11 +8,11 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
+from . import __version__
 import decorator
 from config import CONFIG as cfg
 import db
 from models import Experiment, Client
-
 
 @decorator.decorator
 def service_unavailable_on_connection_error(f, *args, **kwargs):
@@ -58,7 +58,7 @@ class Sixpack(object):
     @service_unavailable_on_connection_error
     def on_status(self, request):
         self.redis.ping()
-        return json_success({}, request)
+        return json_success({'version': __version__}, request)
 
     def on_home(self, request):
         dales = """
@@ -95,11 +95,25 @@ class Sixpack(object):
 
         try:
             experiment = Experiment.find(experiment_name, self.redis)
-            experiment.convert(client)
+            alternative = experiment.convert(client)
         except ValueError as e:
             return json_error({'message': str(e)}, request, 400)
 
-        return json_success({}, request)
+        resp = {
+            'alternative': {
+                'name': alternative
+            },
+            'experiment': {
+                'name': experiment.name,
+                'version': experiment.version()
+            },
+            'conversion': {
+                'value': None
+            },
+            'client_id': client_id
+        }
+
+        return json_success(resp, request)
 
     @service_unavailable_on_connection_error
     def on_participate(self, request):
@@ -129,7 +143,9 @@ class Sixpack(object):
             alternative = experiment.get_alternative(client).name
 
         resp = {
-            'alternative': alternative,
+            'alternative': {
+                'name': alternative
+            },
             'experiment': {
                 'name': experiment.name,
                 'version': experiment.version()
