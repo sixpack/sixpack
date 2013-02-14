@@ -34,12 +34,12 @@
     height: 56px
   }
   .navbar-inverse .brand {
-    width: 130px;
-    height: 25px;
+    width: 109px;
+    height: 31px;
     background-image: url('../img/logo.png');
     padding: 0;
     margin-top: 14px;
-    margin-left: 5px;
+    margin-left: 35px;
   }
 /* END: Navbar */
 
