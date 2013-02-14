@@ -126,7 +126,6 @@ You'll notice that the ``convert`` endpoint does not take a ``alternative`` quer
 
 We've included a 'health-check' endpoint available at ``/_status``. This is helpful for monitoring and alerting if the Sixpack service become unavailable.
 
-=======
 Clients
 =======
 
