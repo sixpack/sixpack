@@ -87,6 +87,15 @@ h2 {
 	margin: 0 auto;
 	padding: 60px 0;
 	position: relative;
+    border-top: 1px solid #000000;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+.section.first {
+	border-top: none;
+	box-shadow: none;
+}
+.section.last {
+	margin-bottom: 130px;
 }
 .section p {
 	color: #c6c6c6;
@@ -99,8 +108,25 @@ h2 {
 .section:nth-child(odd) {
 	text-align: right;
 }
+.section:nth-child(odd) p {
+	padding-left: 490px;
+	width: 420px;
+}
 .section.languages img {
 	position: absolute;
 	right: 0;
-	top: 120px;;
+	top: 120px;
+}
+.section.sample {
+	padding-bottom: 135px;
+}
+.section.screenshot img {
+	position: absolute;
+	right: 0;
+	top: 70px;
+}
+.gist {
+	width: 420px;
+	text-align: left;
+	float: left;
 }
