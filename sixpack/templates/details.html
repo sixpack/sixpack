@@ -74,9 +74,47 @@
       </table>
 
       <hr>
-
       <h4>Conversions for <i>control</i></h4>
-      <div class="graph"></div>
+      <div class="graph">  
+        <script type="text/javascript">
+         var graph_data = {};
+
+          {% for alt in experiment.alternatives %}
+            graph_data['{{ alt.name|safe }}'] = {
+              'participants_by_day': [
+                {% for date in alt.participants_by_day() %}
+                 [ "{{ date }}", {{ alt.participants_by_day()[date] }} ],
+                {% endfor %}
+              ],
+              'participants_by_month': [
+                {% for date in alt.participants_by_month() %}
+                 [ "{{ date }}", {{ alt.participants_by_month()[date] }} ],
+                {% endfor %}
+              ],
+              'participants_by_year': [
+                {% for date in alt.participants_by_year() %}
+                 [ "{{ date }}", {{ alt.participants_by_year()[date] }} ],
+                {% endfor %}
+              ],
+              'conversions_by_day': [
+                {% for date in alt.conversions_by_day() %}
+                 [ "{{ date }}", {{ alt.conversions_by_day()[date] }} ],
+                {% endfor %}
+              ],
+              'conversions_by_month': [
+                {% for date in alt.conversions_by_month() %}
+                 [ "{{ date }}", {{ alt.conversions_by_month()[date] }} ],
+                {% endfor %}
+              ],
+              'conversions_by_year': [
+                {% for date in alt.conversions_by_year() %}
+                 [ "{{ date }}", {{ alt.conversions_by_year()[date] }} ],
+                {% endfor %}
+              ]
+            };
+          {% endfor %}
+        </script>
+      </div>
     </li>
   </ul>
 </div>
