@@ -140,3 +140,12 @@ h2 {
 	text-align: left;
 	float: left;
 }
+#clients ul {
+    font-size: 15px;
+    font-weight: 400;
+    list-style: none outside none;
+    text-transform: uppercase;
+}
+#clients ul li {
+	margin-bottom: 2px;
+}
