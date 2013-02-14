@@ -53,7 +53,7 @@
             <tr>
               <td><span class="circle">{% if alt.is_winner() %}<i class="icon-ok"></i>{% endif %}</span>{{ alt.name }} {% if alt.is_control() %}<span class="note control">control</span>{% endif %} </td>
               <td>{{ alt.participant_count()|number_format }}</td>
-              <td>{{ alt.conversion_rate()|number_to_percent }}%</td>
+              <td>{{ alt.conversion_rate()|number_to_percent }}</td>
               <td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
               <td>
                 <div class="alt-controls">
