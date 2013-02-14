@@ -3,12 +3,17 @@ $(function() {
 
   drawChart = function (element, participants, conversions) {
 
+    var $element = $(element);
     var arrData = _.map(participants, function (participant, key) {
         conversion = _.find(conversions, function (conversion) {return conversion[0] === participant[0]});
         return [participant[0], Number(conversion[1]/participant[1]).toFixed(2)];
     });
-    
-    var $element = $(element);
+
+    if (arrData.length <= 2) {
+        $element.append("<p>Not enough data to graph...</p>");
+        return;
+    }
+
 
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
         width = $element.width()
