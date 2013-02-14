@@ -30,7 +30,8 @@
     {% else %}
         <h2>Oh No.</h2>
         <p>It seems you haven't created any experiments, yet. To do this simply make a <code>GET</code> request to your sixpack server's 'participate' endpoint.</p>
-        <pre><code>$ curl http://localhost:5000/participate?experiment=new-header&amp;alternatives=red&amp;alternatives=blue&amp;client_id=&lt;A UNIQUIE CLIENT ID&gt;</code></pre>
+        <pre><code>$ curl <span id="base-domain">http://127.0.0.1:5000</span>/participate?experiment=new-header&amp;alternatives=red&amp;alternatives=blue&amp;client_id=&lt;A UNIQUIE CLIENT ID&gt;</code></pre>
     {% endif %}
 </div>
+
 {% endblock %}
