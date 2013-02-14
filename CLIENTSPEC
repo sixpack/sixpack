@@ -1,7 +1,10 @@
-Clients are responsibile for the following:
+Building a Sixpack Client is pretty straight forward, though there are some basic standards we'd like you to follow.
 
+Clients:
 
-* Generating or accepting a unique client id
-* Making requests to the Sixpack server
-* Testing for server failure
-* If
+* Are responsible for generating and storing (in a cookie, session, MySQL, Redis, etc) unique client ids for each user.
+* should pass IP addresses and User Agents to Sixpack to avoid bots from participating in tests (where applicable)
+* should have a consistant interface
+    * helper methods that make using sixpack extremely easy in a templating language
+    * convert and participate methods
+* should gracefull handle server errors and responses
