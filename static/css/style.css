@@ -48,6 +48,7 @@ h1, h2, h3 {
     color: #FFFFFF;
     float: left;
     font-size: 15px;
+    line-height: 18px;
     font-weight: 200;
     margin-right: 14px;
     text-align: right;
@@ -56,7 +57,7 @@ h1, h2, h3 {
 #byline img {
 	float: right;
 	margin-right: 11px;
-	margin-top: 7px;
+	margin-top: 5px;
 }
 #logo {
 	width: 320px;
