@@ -161,7 +161,7 @@ Contributing
 ============
 
 1. Fork it
-2. Start Sixpack with in development mode with
+2. Start Sixpack in development mode with
 
 ::
 
