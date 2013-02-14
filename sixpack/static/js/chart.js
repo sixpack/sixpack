@@ -7,7 +7,7 @@ $(function() {
         conversion = _.find(conversions, function (conversion) {return conversion[0] === participant[0]});
         return [participant[0], Number(conversion[1]/participant[1]).toFixed(2)];
     });
-    console.log(arrData);
+    
     var $element = $(element);
 
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -36,8 +36,6 @@ $(function() {
         return _.last(arr);
     });
 
-    console.log(yValues.sort());
-    console.log(yValues.length);
     var xAxis = d3.svg.axis()
         .scale(x)
         .ticks(4)
