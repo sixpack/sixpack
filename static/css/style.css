@@ -37,9 +37,26 @@ h1, h2, h3 {
 	font-weight: 200;
 }
 #byline {
-	position: absolute;
-	top: 0;
-	right: 0;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.75);
+    border-radius: 6px 0 0 6px;
+    padding: 9px 10px 3px 20px;
+    position: absolute;
+    right: 0;
+    top: 30px;
+}
+#byline p {
+    color: #FFFFFF;
+    float: left;
+    font-size: 15px;
+    font-weight: 200;
+    margin-right: 14px;
+    text-align: right;
+    text-transform: none;
+}
+#byline img {
+	float: right;
+	margin-right: 11px;
+	margin-top: 7px;
 }
 #logo {
 	width: 320px;
