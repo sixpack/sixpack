@@ -1,0 +1,106 @@
+body {
+	font-family: "proxima-nova",sans-serif;
+	background: url(../img/pattern.png) repeat;
+}
+a {
+	cursor: pointer;
+}
+h1, h2, h3 {
+	margin: 0;
+}
+#upper {
+	height: 430px;
+	padding-top: 180px;
+	background: url(../img/top-header.jpg) top center no-repeat #fff;
+	width: 100%;
+	position: relative;
+	text-align: center;
+}
+#upper h2 {
+	color: #131313;
+	font-size: 28px;
+	font-weight: 500;
+	margin-top: 30px;
+}
+#upper h3 {
+	color: #727272;
+	font-size: 18px;
+	line-height: 25px;
+	width: 760px;
+	margin: 9px auto;
+	font-weight: 200;
+}
+#upper p {
+	color: #717171;
+	text-transform: uppercase;
+	font-size: 15px;
+	font-weight: 200;
+}
+#byline {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+#logo {
+	width: 320px;
+	height: 98px;
+	background: url(../img/logo.png);
+	margin: 0 auto;
+}
+a.large-button {
+	width: 244px;
+	height: 56px;
+	display: block;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	background-color: #e09031;
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,.28), inset 0 1px 2px rgba(255,255,255,.35), inset 0 0 1px rgba(255,255,255,.15);
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,.28), inset 0 1px 2px rgba(255,255,255,.35), inset 0 0 1px rgba(255,255,255,.15);
+	box-shadow: 0 1px 3px rgba(0,0,0,.28), inset 0 1px 2px rgba(255,255,255,.35), inset 0 0 1px rgba(255,255,255,.15);
+	border: solid 1px #a97912;
+	background-image: -webkit-linear-gradient(bottom, rgba(0,0,0,.18), rgba(255,255,255,.18));
+	background-image: -moz-linear-gradient(bottom, rgba(0,0,0,.18), rgba(255,255,255,.18));
+	background-image: -o-linear-gradient(bottom, rgba(0,0,0,.18), rgba(255,255,255,.18));
+	background-image: -ms-linear-gradient(bottom, rgba(0,0,0,.18), rgba(255,255,255,.18));
+	background-image: linear-gradient(to top, rgba(0,0,0,.18), rgba(255,255,255,.18));
+	text-transform: uppercase;
+	margin: 39px auto 33px;
+	color: #2b1906;
+	text-shadow: 0 1px 0 rgba(255,255,255,.26);
+	font-size: 18px;
+	font-family: "HelveticaNeue",​"Helvet...eva",​"Arial",​sans-serif;
+	line-height: 54px;
+	font-weight: 600;
+}
+a.large-button:hover {
+	text-decoration: none;
+}
+h2 {
+	font-family: 'Lato', sans-serif;
+	font-weight: 100;
+	color: #fff;
+	font-size: 36px;
+}
+.section {
+	width: 910px;
+	margin: 0 auto;
+	padding: 60px 0;
+	position: relative;
+}
+.section p {
+	color: #c6c6c6;
+	font-size: 18px;
+	line-height: 29px;
+	width: 480px;
+	font-weight: 100;
+	margin-top: 26px;
+}
+.section:nth-child(odd) {
+	text-align: right;
+}
+.section.languages img {
+	position: absolute;
+	right: 0;
+	top: 120px;;
+}
