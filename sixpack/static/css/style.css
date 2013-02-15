@@ -388,7 +388,7 @@ ul.experiments h4 {
 #details-page .graph {
   width: 330px;
   height: 200px;
-  padding-bottom: 40px;
+  margin-bottom: 50px;
 }
 #details-page ul.experiments li table {
   width: auto;
@@ -513,6 +513,12 @@ hr {
   margin: 0 auto;
 }
 .graph p {
+  color: #6D6D6D;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+#dashboard-page .graph p {
   margin-left: 15px;
-  margin-top: -10px;
+  margin-top: 90px;
+  text-align: center;
 }
