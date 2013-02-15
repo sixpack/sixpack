@@ -160,6 +160,7 @@ h2 {
     font-weight: 400;
     list-style: none outside none;
     text-transform: uppercase;
+    margin-left: 0;
 }
 #clients ul li {
 	margin-bottom: 2px;
@@ -234,8 +235,5 @@ footer .right {
 	}
 	.section.sample {
 		padding-bottom: 60px;
-	}
-	ul {
-		margin-left: 0;
 	}
 }
