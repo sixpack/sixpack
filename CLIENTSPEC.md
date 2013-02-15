@@ -41,4 +41,4 @@ Sixpack clients run the risk of negatively impacting the performance of the appl
 
 ## 5. Additional considerations
 
-Clients SHOULD allow the location of the sixpack server to be specified with a single argument, e.g. `http://my.sixpack.host:8129/sixpack/mount/point`.
+Clients MUST allow the location of the sixpack server to be specified with a single argument, e.g. `http://my.sixpack.host:8129/sixpack/mount/point`.
