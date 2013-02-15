@@ -13,7 +13,9 @@ class TestAlternativeModel(unittest.TestCase):
         self.client_id = 381
 
     def test_key(self):
-        alt = Alternative('yes', 'show-something', self.redis)
+        exp = Experiment('show-something', ['yes', 'no'], self.redis)
+
+        alt = Alternative('yes', exp, self.redis)
         key = alt.key()
         self.assertEqual(key, 'sixpack:show-something:yes')
 
@@ -41,7 +43,7 @@ class TestAlternativeModel(unittest.TestCase):
         exp = Experiment('trololo', ['yes', 'no'], self.redis)
         exp.save()
 
-        alt = Alternative('yes', 'trololo', self.redis)
+        alt = Alternative('yes', exp, self.redis)
         self.assertTrue(alt.is_control())
         exp.delete()
 
@@ -49,7 +51,7 @@ class TestAlternativeModel(unittest.TestCase):
         exp = Experiment('trololo', ['yes', 'no'], self.redis)
         exp.save()
 
-        alt = Alternative('yes', 'trololo', self.redis)
+        alt = Alternative('yes', exp, self.redis)
         self.assertTrue(alt.is_control())
 
     def test_participant_count(self):

@@ -52,15 +52,19 @@ class Experiment(object):
             raise ValueError('experiments require at least two alternatives')
 
         self.name = name
-        self.alternatives = Experiment.initialize_alternatives(
-            name,
-            alternatives,
-            redis_conn)
         self.redis = redis_conn
         self.random_sample = RANDOM_SAMPLE
+        self.alternatives = self.initialize_alternatives(alternatives)
 
     def __repr__(self):
         return '<Experiment: {0} (version: {1})>'.format(self.name, self.version())
+
+    def initialize_alternatives(self, alternatives):
+        for alternative_name in alternatives:
+            if not Alternative.is_valid(alternative_name):
+                raise ValueError('invalid alternative name')
+
+        return [Alternative(n, self, self.redis) for n in alternatives]
 
     def save(self):
         pipe = self.redis.pipeline()
@@ -95,7 +99,6 @@ class Experiment(object):
     def total_participants(self):
         key = _key("participations:{0}:_all:all".format(self.rawkey()))
         return self.redis.bitcount(key)
-
 
     def participants_by_day(self):
         return self._get_stats('participations', 'days')
@@ -229,7 +232,7 @@ class Experiment(object):
         for alternative in self.get_alternative_names():
             key = _key("participations:{0}:{1}:all".format(self.rawkey(), alternative))
             if self.redis.getbit(key, client.sequential_id):
-                return Alternative(alternative, self.name, self.redis)
+                return Alternative(alternative, self, self.redis)
 
         return None
 
@@ -250,7 +253,7 @@ class Experiment(object):
         if random.random() < self.random_sample:
             return self._random_choice()
         else:
-           return Alternative(self._whiplash(), self.name, self.redis)
+           return Alternative(self._whiplash(), self, self.redis)
 
     def _random_choice(self):
         return random.choice(self.alternatives)
@@ -341,14 +344,6 @@ class Experiment(object):
         return redis_conn.lrange(key, 0, -1)
 
     @staticmethod
-    def initialize_alternatives(experiment_name, alternatives, redis_conn):
-        for alternative_name in alternatives:
-            if not Alternative.is_valid(alternative_name):
-                raise ValueError('invalid alternative name')
-
-        return [Alternative(n, experiment_name, redis_conn) for n in alternatives]
-
-    @staticmethod
     def is_valid(experiment_name):
         return (isinstance(experiment_name, basestring) and
                 VALID_EXPERIMENT_ALTERNATIVE_RE.match(experiment_name) is not None)
@@ -374,29 +369,22 @@ class AlternativeCollection(object):
 
 class Alternative(object):
 
-    def __init__(self, name, experiment_name, redis_conn):
+    def __init__(self, name, experiment, redis_conn):
         self.name = name
-        self.experiment_name = experiment_name
+        self.experiment = experiment
         self.redis = redis_conn
-        self._experiment = None
 
     def __repr__(self):
-        return "<Alternative {0} (Experiment {1})".format(self.name, self.experiment_name)
+        return "<Alternative {0} (Experiment {1})".format(self.name, self.experiment.name)
 
     def is_control(self):
-        return self.experiment().control().name == self.name
+        return self.experiment.control().name == self.name
 
     def is_winner(self):
-        return self.experiment().has_winner() and self.experiment().get_winner() == self.name
-
-    def experiment(self):
-        if self._experiment is None:
-            self._experiment = Experiment.find(self.experiment_name, self.redis)
-
-        return self._experiment
+        return self.experiment.has_winner() and self.experiment.get_winner() == self.name
 
     def participant_count(self):
-        key = _key("participations:{0}:{1}:all".format(self.experiment().rawkey(), self.name))
+        key = _key("participations:{0}:{1}:all".format(self.experiment.rawkey(), self.name))
         return self.redis.bitcount(key)
 
     def participants_by_day(self):
@@ -409,7 +397,7 @@ class Alternative(object):
         return self._get_stats('participations', 'years')
 
     def completed_count(self):
-        key = _key("conversions:{0}:{1}:users:all".format(self.experiment().rawkey(), self.name))
+        key = _key("conversions:{0}:{1}:users:all".format(self.experiment.rawkey(), self.name))
         return self.redis.bitcount(key)
 
     def conversions_by_day(self):
@@ -430,7 +418,7 @@ class Alternative(object):
 
         stats = {}
 
-        exp_key = self.experiment().rawkey()
+        exp_key = self.experiment.rawkey()
         search_key = _key("{0}:{1}:{2}".format(stat_type, exp_key, stat_range))
         keys = self.redis.smembers(search_key)
         for k in keys:
@@ -444,7 +432,7 @@ class Alternative(object):
         """Record a user's participation in a test along with a given variation"""
         date = datetime.now()
 
-        experiment_key = self.experiment().rawkey()
+        experiment_key = self.experiment.rawkey()
 
         pipe = self.redis.pipeline()
 
@@ -469,7 +457,7 @@ class Alternative(object):
     def record_conversion(self, client):
         """Record a user's conversion in a test along with a given variation"""
         date = datetime.now()
-        experiment_key = self.experiment().rawkey()
+        experiment_key = self.experiment.rawkey()
 
         pipe = self.redis.pipeline()
 
@@ -502,7 +490,7 @@ class Alternative(object):
         if self.is_control():
             return 'N/A'
 
-        control = self.experiment().control()
+        control = self.experiment.control()
         ctr_e = self.conversion_rate()
         ctr_c = control.conversion_rate()
 
@@ -538,7 +526,7 @@ class Alternative(object):
         return ret
 
     def key(self):
-        return _key("{0}:{1}".format(self.experiment_name, self.name))
+        return _key("{0}:{1}".format(self.experiment.name, self.name))
 
     @staticmethod
     def is_valid(alternative_name):
