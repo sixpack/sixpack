@@ -207,7 +207,7 @@ footer .right {
 		background-size: 110px 33px;
 	}
 }
-@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+@media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
 	#upper {
 		padding-top: 180px;
 		background-image: none;
