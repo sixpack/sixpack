@@ -294,7 +294,8 @@ class Experiment(object):
             raise ValueError('experiments require at least two alternatives')
 
         # We don't use the class method key here
-        if redis_conn.sismember(_key("experiments"), experiment_name):
+        try:
+            Experiment.find(experiment_name, redis_conn)
             # Note during refactor:
             # We're not instanciating a new Experiment, rather than this load_alternatives hackery
             exp = Experiment.find(experiment_name, redis_conn)
@@ -314,7 +315,7 @@ class Experiment(object):
             else:
                 experiment = exp
         # completely new experiment
-        else:
+        except ValueError:
             experiment = cls(experiment_name, alternatives, redis_conn)
             experiment.save()
 
@@ -329,8 +330,7 @@ class Experiment(object):
             experiment = Experiment.find(key, redis_conn)
             if experiment.is_archived() and exclude_archived:
                 continue
-            experiments.append(Experiment.find(key, redis_conn))
-
+            experiments.append(experiment)
         return experiments
 
     @staticmethod
@@ -378,6 +378,7 @@ class Alternative(object):
         self.name = name
         self.experiment_name = experiment_name
         self.redis = redis_conn
+        self._experiment = None
 
     def __repr__(self):
         return "<Alternative {0} (Experiment {1})".format(self.name, self.experiment_name)
@@ -389,7 +390,10 @@ class Alternative(object):
         return self.experiment().has_winner() and self.experiment().get_winner() == self.name
 
     def experiment(self):
-        return Experiment.find(self.experiment_name, self.redis)
+        if self._experiment is None:
+            self._experiment = Experiment.find(self.experiment_name, self.redis)
+
+        return self._experiment
 
     def participant_count(self):
         key = _key("participations:{0}:{1}:all".format(self.experiment().rawkey(), self.name))
