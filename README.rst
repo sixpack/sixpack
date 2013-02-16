@@ -5,7 +5,7 @@ Sixpack
 .. image:: https://travis-ci.org/seatgeek/sixpack.png?branch=master
         :target: https://travis-ci.org/seatgeek/sixpack
 
-Sixpack is a tool to help solve the problem of A/B testing across multiple programming languages. It does this by exposing a  simple API against which a client library in virtually any language can make requests.
+Sixpack is a framework to enable A/B testing across multiple programming languages. It does this by exposing a  simple API against which a client library can make requests.  Client libraries can be written in virtually any language.
 
 Sixpack has two main parts. The first, **Sixpack-server**, is responsible for responding to web requests.  The second, **Sixpack-web**, is a web dashboard for tracking and acting on your A/B tests.  Sixpack-web is optional.
 
@@ -13,12 +13,12 @@ Requirements
 ============
 
 * Redis
-* Python >= 2.7 (3.0 Untested, Pull Requests welcome)
+* Python >= 2.7 (3.0 untested, Pull Requests welcome)
 
 Getting Started
 ===============
 
-To get going, create (or don't, but you really should) a new virtualenv for your sixpack installation. Follow that up with a ``pip install``::
+To get going, create (or don't, but you really should) a new virtualenv for your sixpack installation. Follow that up with ``pip install``::
 
     $ pip install sixpack
 
@@ -40,7 +40,7 @@ Next, create a Sixpack configuration. Here's the default::
 
     secret_key: '<your secret key here>'    # Random key (any string is valid, required for sixpack-web to run)
 
-You can store this file anywhere.  We'd like to recommend ``/etc/sixpack/config.yml``, but anywhere is fine. As long as Redis is running, you should now be able to start the Sixpack servers like this::
+You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As long as Redis is running, you can now start the Sixpack servers like this::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack
 
@@ -54,7 +54,7 @@ We've also included a small script that will seed Sixpack with lots of random da
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack-seed
 
-This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get a reasonable data set.
+This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get additional data.
 
 Usage
 =====
@@ -68,7 +68,7 @@ You can participate in an experiment with a ``GET`` request to the ``participate
 
     $ curl http://localhost:5000/participate?experiment=button_color&alternatives=red&alternatives=blue&alternatives=orange&client_id=12345678-1234-5678-1234-567812345678
 
-If the test does not exist, it will be created automatically.
+If the test does not exist, it will be created automatically.  You do not need to create the test in Sixpack-web.
 
 Arguments
 ---------
@@ -127,12 +127,12 @@ Notes
 
 You'll notice that the ``convert`` endpoint does not take a ``alternative`` query parameter. This is because Sixpack handles that internally with the ``client_id``.
 
-We've included a 'health-check' endpoint, available at ``/_status``. This is helpful for monitoring and alerting if the Sixpack service become unavailable.
+We've included a 'health-check' endpoint, available at ``/_status``. This is helpful for monitoring and alerting if the Sixpack service becomes unavailable.
 
 Clients
 =======
 
-We've already provided clients in four languages. We'd love to have clients in many more languages.  If you feel inclined to create one, please first read the CLIENTSPEC_.  After writing your client, please update and pull request this file so we know about it.
+We've already provided clients in four languages. We'd love to add clients in additional languages.  If you feel inclined to create one, please first read the CLIENTSPEC_.  After writing your client, please update and pull request this file so we know about it.
 
 - Ruby_
 - Python_
@@ -149,11 +149,11 @@ Production Notes
 
 We recommend running Sixpack on gunicorn_ in production. You will need to install gunicorn in your virtual environment before running the following.
 
-To run the sixpack server using gunicorn/gevent - a separate installation - you can run the following::
+To run the sixpack server using gunicorn/gevent (a separate installation) you can run the following::
 
     gunicorn --access-logfile - -w 8 --worker-class=gevent sixpack.server:start
 
-To run the sixpack web dashboard using gunicorn/gevent - a separate installation - you can run the following::
+To run the sixpack web dashboard using gunicorn/gevent (a separate installation) you can run the following::
 
     gunicorn --access-logfile - -w 2 --worker-class=gevent sixpack.web:start
 
