@@ -147,7 +147,7 @@ We've already provided clients in four languages. We'd love to have clients in m
 Production Notes
 ================
 
-We recommend running Sixpack on .. _gunicorn: https://github.com/benoitc/gunicorn in production. You will need to install gunicorn in your virtual environment before running the following.
+We recommend running Sixpack on gunicorn_ in production. You will need to install gunicorn in your virtual environment before running the following.
 
 To run the sixpack server using gunicorn/gevent - a separate installation - you can run the following::
 
@@ -179,3 +179,5 @@ and
 5. Push to the branch (``git push origin my-new-feature``)
 6. Create new pull request
 7. Please avoid changing versions numbers; we'll take care of that for you
+
+.. _gunicorn: https://github.com/benoitc/gunicorn
