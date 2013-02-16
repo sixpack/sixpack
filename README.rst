@@ -5,9 +5,9 @@ Sixpack
 .. image:: https://travis-ci.org/seatgeek/sixpack.png?branch=master
         :target: https://travis-ci.org/seatgeek/sixpack
 
-Sixpack is a tool to help solve the problem of A/B testing across multiple programming languages. It does this by exposing a very simple API that a client library in virtually any language can make requests against.
+Sixpack is a tool to help solve the problem of A/B testing across multiple programming languages. It does this by exposing a  simple API against which a client library in virtually any language can make requests.
 
-Sixpack is comprised of two main parts. The first is Sixpack-server which is responsible for responding to web requests, and the second is (an optional) Sixpack-web which will allow you to access the Sixpack dashboard for seeing and acting on your A/B tests.
+Sixpack has two main parts. The first, **Sixpack-server**, is responsible for responding to web requests.  The second, **Sixpack-web**, is a web dashboard for tracking and acting on your A/B tests.  Sixpack-web is optional.
 
 Requirements
 ============
@@ -22,7 +22,7 @@ To get going, create (or don't, but you really should) a new virtualenv for your
 
     $ pip install sixpack
 
-Next, you're going to need to create a Sixpack configuration file that specifies a few things. Here's the default::
+Next, create a Sixpack configuration. Here's the default::
 
     redis_port: 6379                        # Redis port
     redis_host: localhost                   # Redis host
@@ -40,7 +40,7 @@ Next, you're going to need to create a Sixpack configuration file that specifies
 
     secret_key: '<your secret key here>'    # Random key (any string is valid, required for sixpack-web to run)
 
-You can store this file anywhere, we'd like to recommend ``/etc/sixpack/config.yml``, but where ever you'd like to store it is fine. As long as Redis is running, you should now be able to start the Sixpack servers like this::
+You can store this file anywhere.  We'd like to recommend ``/etc/sixpack/config.yml``, but anywhere is fine. As long as Redis is running, you should now be able to start the Sixpack servers like this::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack
 
@@ -48,13 +48,13 @@ and::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack-web
 
-Sixpack-server and Sixpack-web will be listening on ports 5000 and 5001 respectively. For use in a production environment, please see the "Production Notes" section below.
+Sixpack-server and Sixpack-web will be listening on ports 5000 and 5001, respectively. For use in a production environment, please see the "Production Notes" section below.
 
-We've also thrown in a small script that will help seed Sixpack with loads of random data, for testing and development on sixpack-web. You can seed Sixpack with the following command::
+We've also included a small script that will seed Sixpack with lots of random data for testing and development on sixpack-web. You can seed Sixpack with the following command::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack-seed
 
-This command will make a few dozen requests to the participate and convert endpoints. Feel free to run it multiple times to get a reasonable data set.
+This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get a reasonable data set.
 
 Usage
 =====
@@ -73,15 +73,15 @@ If the test does not exist, it will be created automatically.
 Arguments
 ---------
 
-``experiment`` (required) is the name of the test you'd like to start A/B testing. Valid experiment names must be alphanumeric and can contain ``_`` and ``-``.
+``experiment`` (required) is the name of the test. Valid experiment names must be alphanumeric and can contain ``_`` and ``-``.
 
-``alternatives`` (required) are the potential responses from Sixpack, and will be the bucket that the ``client_id`` is assigned to.
+``alternatives`` (required) are the potential responses from Sixpack.  One of them will be the bucket that the ``client_id`` is assigned to.
 
 ``client_id`` (required) is the unique id for the user participating in the test.
 
-``user_agent`` (optional) user agent of the user making a request. Used for bot detection
+``user_agent`` (optional) user agent of the user making a request. Used for bot detection.
 
-``ip_address`` (optional) ip address of user making a request. Used for bot detection
+``ip_address`` (optional) ip address of user making a request. Used for bot detection.
 
 ``force`` (optional) force a specific alternative to be returned, example::
 
@@ -127,12 +127,12 @@ Notes
 
 You'll notice that the ``convert`` endpoint does not take a ``alternative`` query parameter. This is because Sixpack handles that internally with the ``client_id``.
 
-We've included a 'health-check' endpoint available at ``/_status``. This is helpful for monitoring and alerting if the Sixpack service become unavailable.
+We've included a 'health-check' endpoint, available at ``/_status``. This is helpful for monitoring and alerting if the Sixpack service become unavailable.
 
 Clients
 =======
 
-We've already provided clients in four languages. We'd love to have clients in many more languages, so if you feel so inclined, first read the CLIENTSPEC (in the base of this resp). Write your client, then update and pull request this file so we know about it.
+We've already provided clients in four languages. We'd love to have clients in many more languages.  If you feel inclined to create one, first read the CLIENTSPEC in the base of this repository.  After writing your client, please update and pull request this file so we know about it.
 
 - Ruby_
 - Python_
@@ -147,7 +147,7 @@ We've already provided clients in four languages. We'd love to have clients in m
 Production Notes
 ================
 
-We recommend running Sixpack on gunicorn in production. You will need to install gunicorn in your virtual environment before running the following.
+We recommend running Sixpack on .. _gunicorn: https://github.com/benoitc/gunicorn in production. You will need to install gunicorn in your virtual environment before running the following.
 
 To run the sixpack server using gunicorn/gevent - a separate installation - you can run the following::
 
@@ -173,9 +173,9 @@ and
 
     $ PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack-web
 
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Write Tests !!!
-4. Commit your changes (`git commit -am 'Added some feature'`)
-5. Push to the branch (`git push origin my-new-feature`)
-6. Create new Pull Request
-7. Please avoid changing versions numbers, as we'll take care of that for you
+2. Create your feature branch (``git checkout -b my-new-feature``)
+3. Write tests
+4. Commit your changes (``git commit -am 'Added some feature'``)
+5. Push to the branch (``git push origin my-new-feature``)
+6. Create new pull request
+7. Please avoid changing versions numbers; we'll take care of that for you
