@@ -132,7 +132,7 @@ We've included a 'health-check' endpoint, available at ``/_status``. This is hel
 Clients
 =======
 
-We've already provided clients in four languages. We'd love to have clients in many more languages.  If you feel inclined to create one, first read the CLIENTSPEC in the base of this repository.  After writing your client, please update and pull request this file so we know about it.
+We've already provided clients in four languages. We'd love to have clients in many more languages.  If you feel inclined to create one, please first read the CLIENTSPEC_.  After writing your client, please update and pull request this file so we know about it.
 
 - Ruby_
 - Python_
@@ -181,3 +181,4 @@ and
 7. Please avoid changing versions numbers; we'll take care of that for you
 
 .. _gunicorn: https://github.com/benoitc/gunicorn
+.. _CLIENTSPEC: https://github.com/seatgeek/sixpack/blob/master/CLIENTSPEC.md
