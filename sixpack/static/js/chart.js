@@ -79,11 +79,15 @@ $(function () {
 
     // Calculate conversion rates each time interval
     my.formatRateData = function (participants, conversions) {
+      var rate = 0;
       return _.map(participants, function (participant, key) {
         conversion = _.find(conversions, function (conversion) {
           return conversion[0] === participant[0]
         });
-        return [participant[0], Number(conversion[1] / participant[1]).toFixed(2)];
+        
+        rate = Number(conversion[1] / participant[1]).toFixed(2);
+        if (isNaN(rate)) rate = 0.00;
+        return [participant[0], rate];
       });
     };
 
