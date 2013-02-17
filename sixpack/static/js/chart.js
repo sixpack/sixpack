@@ -49,8 +49,8 @@ $(function () {
     my.drawLine = function (data, color) {
       var line = d3.svg.line()
         .x(function (d) {
-        return my.xScale(d.date);
-      })
+          return my.xScale(d.date);
+        })
         .y(function (d) {
           return my.yScale(d.close);
         });
