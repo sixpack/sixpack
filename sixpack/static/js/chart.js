@@ -84,7 +84,7 @@ $(function () {
         conversion = _.find(conversions, function (conversion) {
           return conversion[0] === participant[0]
         });
-        
+
         rate = Number(conversion[1] / participant[1]).toFixed(2);
         if (isNaN(rate)) rate = 0.00;
         return [participant[0], rate];
@@ -99,6 +99,14 @@ $(function () {
           close: d[1]
         };
       });
+    };
+
+    my.drawBase = function () {
+      my.svg = d3.select(element).append("svg")
+        .attr("width", my.width + my.margin.left + my.margin.right)
+        .attr("height", my.height + my.margin.top + my.margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + my.margin.left + "," + my.margin.top + ")");
     };
 
     my.drawBackground = function (data) {
@@ -130,8 +138,16 @@ $(function () {
         .tickFormat(""));
     };
 
+    my.dataExists = function (data) {
+      if (data.participants.length <= 2) {
+        my.$element.append("<p>Not enough data to graph</p>");
+        return false;
+      }
+      return true;
+    };
+
     /**
-     * Takes an array of alts and draws them to graph.
+     * Takes an array of alt(s) and draws them to graph.
      * @param {Array} alt An array of objects
      *      @param {Array<Array<String>>} conversions
      *      @param {Array<Array<String>>} participants
@@ -141,36 +157,27 @@ $(function () {
     that.draw = function (alts) {
       var data;
 
-      my.svg = d3.select(element).append("svg")
-        .attr("width", my.width + my.margin.left + my.margin.right)
-        .attr("height", my.height + my.margin.top + my.margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + my.margin.left + "," + my.margin.top + ")");
-
-      /*
-        if (participants.length <= 2 || conversions.length <= 2) {
-            $element.append("<p>Not enough data to graph</p>");
-            return;
-        }*/
-
-      // if one line
       if (alts.length === 1) {
+        if (!my.dataExists(alts[0])) return;
+
         rate_data = my.formatRateData(alts[0].participants, alts[0].conversions);
         d3_data = my.formatGraphData(rate_data);
 
+        my.drawBase();
         my.drawLabels(rate_data);
         my.drawBackground(d3_data);
         my.drawLine(d3_data, alts[0].color);
         my.drawArea(d3_data);
       } else {
         /*
+        my.drawBase();
         _.each(alts, function (k, alt) {
+          if (!my.dataExists(alt)) return;
           rate_data = my.formatRateData(alt.participants, alt.conversions);
           d3_data = my.formatGraphData(rate_data);
 
           my.drawLabels(rate_data);
           my.drawBackground(d3_data);
-          console.log(alt);
           my.drawLine(d3_data, alts[0].color);
         });
         */
