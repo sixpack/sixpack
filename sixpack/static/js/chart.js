@@ -35,11 +35,16 @@ $(function() {
         .range([height, 0]);
 
     var xValues =_.map(arrData, function(arr) {
-        return _.first(arr);
+        return arr[0];
     });
+    
+    // Build y-axis values.
     var yValues =_.map(arrData, function(arr) {
-        return _.last(arr);
+        return parseFloat(arr[1]);
     });
+    var yMin = _.min(yValues);
+    var yMax = _.max(yValues);
+    yValues = [yMin, ((yMax - yMin) * 0.5) + yMin, yMax]
 
     var xAxis = d3.svg.axis()
         .scale(x)
