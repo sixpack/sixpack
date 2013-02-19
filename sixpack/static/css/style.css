@@ -240,7 +240,6 @@
 }
 .graph .line {
   fill: none;
-  stroke: #9d5012;
   stroke-width: 2.2px;
 }
 .graph g.tick text {

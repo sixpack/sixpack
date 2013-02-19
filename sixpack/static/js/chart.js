@@ -17,16 +17,16 @@ $(function () {
     my.yScale = d3.scale.linear().range([my.height, 0]);
 
     my.drawLabels = function (data) {
-      var xValues = _.map(data, function (arr) {
-        return arr[0];
-      });
+      var xValues, yValues, yMin, yMax;
 
-      var yValues = _.map(data, function (arr) {
-        return parseFloat(arr[1]);
+      xValues = _.map(data, function (d) {
+        return d[0];
       });
-
-      var yMin = _.min(yValues);
-      var yMax = _.max(yValues);
+      yValues = _.map(data, function (d) {
+        return parseFloat(d[1]);
+      });
+      yMin = _.min(yValues);
+      yMax = _.max(yValues);
       yValues = [yMin, ((yMax - yMin) * 0.5) + yMin, yMax]
 
       my.xAxis = d3.svg.axis()
@@ -45,8 +45,8 @@ $(function () {
         .orient("left");
     };
 
-    // TODO: Implement color
     my.drawLine = function (data, color) {
+      color = color || "#9d5012";
       var line = d3.svg.line()
         .x(function (d) {
           return my.xScale(d.date);
@@ -58,7 +58,8 @@ $(function () {
       my.svg.append("path")
         .datum(data)
         .attr("class", "line")
-        .attr("d", line);
+        .attr("d", line)
+        .attr("style", "stroke:" + color)
     };
 
     my.drawArea = function (data) {
@@ -86,6 +87,11 @@ $(function () {
         });
 
         rate = Number(conversion[1] / participant[1]).toFixed(2);
+        if (rate > 1) {
+          console.log(rate)
+          console.log(conversion[1]);
+          console.log(participant[1]);
+        }
         if (isNaN(rate)) rate = 0.00;
         return [participant[0], rate];
       });
@@ -110,11 +116,11 @@ $(function () {
     };
 
     my.drawBackground = function (data) {
-      my.xScale.domain(d3.extent(d3_data, function (d) {
+      my.xScale.domain(d3.extent(data, function (d) {
         return d.date;
       }));
 
-      my.yScale.domain(d3.extent(d3_data, function (d) {
+      my.yScale.domain(d3.extent(data, function (d) {
         return d.close;
       }));
 
@@ -133,7 +139,7 @@ $(function () {
         .call(d3.svg.axis()
           .scale(my.xScale)
           .orient("bottom")
-          .ticks(5)
+          .ticks(data.length)
         .tickSize(-my.height, 0, 0)
         .tickFormat(""));
     };
@@ -155,7 +161,10 @@ $(function () {
      * @return 
      */
     that.draw = function (alts) {
-      var data;
+      var data, rate_data, d3_data, aggregate_data, 
+        data_intervals, 
+        participants = {},
+        conversions = {};
 
       if (alts.length === 1) {
         if (!my.dataExists(alts[0])) return;
@@ -163,24 +172,71 @@ $(function () {
         rate_data = my.formatRateData(alts[0].participants, alts[0].conversions);
         d3_data = my.formatGraphData(rate_data);
 
+        console.log(rate_data)
         my.drawBase();
         my.drawLabels(rate_data);
         my.drawBackground(d3_data);
         my.drawLine(d3_data, alts[0].color);
         my.drawArea(d3_data);
       } else {
-        /*
+        // TODO: better data check
+        if (!my.dataExists(alts[0])) return;
+
+        // Get the aggregate data for drawing labels + background
+        // use .each to build a rate_data and d3_data for all lines
+        aggregate_data = {
+          conversions: [],
+          participants: []
+        };
+
+        _.each(alts, function (alt, k) {
+          aggregate_data.participants = aggregate_data.participants.concat(alt.participants);
+          aggregate_data.conversions = aggregate_data.conversions.concat(alt.conversions);
+        });
+
+        data_intervals = _.uniq(_.map(aggregate_data.participants, function (d, k) {
+          return d[0];
+        }));
+        _.each(data_intervals, function (date, k) {
+          _.each(aggregate_data.participants, function (p, k) {
+            if (date === p[0]) {
+              if (!participants.hasOwnProperty(date)) {
+                participants[date] = p[1]; 
+              } else if (participants[date] < p[1]) {
+                participants[date] = p[1];
+              }
+            }
+          });
+          _.each(aggregate_data.conversions, function (c, k) {
+            if (date === c[0]) {
+              if (!conversions.hasOwnProperty(date)) {
+                conversions[date] = c[1]; 
+              } else if (conversions[date] < c[1]) {
+                conversions[date] = c[1];
+              }
+            }
+          });
+        });
+
+        aggregate_data.participants = _.pairs(participants);
+        aggregate_data.conversions = _.pairs(conversions);
+
+        aggregate_data.participants[0][1] = 0;
+        aggregate_data.conversions[0][1] = 0; 
+        aggregate_data.participants[1][1] = 1;
+        aggregate_data.conversions[1][1] = 1;
+
+        rate_data = my.formatRateData(aggregate_data.participants, aggregate_data.conversions);
+        d3_data = my.formatGraphData(rate_data);
+
         my.drawBase();
-        _.each(alts, function (k, alt) {
-          if (!my.dataExists(alt)) return;
+        my.drawLabels(rate_data);
+        my.drawBackground(d3_data);
+        _.each(alts, function (alt, k) {
           rate_data = my.formatRateData(alt.participants, alt.conversions);
           d3_data = my.formatGraphData(rate_data);
-
-          my.drawLabels(rate_data);
-          my.drawBackground(d3_data);
-          my.drawLine(d3_data, alts[0].color);
+          my.drawLine(d3_data, alt.color);
         });
-        */
       }
     };
 
