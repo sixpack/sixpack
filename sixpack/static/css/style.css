@@ -209,24 +209,6 @@
     width: 110px
   }
   /*End Chrome bug workaround*/
-
-  /*Dummy color values.  These should be replaced.*/
-  ul.experiments li table tr:nth-child(2) td span.circle {
-    background: #9d5012
-  }
-  ul.experiments li table tr:nth-child(3) td span.circle {
-    background: #33716f
-  }
-  ul.experiments li table tr:nth-child(4) td span.circle {
-    background: #823131
-  }
-  ul.experiments li table tr:nth-child(5) td span.circle {
-    background: #3a85ac
-  }
-  ul.experiments li table tr:nth-child(6) td span.circle {
-    background: #86856f
-  }
-  /* End color dummy values */
 /* END: Experiments */
 
 /* BEGIN: Placeholder rules for D3 graph */
@@ -521,3 +503,62 @@ hr {
   margin-top: 90px;
   text-align: center;
 }
+
+/* Graph color values.*/
+.color-1 {
+  background: #714A33;
+  stroke: #714A33;
+}
+.color-2 {
+  background: #32587E;
+  stroke: #32587E;
+}
+.color-3 {
+  background: #327E51;
+  stroke: #327E51;
+}
+.color-4 {
+  background: #3A85AC;
+  stroke: #3A85AC;
+}
+.color-5 {
+  background: #8EBDBC;
+  stroke: #8EBDBC;
+}
+.color-6 {
+  background: #56BDBB;
+  stroke: #56BDBB;
+}
+.color-7 {
+  background: #BDAB4D;
+  stroke: #BDAB4D;
+}
+.color-8 {
+  background: #33716F;
+  stroke: #33716F;
+}
+.color-9 {
+  background: #7E466F;
+  stroke: #7E466F;
+}
+.color-10 {
+  background: #A4433A;
+  stroke: #A4433A;
+}
+.color-11 {
+  background: #B8C6D7;
+  stroke: #B8C6D7;
+}
+.color-12 {
+  background: #5D300B;
+  stroke: #5D300B;
+}
+.color-13 {
+  background: #D09104;
+  stroke: #D09104;
+}
+.color-14 {
+  background: #E99E62;
+  stroke: #E99E62;
+}
+/* End graph color values */

@@ -87,11 +87,6 @@ $(function () {
         });
 
         rate = Number(conversion[1] / participant[1]).toFixed(2);
-        if (rate > 1) {
-          console.log(rate)
-          console.log(conversion[1]);
-          console.log(participant[1]);
-        }
         if (isNaN(rate)) rate = 0.00;
         return [participant[0], rate];
       });
@@ -172,7 +167,6 @@ $(function () {
         rate_data = my.formatRateData(alts[0].participants, alts[0].conversions);
         d3_data = my.formatGraphData(rate_data);
 
-        console.log(rate_data)
         my.drawBase();
         my.drawLabels(rate_data);
         my.drawBackground(d3_data);
