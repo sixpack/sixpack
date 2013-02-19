@@ -158,8 +158,8 @@ $(function () {
     that.draw = function (alts) {
       var data, rate_data, d3_data, aggregate_data, 
         data_intervals, 
-        participants = {},
-        conversions = {};
+        participants = [],
+        conversions = [];
 
       if (alts.length === 1) {
         if (!my.dataExists(alts[0])) return;
@@ -176,13 +176,11 @@ $(function () {
         // TODO: better data check
         if (!my.dataExists(alts[0])) return;
 
-        // Get the aggregate data for drawing labels + background
-        // use .each to build a rate_data and d3_data for all lines
+        // Get the aggregate data intervals for drawing labels + background
         aggregate_data = {
           conversions: [],
           participants: []
         };
-
         _.each(alts, function (alt, k) {
           aggregate_data.participants = aggregate_data.participants.concat(alt.participants);
           aggregate_data.conversions = aggregate_data.conversions.concat(alt.conversions);
@@ -191,36 +189,11 @@ $(function () {
         data_intervals = _.uniq(_.map(aggregate_data.participants, function (d, k) {
           return d[0];
         }));
-        _.each(data_intervals, function (date, k) {
-          _.each(aggregate_data.participants, function (p, k) {
-            if (date === p[0]) {
-              if (!participants.hasOwnProperty(date)) {
-                participants[date] = p[1]; 
-              } else if (participants[date] < p[1]) {
-                participants[date] = p[1];
-              }
-            }
-          });
-          _.each(aggregate_data.conversions, function (c, k) {
-            if (date === c[0]) {
-              if (!conversions.hasOwnProperty(date)) {
-                conversions[date] = c[1]; 
-              } else if (conversions[date] < c[1]) {
-                conversions[date] = c[1];
-              }
-            }
-          });
+        participants = conversions = _.map(data_intervals, function (date, index) {
+          return [date,(index / data_intervals.length)];
         });
 
-        aggregate_data.participants = _.pairs(participants);
-        aggregate_data.conversions = _.pairs(conversions);
-
-        aggregate_data.participants[0][1] = 0;
-        aggregate_data.conversions[0][1] = 0; 
-        aggregate_data.participants[1][1] = 1;
-        aggregate_data.conversions[1][1] = 1;
-
-        rate_data = my.formatRateData(aggregate_data.participants, aggregate_data.conversions);
+        rate_data = my.formatRateData(participants, conversions);
         d3_data = my.formatGraphData(rate_data);
 
         my.drawBase();
