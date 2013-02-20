@@ -183,7 +183,7 @@ and
 License
 ============
 
-Sixpack is released under the BSD 3-Clause License_.
+Sixpack is released under the `BSD 3-Clause License`_.
 
 
 .. _gunicorn: https://github.com/benoitc/gunicorn
