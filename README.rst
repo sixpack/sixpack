@@ -56,8 +56,8 @@ We've also included a small script that will seed Sixpack with lots of random da
 
 This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get additional data.
 
-Usage
-=====
+Using the API
+=============
 
 All interaction with Sixpack is done via ``HTTP GET`` requests. Sixpack allows for cross-language testing by accepting a unique ``client_id`` (which the client is responsible for generating) that links a participation to a conversion. All requests to Sixpack require a ``client_id``.
 
@@ -178,7 +178,10 @@ and
 4. Commit your changes (``git commit -am 'Added some feature'``)
 5. Push to the branch (``git push origin my-new-feature``)
 6. Create new pull request
-7. Please avoid changing versions numbers; we'll take care of that for you
+
+Please avoid changing versions numbers; we'll take care of that for you
+
+Sixpack has a `Google Group`_ for support and discussion.
 
 License
 ============
@@ -189,3 +192,4 @@ Sixpack is released under the `BSD 3-Clause License`_.
 .. _gunicorn: https://github.com/benoitc/gunicorn
 .. _CLIENTSPEC: https://github.com/seatgeek/sixpack/blob/master/CLIENTSPEC.md
 .. _`BSD 3-Clause License`: http://opensource.org/licenses/BSD-3-Clause
+.. _`Google Group`_: https://groups.google.com/forum/?fromgroups#!forum/sixpack-ab
