@@ -180,5 +180,12 @@ and
 6. Create new pull request
 7. Please avoid changing versions numbers; we'll take care of that for you
 
+License
+============
+
+Sixpack is released under the BSD 3-Clause License_.
+
+
 .. _gunicorn: https://github.com/benoitc/gunicorn
 .. _CLIENTSPEC: https://github.com/seatgeek/sixpack/blob/master/CLIENTSPEC.md
+.. _License_: http://opensource.org/licenses/BSD-3-Clause
