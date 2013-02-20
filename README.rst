@@ -188,4 +188,4 @@ Sixpack is released under the `BSD 3-Clause License`_.
 
 .. _gunicorn: https://github.com/benoitc/gunicorn
 .. _CLIENTSPEC: https://github.com/seatgeek/sixpack/blob/master/CLIENTSPEC.md
-.. _License_: http://opensource.org/licenses/BSD-3-Clause
+.. _License: http://opensource.org/licenses/BSD-3-Clause
