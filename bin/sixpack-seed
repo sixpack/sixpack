@@ -4,6 +4,9 @@ import os
 import random
 import requests
 import string
+import sys
+
+sys.path.append("..")
 
 experiments = {
     'show-bieber': ['yes', 'no'],
