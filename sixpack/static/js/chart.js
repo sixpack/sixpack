@@ -156,10 +156,7 @@ $(function () {
      * @return 
      */
     that.draw = function (alts) {
-      var data, rate_data, d3_data, aggregate_data, 
-        data_intervals, 
-        participants = [],
-        conversions = [];
+      var data, rate_data, d3_data, aggregate_rates, data_intervals, min_rate, max_rate;
 
       if (alts.length === 1) {
         if (!my.dataExists(alts[0])) return;
@@ -177,28 +174,35 @@ $(function () {
         if (!my.dataExists(alts[0])) return;
 
         // Get the aggregate data intervals for drawing labels + background
-        aggregate_data = {
-          conversions: [],
-          participants: []
-        };
+        aggregate_rates = [];
         _.each(alts, function (alt, k) {
-          aggregate_data.participants = aggregate_data.participants.concat(alt.participants);
-          aggregate_data.conversions = aggregate_data.conversions.concat(alt.conversions);
+          _.each(my.formatRateData(alt.participants, alt.conversions), function (rate, k) {
+            aggregate_rates.push(rate);
+          });
         });
 
-        data_intervals = _.uniq(_.map(aggregate_data.participants, function (d, k) {
+        data_intervals = _.uniq(_.map(aggregate_rates, function (d, k) {
           return d[0];
         }));
-        participants = conversions = _.map(data_intervals, function (date, index) {
-          return [date,(index / data_intervals.length)];
-        });
 
-        rate_data = my.formatRateData(participants, conversions);
+        min_rate = _.min(_.map(aggregate_rates, function(n) {
+          return parseFloat(n[1]);
+        }));
+        max_rate = _.max(_.map(aggregate_rates, function(n) {
+          return parseFloat(n[1]);
+        }));
+        
+        rate_data = _.map(data_intervals, function (date, index) {
+          return [date, min_rate];
+        });
+        rate_data[0][1] = max_rate;
+
         d3_data = my.formatGraphData(rate_data);
 
         my.drawBase();
         my.drawLabels(rate_data);
         my.drawBackground(d3_data);
+
         _.each(alts, function (alt, k) {
           rate_data = my.formatRateData(alt.participants, alt.conversions);
           d3_data = my.formatGraphData(rate_data);
