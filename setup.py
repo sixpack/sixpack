@@ -13,7 +13,7 @@ setup(
     author='SeatGeek',
     author_email='hi@seatgeek.com',
     packages=['sixpack', 'sixpack.test'],
-    scripts=['bin/sixpack', 'bin/sixpack-seed', 'bin/sixpack-web'],
+    scripts=['bin/sixpack', 'bin/sixpack-web'],
     url='http://github.com/seatgeek/sixpack',
     license=open('LICENSE.txt').read(),
     classifiers=[

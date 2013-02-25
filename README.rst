@@ -50,12 +50,6 @@ and::
 
 Sixpack-server and Sixpack-web will be listening on ports 5000 and 5001, respectively. For use in a production environment, please see the "Production Notes" section below.
 
-We've also included a small script that will seed Sixpack with lots of random data for testing and development on sixpack-web. You can seed Sixpack with the following command::
-
-    $ SIXPACK_CONFIG=<path to config.yml> sixpack-seed
-
-This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get additional data.
-
 Using the API
 =============
 
@@ -172,6 +166,14 @@ and
 ::
 
     $ PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack-web
+
+We've also included a small script that will seed Sixpack with lots of random data for testing and development on sixpack-web. You can seed Sixpack with the following command::
+
+::
+
+    $ SIXPACK_CONFIG=<path to config.yml> sixpack/test/seed
+
+This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get additional data.
 
 2. Create your feature branch (``git checkout -b my-new-feature``)
 3. Write tests
