@@ -167,7 +167,7 @@ and
 
     $ PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack-web
 
-We've also included a small script that will seed Sixpack with lots of random data for testing and development on sixpack-web. You can seed Sixpack with the following command::
+We've also included a small script that will seed Sixpack with lots of random data for testing and development on sixpack-web. You can seed Sixpack with the following command
 
 ::
 
