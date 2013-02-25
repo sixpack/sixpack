@@ -20,16 +20,6 @@ experiments = {
     'jose': ['troll', 'no-troll']
 }
 
-
-
-
-
-
-
-
-
-
-
 for d in range(1, 8):
 
     _date = date.today() - timedelta(days=d)
@@ -51,13 +41,10 @@ for d in range(1, 8):
             chosen_alt = random.choice(experiment.alternatives)
             chosen_alt.record_participation(client, _date)
 
-
-
             # no dupes, plz
             client_ids.remove(_id)
 
             client_exp.append((_id, experiment))
-
 
     for key, tup in enumerate(client_exp):
         if key % 2:
