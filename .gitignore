@@ -7,3 +7,5 @@
 build
 dist
 pkg
+sixpack/static/.webassets-cache
+sixpack/static/gen/sixpack.js

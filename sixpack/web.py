@@ -1,5 +1,6 @@
 from flask import Flask, render_template, abort, request, url_for, redirect
 from flask.ext.seasurf import SeaSurf
+from flask.ext.assets import Environment, Bundle
 
 from config import CONFIG as cfg
 from db import REDIS
@@ -8,7 +9,11 @@ import utils
 
 app = Flask(__name__)
 csrf = SeaSurf(app)
+js = Bundle('js/jquery.js', 'js/d3.js', 'js/bootstrap.js', 'js/bootstrap.min.js', 'js/chart.js', 'js/script.js', 'js/underscore-min.js',
+            filters='jsmin', output='gen/sixpack.js')
 
+assets = Environment(app)
+assets.register('js_all', js)
 
 # List of experiments
 @app.route("/")
