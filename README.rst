@@ -42,11 +42,11 @@ Next, create a Sixpack configuration. Here's the default::
 
 You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As long as Redis is running, you can now start the Sixpack servers like this::
 
-    $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> sixpack
+    $ SIXPACK_CONFIG=<path to config.yml> sixpack
 
 and::
 
-    $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> sixpack-web
+    $ SIXPACK_CONFIG=<path to config.yml> sixpack-web
 
 Sixpack-server and Sixpack-web will be listening on ports 5000 and 5001, respectively. For use in a production environment, please see the "Production Notes" section below.
 
