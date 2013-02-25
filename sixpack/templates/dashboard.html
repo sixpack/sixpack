@@ -6,11 +6,13 @@
   var graph_data = {};
 </script>
 
-{% if include_archived %}
-  <p>Showing archived experiments, <a href="{{ url_for('hello') }}">hide</a> them?</p>
-{% else %}
-  <p>Excluding archived experiments, <a href="{{ url_for('hello', include_archived=True) }}">show</a> them?</p>
-{% endif %}
+<div id="archive-notice">
+  {% if include_archived %}
+    <p class="archive-is-not-active"><i class="icon-eye-open icon-white"></i>&nbsp; <span>ARCHIVED INCLUDED</span> <a href="{{ url_for('hello') }}" class="btn btn-inverse">Hide</a> </p>
+  {% else %}
+    <p class="archive-is-active"><i class="icon-eye-close icon-white"></i>&nbsp; <span>ARCHIVED NOT INCLUDED</span> <a href="{{ url_for('hello', include_archived=True) }}" class="btn btn-inverse">Show</a></p>
+  {% endif %}
+</div>
 
 <div id="dashboard-page">
     {% if experiments|length %}

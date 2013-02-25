@@ -333,7 +333,37 @@ ul.experiments h4 {
   font-weight: lighter;
 }
 
-
+#archive-notice {
+  position: relative;
+  margin-bottom: 25px;
+  border-radius: 5px;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.04)), to(rgba(255, 255, 255, 0.05)));
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
+  background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
+  background-image: linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ffffff', EndColorStr='#ffffff');
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
+  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
+  -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
+}
+#archive-notice p {
+  padding: 10px 38px;
+  line-height: 16px;
+}
+#archive-notice p span {
+  color: #6D6D6D;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+#archive-notice a.btn {
+  position: absolute;
+  padding: 2px 10px;
+  top: 7px;
+  right: 12px;
+  font-size: 12px;
+}
 #dashboard-page ul.experiments li table {
   width: auto;
 }
