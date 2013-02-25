@@ -13,8 +13,11 @@ csrf = SeaSurf(app)
 # List of experiments
 @app.route("/")
 def hello():
-    experiments = Experiment.all(REDIS)
-    return render_template('dashboard.html', experiments=experiments)
+    archived = bool(request.args.get('include_archived', False))
+    exclude_archived = not archived
+    experiments = Experiment.all(REDIS, exclude_archived)
+
+    return render_template('dashboard.html', experiments=experiments, include_archived=archived)
 
 
 # Details for experiment

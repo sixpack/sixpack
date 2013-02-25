@@ -6,6 +6,12 @@
   var graph_data = {};
 </script>
 
+{% if include_archived %}
+  <p>Showing archived experiments, <a href="{{ url_for('hello') }}">hide</a> them?</p>
+{% else %}
+  <p>Excluding archived experiments, <a href="{{ url_for('hello', include_archived=True) }}">show</a> them?</p>
+{% endif %}
+
 <div id="dashboard-page">
     {% if experiments|length %}
         <ul class="experiments">
@@ -28,7 +34,7 @@
                 </tr>
                 {% endfor %}
             </table>
-              <div id="graph-{{ experiment.name }}" class="graph">  
+              <div id="graph-{{ experiment.name }}" class="graph">
                 <script type="text/javascript">
                   graph_data['{{ experiment.name }}'] = {};
                 </script>
