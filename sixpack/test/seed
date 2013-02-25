@@ -1,12 +1,15 @@
 #!/usr/bin/env python
-
-import os
+from datetime import date
+from datetime import timedelta
 import random
-import requests
 import string
 import sys
 
 sys.path.append("..")
+
+from sixpack.models import Client
+from sixpack.models import Experiment
+from sixpack.db import REDIS
 
 experiments = {
     'show-bieber': ['yes', 'no'],
@@ -17,34 +20,52 @@ experiments = {
     'jose': ['troll', 'no-troll']
 }
 
-SIXPACK_BASE = 'http://localhost:{0}'.format(os.environ.get('SIXPACK_PORT', 5000))
 
-# generate 20 client ids
-client_ids = []
-for i in range(1, 800):
-    client_ids.append(''.join(random.choice(string.ascii_lowercase + string.digits + '-_') for x in range(30)))
 
-client_exp = []
-participations = {}
-for x in range(1, 10):
-    for experiment, alternatives in experiments.iteritems():
-        _id = random.choice(client_ids)
 
-        # no dupes, plz
-        client_ids.remove(_id)
 
-        client_exp.append((_id, experiment))
 
-        payload = {'experiment': experiment, 'alternatives': alternatives, 'client_id': _id}
-        ret = requests.get('{0}/participate'.format(SIXPACK_BASE), params=payload)
-        print ret.headers
 
-for key, tup in enumerate(client_exp):
-    if key % 2:
-        client_id, exp = tup
-        payload = {
-            'experiment': exp,
-            'client_id': client_id
-        }
-        ret = requests.get('{0}/convert'.format(SIXPACK_BASE), params=payload)
-        print ret.headers
+
+
+
+
+for d in range(1, 8):
+
+    _date = date.today() - timedelta(days=d)
+    print _date
+    # generate 20 client ids
+    client_ids = []
+    for i in range(1, 2000):
+        client_ids.append(''.join(random.choice(string.ascii_lowercase + string.digits + '-_') for x in range(30)))
+
+    client_exp = []
+    participations = {}
+    for x in range(1, 10):
+        for experiment, alternatives in experiments.iteritems():
+            _id = random.choice(client_ids)
+
+            client = Client(_id, REDIS)
+            experiment = Experiment.find_or_create(experiment, alternatives, REDIS)
+
+            chosen_alt = random.choice(experiment.alternatives)
+            chosen_alt.record_participation(client, _date)
+
+
+
+            # no dupes, plz
+            client_ids.remove(_id)
+
+            client_exp.append((_id, experiment))
+
+
+    for key, tup in enumerate(client_exp):
+        if key % 2:
+            client_id, exp = tup
+            client = Client(client_id, REDIS)
+            experiment = Experiment.find(exp.name, REDIS)
+            alternative = experiment.get_alternative_by_client_id(client)
+            alternative.record_conversion(client, _date)
+            #alternative = experiment.convert(client, _date)
+
+print 'done'

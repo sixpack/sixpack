@@ -428,9 +428,12 @@ class Alternative(object):
 
         return stats
 
-    def record_participation(self, client):
+    def record_participation(self, client, dt=None):
         """Record a user's participation in a test along with a given variation"""
-        date = datetime.now()
+        if dt is None:
+            date = datetime.now()
+        else:
+            date = dt
 
         experiment_key = self.experiment.rawkey()
 
@@ -454,9 +457,13 @@ class Alternative(object):
         ]
         msetbit(keys=keys, args=([client.sequential_id, 1] * len(keys)))
 
-    def record_conversion(self, client):
+    def record_conversion(self, client, dt=None):
         """Record a user's conversion in a test along with a given variation"""
-        date = datetime.now()
+        if dt is None:
+            date = datetime.now()
+        else:
+            date = dt
+
         experiment_key = self.experiment.rawkey()
 
         pipe = self.redis.pipeline()
