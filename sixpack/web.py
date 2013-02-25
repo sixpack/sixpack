@@ -12,7 +12,7 @@ csrf = SeaSurf(app)
 js = Bundle('js/jquery.js', 'js/d3.js', 'js/bootstrap.js', 'js/bootstrap.min.js', 'js/chart.js', 'js/script.js', 'js/underscore-min.js',
             output='gen/sixpack.js')
 
-css = Bundle('css/bootstrap-responsive.css', 'css/bootstrap.css', 'css/style.css',
+css = Bundle('css/bootstrap.css', 'css/bootstrap-responsive.css', 'css/style.css',
              output='gen/sixpack.css')
 
 assets = Environment(app)
