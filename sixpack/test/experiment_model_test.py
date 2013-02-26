@@ -63,7 +63,7 @@ class TestExperimentModel(unittest.TestCase):
 
     def test_description(self):
         exp = Experiment.find_or_create('never-gonna', ['give', 'you', 'up'], self.redis)
-        self.assertEqual(exp.get_description(), '')
+        self.assertEqual(exp.get_description(), None)
 
         exp.update_description('hallo')
         self.assertEqual(exp.get_description(), 'hallo')
