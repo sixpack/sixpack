@@ -5,11 +5,15 @@
   <ul class="experiments">
     <li>
       <div class="header">
-        <h3 class="name">
-          <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a>
-        </h3>
-        {% if experiment.get_description() %}
-          <h4>{{ experiment.get_description() }}</h4>
+        {% if not experiment.get_description() %}
+          <h3 class="name">
+            <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }} </a>
+          </h3>
+        {% else %}
+          <h3 class="name">
+            <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.get_description() }}</a>
+          </h3>
+          <h4>{{ experiment.name }}</h4>
         {% endif %}
         <div class="controls">
 
@@ -37,7 +41,7 @@
             <button class="btn btn-small btn-danger" data-toggle="modal" data-target="#confirm-delete-modal">Delete</button>
           </form>
         </div>
-      </div> 
+      </div>
       <div class="clearfix"></div>
 
       <table>
@@ -81,7 +85,7 @@
         </script>
         {% for alt in experiment.alternatives %}
 
-          <div id="graph-{{ alt.name }}" class="graph">  
+          <div id="graph-{{ alt.name }}" class="graph">
             <h4>Conversion Rate / Day for <i>{{ alt.name }}</i></h4>
             <script type="text/javascript">
               graph_data['{{ alt.name }}'] = {
@@ -133,7 +137,7 @@
       <h3>Update Description</h3>
     </div>
     <div class="modal-body">
-      <textarea type="text" name="description">{{ experiment.get_description() }}</textarea>
+      <textarea type="text" name="description">{% if experiment.get_description() %}{{ experiment.get_description() }}{% endif %}</textarea>
     </div>
     <div class="modal-footer">
       <button href="#" class="btn btn-primary">Save description</a>
