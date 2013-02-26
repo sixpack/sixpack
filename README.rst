@@ -22,7 +22,7 @@ To get going, create (or don't, but you really should) a new virtualenv for your
 
     $ pip install sixpack
 
-Next, create a Sixpack configuration. Here's the default::
+Next, create a Sixpack configuration. A configuration must be created for sixpack to run. Here's the default::
 
     redis_port: 6379                        # Redis port
     redis_host: localhost                   # Redis host
@@ -40,13 +40,9 @@ Next, create a Sixpack configuration. Here's the default::
 
     secret_key: '<your secret key here>'    # Random key (any string is valid, required for sixpack-web to run)
 
-You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As long as Redis is running, you can now start the Sixpack servers like this::
+You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As long as Redis is running, you can now start the sixpack server like this::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack
-
-and::
-
-    $ SIXPACK_CONFIG=<path to config.yml> sixpack-web
 
 Sixpack-server and Sixpack-web will be listening on ports 5000 and 5001, respectively. For use in a production environment, please see the "Production Notes" section below.
 
@@ -137,6 +133,15 @@ We've already provided clients in four languages. We'd love to add clients in ad
 .. _Python: http://github.com/seatgeek/sixpack-py
 .. _JavaScript: http://github.com/seatgeek/sixpack-js
 .. _PHP: http://github.com/seatgeek/sixpack-php
+
+Dashboard
+=========
+
+Sixpack comes with a built in dashboard. You can start the dashboard with::
+
+    $ SIXPACK_CONFIG=<path to config.yml> sixpack-web
+
+The sixpack dashboard allows you to visualize how each experiment's alternatives are doing compared to the rest, select alternatives as winners, and update experiment descriptions to something more human-readable
 
 Production Notes
 ================
