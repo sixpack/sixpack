@@ -26,9 +26,9 @@
               </h3>
             {% else %}
               <h3 class="name">
-                <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.get_description() }}</a>
+                <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a>
               </h3>
-              <h4>{{ experiment.name }}</h4>
+              <h4>{{ experiment.get_description() }}</h4>
             {% endif %}
 
             <table>
