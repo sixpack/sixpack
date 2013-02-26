@@ -74,9 +74,6 @@ class Experiment(object):
             # Set version to zero
             pipe.set(_key("experiments:{0}".format(self.name)), 0)
 
-            # Empty desc by default
-            pipe.hset(self.key(), 'description', '')
-
         pipe.hset(self.key(), 'created_at', datetime.now())
         # reverse here and use lpush to keep consistent with using lrange
         for alternative in reversed(self.alternatives):
@@ -136,13 +133,15 @@ class Experiment(object):
         for k in keys:
             mod = '' if stat_type == 'participations' else "users:"
             range_key = _key("{0}:{1}:_all:{2}{3}".format(stat_type, self.rawkey(), mod, k))
-            print range_key
             stats[k] = self.redis.bitcount(range_key)
 
         return stats
 
     def update_description(self, description=None):
-        self.redis.hset(self.key(), 'description', description or '')
+        if description == '' or description is None:
+            self.redis.hdel(self.key(), 'description')
+        else:
+            self.redis.hset(self.key(), 'description', description)
 
     def get_description(self):
         return self.redis.hget(self.key(), 'description')
