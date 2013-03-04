@@ -85,7 +85,9 @@ $(function () {
         conversion = _.find(conversions, function (conversion) {
           return conversion[0] === participant[0]
         });
-
+        if (conversion === undefined) {
+          conversion = [participant[0], 0]
+        }
         rate = Number(conversion[1] / participant[1]).toFixed(2);
         if (isNaN(rate)) rate = 0.00;
         return [participant[0], rate];
