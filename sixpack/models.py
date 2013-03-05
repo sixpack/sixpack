@@ -126,14 +126,19 @@ class Experiment(object):
         if stat_range not in ['days', 'months', 'years']:
             raise ValueError
 
-        stats = {}
+        pipe = self.redis.pipe()
 
+        stats = {}
         search_key = _key("{0}:{1}:{2}".format(stat_type, self.rawkey(), stat_range))
         keys = self.redis.smembers(search_key)
         for k in keys:
             mod = '' if stat_type == 'participations' else "users:"
             range_key = _key("{0}:{1}:_all:{2}{3}".format(stat_type, self.rawkey(), mod, k))
-            stats[k] = self.redis.bitcount(range_key)
+            pipe.bitcount(range_key)
+
+        redis_results = pipe.execute()
+        for idx, k in enumerate(keys):
+            stats[k] = redis_results[idx]
 
         return stats
 
@@ -417,13 +422,20 @@ class Alternative(object):
 
         stats = {}
 
+        pipe = self.redis.pipeline()
+
         exp_key = self.experiment.rawkey()
         search_key = _key("{0}:{1}:{2}".format(stat_type, exp_key, stat_range))
+
         keys = self.redis.smembers(search_key)
         for k in keys:
             name = self.name if stat_type == 'participations' else "{0}:users".format(self.name)
             range_key = _key("{0}:{1}:{2}:{3}".format(stat_type, exp_key, name, k))
-            stats[k] = self.redis.bitcount(range_key)
+            pipe.bitcount(range_key)
+
+        redis_results = pipe.execute()
+        for idx, k in enumerate(keys):
+            stats[k] = redis_results[idx]
 
         return stats
 
