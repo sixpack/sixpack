@@ -95,7 +95,10 @@ class Sixpack(object):
 
         try:
             experiment = Experiment.find(experiment_name, self.redis)
-            alternative = experiment.convert(client)
+            if cfg.get('enabled', True):
+                alternative = experiment.convert(client)
+            else:
+                alternative = experiment.control().name
         except ValueError as e:
             return json_error({'message': str(e)}, request, 400)
 
@@ -131,10 +134,9 @@ class Sixpack(object):
 
         resp = {}
 
-        # Wondering if this logic should be moved into the model
         if force and force in alts:
             alternative = force
-        elif should_exclude_visitor(request):
+        elif not cfg.get('enabled', True) or should_exclude_visitor(request):
             alternative = alts[0]
             resp['excluded'] = True
         elif experiment.has_winner():
