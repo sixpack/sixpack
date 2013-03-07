@@ -139,7 +139,7 @@ class Experiment(object):
 
         redis_results = pipe.execute()
         for idx, k in enumerate(keys):
-            stats[k] = redis_results[idx]
+            stats[k] = float(redis_results[idx])
 
         return stats
 
@@ -322,11 +322,17 @@ class Experiment(object):
             # If they are not, then we have to make a new version
             # above `experiment` is then returned eventually
             if sorted(current_alternatives) != sorted(alternatives):
-                exp.increment_version()
 
-                # initialize a new one
-                experiment = cls(experiment_name, alternatives, redis_conn)
-                experiment.save()
+                # First, let's try to find a version of the experiment that -did- have this argument list
+                found = Experiment.find_with_alternatives(experiment_name, alternatives, redis_conn)
+                if found is not None:
+                    experiment = found
+                else:
+                    exp.increment_version()
+
+                    # initialize a new one
+                    experiment = cls(experiment_name, alternatives, redis_conn)
+                    experiment.save()
             else:
                 experiment = exp
         # completely new experiment
@@ -335,6 +341,16 @@ class Experiment(object):
             experiment.save()
 
         return experiment
+
+    @classmethod
+    def find_with_alternatives(cls, experiment_name, alternatives, redis_conn):
+        versions = int(redis_conn.get(_key("experiments:{0}".format(experiment_name))))
+        for i in range(0, versions + 1):
+            _a_key = _key("experiments:{0}/{1}:alternatives".format(experiment_name, i))
+            _alts = redis_conn.lrange(_a_key, 0, -1)
+            if sorted(_alts) == sorted(alternatives):
+                return cls(experiment_name, alternatives, redis_conn, i)
+        return None
 
     @staticmethod
     def all(redis_conn, exclude_archived=True):
@@ -444,7 +460,7 @@ class Alternative(object):
 
         redis_results = pipe.execute()
         for idx, k in enumerate(keys):
-            stats[k] = redis_results[idx]
+            stats[k] = float(redis_results[idx])
 
         return stats
 
