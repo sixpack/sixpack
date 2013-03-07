@@ -91,7 +91,7 @@ def favicon():
 
 def find_or_404(experiment_name):
     try:
-        return Experiment.find(experiment_name, REDIS)
+        return Experiment.find(experiment_name, REDIS, request.args.get('version', None))
     except:
         abort(404)
 

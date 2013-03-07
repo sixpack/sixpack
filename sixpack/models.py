@@ -47,7 +47,7 @@ class ExperimentCollection(object):
 
 class Experiment(object):
 
-    def __init__(self, name, alternatives, redis_conn):
+    def __init__(self, name, alternatives, redis_conn, version=None):
         if len(alternatives) < 2:
             raise ValueError('experiments require at least two alternatives')
 
@@ -55,6 +55,7 @@ class Experiment(object):
         self.redis = redis_conn
         self.random_sample = RANDOM_SAMPLE
         self.alternatives = self.initialize_alternatives(alternatives)
+        self._version = version
 
     def __repr__(self):
         return '<Experiment: {0} (version: {1})>'.format(self.name, self.version())
@@ -180,7 +181,14 @@ class Experiment(object):
     def is_archived(self):
         return self.redis.hexists(self.key(), 'archived')
 
+    def versions(self):
+        current_version = self.version()
+        return range(0, (current_version + 1))
+
     def version(self):
+        if self._version is not None:
+            return self._version
+
         version = self.redis.get(_key("experiments:{0}".format(self.name)))
         return int(version) if version else 0
 
@@ -289,9 +297,9 @@ class Experiment(object):
         return _key(key)
 
     @classmethod
-    def find(cls, experiment_name, redis_conn):
+    def find(cls, experiment_name, redis_conn, version=None):
         if redis_conn.sismember(_key("experiments"), experiment_name):
-            return cls(experiment_name, Experiment.load_alternatives(experiment_name, redis_conn), redis_conn)
+            return cls(experiment_name, Experiment.load_alternatives(experiment_name, redis_conn, version), redis_conn, version)
         else:
             raise ValueError('experiment does not exist')
 
@@ -341,9 +349,10 @@ class Experiment(object):
         return experiments
 
     @staticmethod
-    def load_alternatives(experiment_name, redis_conn):
+    def load_alternatives(experiment_name, redis_conn, version=None):
         # get latest version of experiment
-        version = redis_conn.get(_key("experiments:{0}".format(experiment_name)))
+        if version is None:
+            version = redis_conn.get(_key("experiments:{0}".format(experiment_name)))
         key = _key("experiments:{0}/{1}:alternatives".format(experiment_name, version))
         return redis_conn.lrange(key, 0, -1)
 
