@@ -345,11 +345,12 @@ class Experiment(object):
     @classmethod
     def find_with_alternatives(cls, experiment_name, alternatives, redis_conn):
         versions = int(redis_conn.get(_key("experiments:{0}".format(experiment_name))))
-        for i in range(0, versions + 1):
+        for i in reversed(range(0, versions + 1)):
             _a_key = _key("experiments:{0}/{1}:alternatives".format(experiment_name, i))
             _alts = redis_conn.lrange(_a_key, 0, -1)
             if sorted(_alts) == sorted(alternatives):
                 return cls(experiment_name, alternatives, redis_conn, i)
+
         return None
 
     @staticmethod
