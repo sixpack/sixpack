@@ -5,7 +5,5 @@ Werkzeug==0.8.3
 PyYAML==3.10
 Flask==0.9
 Flask-SeaSurf==0.1.13
-Flask-Assets==0.8
 fakeredis==0.3.0
 decorator==3.3.2
-jsmin==2.0.2-1
