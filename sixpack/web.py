@@ -8,6 +8,7 @@ from models import Experiment
 import utils
 
 app = Flask(__name__)
+app.debug = True
 csrf = SeaSurf(app)
 js = Bundle('js/jquery.js', 'js/d3.js', 'js/bootstrap.js', 'js/bootstrap.min.js', 'js/chart.js', 'js/script.js', 'js/underscore-min.js',
             output='gen/sixpack.js')
