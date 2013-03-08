@@ -7,4 +7,4 @@ from sixpack.web import app
 
 sys.path.append("..")
 
-app.run(port=os.environ.get('SIXPACK_WEB_PORT', 5001), debug=True)
+app.run(host='0.0.0.0', port=os.environ.get('SIXPACK_WEB_PORT', 5001), debug=True)
