@@ -38,6 +38,7 @@ Next, create a Sixpack configuration. A configuration must be created for sixpac
     control_on_db_failure: True             # Not in use
     allow_multiple_experiments: False       # Not in Use
 
+    asset_path: gen                         # Path for compressed assets to live. This path is RELATIVE to sixpack/static
     secret_key: '<your secret key here>'    # Random key (any string is valid, required for sixpack-web to run)
 
 You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As long as Redis is running, you can now start the sixpack server like this::
