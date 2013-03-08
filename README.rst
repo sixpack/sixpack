@@ -176,7 +176,7 @@ We've also included a small script that will seed Sixpack with lots of random da
 
 ::
 
-    $ SIXPACK_CONFIG=<path to config.yml> sixpack/test/seed
+    $ PYTHONPATH=. SIXPACK_CONFIG=config.yml sixpack/test/seed
 
 This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get additional data.
 
