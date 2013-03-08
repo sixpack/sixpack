@@ -11,10 +11,10 @@ app = Flask(__name__)
 app.debug = True
 csrf = SeaSurf(app)
 js = Bundle('js/jquery.js', 'js/d3.js', 'js/bootstrap.js', 'js/bootstrap.min.js', 'js/chart.js', 'js/script.js', 'js/underscore-min.js',
-            output='gen/sixpack.js')
+            output="{0}/sixpack.js".format(cfg.get('asset_path', 'gen')))
 
 css = Bundle('css/bootstrap.css', 'css/bootstrap-responsive.css', 'css/style.css',
-             output='gen/sixpack.css')
+             output="{0}/sixpack.css".format(cfg.get('asset_path', 'gen')))
 
 assets = Environment(app)
 assets.register('js_all', js)

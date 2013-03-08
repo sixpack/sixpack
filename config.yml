@@ -13,4 +13,5 @@ ignored_ip_addresses: []
 control_on_db_failure: True
 allow_multiple_experiments: False
 
+asset_path: gen
 secret_key: '<your secret key here>'
