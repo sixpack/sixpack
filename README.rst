@@ -176,15 +176,15 @@ We've also included a small script that will seed Sixpack with lots of random da
 
 ::
 
-    $ SIXPACK_CONFIG=<path to config.yml> sixpack/test/seed
+    $ PYTHONPATH=. SIXPACK_CONFIG=config.yml sixpack/test/seed
 
 This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get additional data.
 
-2. Create your feature branch (``git checkout -b my-new-feature``)
-3. Write tests
-4. Commit your changes (``git commit -am 'Added some feature'``)
-5. Push to the branch (``git push origin my-new-feature``)
-6. Create new pull request
+3. Create your feature branch (``git checkout -b my-new-feature``)
+4. Write tests
+5. Commit your changes (``git commit -am 'Added some feature'``)
+6. Push to the branch (``git push origin my-new-feature``)
+7. Create new pull request
 
 Please avoid changing versions numbers; we'll take care of that for you
 
