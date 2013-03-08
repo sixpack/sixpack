@@ -164,19 +164,19 @@ Contributing
 
 ::
 
-    $ PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack
+    $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> bin/sixpack
 
 and
 
 ::
 
-    $ PYTHONPATH=. SIXPACK_CONFIG=config.yml bin/sixpack-web
+    $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> bin/sixpack-web
 
 We've also included a small script that will seed Sixpack with lots of random data for testing and development on sixpack-web. You can seed Sixpack with the following command
 
 ::
 
-    $ PYTHONPATH=. SIXPACK_CONFIG=config.yml sixpack/test/seed
+    $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> sixpack/test/seed
 
 This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get additional data.
 
