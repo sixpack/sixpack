@@ -43,7 +43,7 @@ def details(experiment_name):
     return render_template('details.html', experiment=experiment)
 
 
-@app.route("/experiment/<experiment_name>.json/")
+@app.route("/experiment/<experiment_name>.json")
 def json_details(experiment_name):
 
     period = request.args.get('period', None)
