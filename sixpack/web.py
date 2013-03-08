@@ -9,7 +9,8 @@ import utils
 
 app = Flask(__name__)
 csrf = SeaSurf(app)
-js = Bundle('js/jquery.js', 'js/d3.js', 'js/bootstrap.js', 'js/bootstrap.min.js', 'js/chart.js', 'js/script.js', 'js/underscore-min.js',
+js = Bundle('js/jquery.js', 'js/d3.js', 'js/bootstrap.js', 'js/bootstrap.min.js',
+            'js/chart.js', 'js/script.js', 'js/underscore-min.js',
             output="{0}/sixpack.js".format(cfg.get('asset_path', 'gen')))
 
 css = Bundle('css/bootstrap.css', 'css/bootstrap-responsive.css', 'css/style.css',
