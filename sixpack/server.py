@@ -14,6 +14,7 @@ from config import CONFIG as cfg
 import db
 from models import Experiment, Client
 
+
 @decorator.decorator
 def service_unavailable_on_connection_error(f, *args, **kwargs):
     try:

@@ -1,4 +1,5 @@
-from flask import Flask, render_template, abort, request, url_for, redirect
+from flask import Flask
+from flask import render_template, abort, request, url_for, redirect, jsonify
 from flask.ext.seasurf import SeaSurf
 from flask.ext.assets import Environment, Bundle
 
@@ -9,11 +10,14 @@ import utils
 
 app = Flask(__name__)
 csrf = SeaSurf(app)
-js = Bundle('js/jquery.js', 'js/d3.js', 'js/bootstrap.js', 'js/bootstrap.min.js',
-            'js/chart.js', 'js/script.js', 'js/underscore-min.js',
+
+js = Bundle('js/jquery.js', 'js/d3.js', 'js/bootstrap.js',
+            'js/bootstrap.min.js', 'js/chart.js',
+            'js/script.js', 'js/underscore-min.js',
             output="{0}/sixpack.js".format(cfg.get('asset_path', 'gen')))
 
-css = Bundle('css/bootstrap.css', 'css/bootstrap-responsive.css', 'css/style.css',
+css = Bundle('css/bootstrap.css',
+             'css/bootstrap-responsive.css', 'css/style.css',
              output="{0}/sixpack.css".format(cfg.get('asset_path', 'gen')))
 
 assets = Environment(app)
@@ -28,7 +32,8 @@ def hello():
     exclude_archived = not archived
     experiments = Experiment.all(REDIS, exclude_archived)
 
-    return render_template('dashboard.html', experiments=experiments, include_archived=archived)
+    return render_template('dashboard.html',
+                           experiments=experiments, include_archived=archived)
 
 
 # Details for experiment
@@ -36,6 +41,19 @@ def hello():
 def details(experiment_name):
     experiment = find_or_404(experiment_name)
     return render_template('details.html', experiment=experiment)
+
+
+@app.route("/experiment/<experiment_name>.json")
+def json_details(experiment_name):
+
+    period = request.args.get('period', None)
+    if period not in ['day', 'week', 'month', 'year']:
+        err = {'error': 'invalid argument: {0}'.format(period), 'status': 400}
+        return jsonify(err)
+
+    experiment = find_or_404(experiment_name)
+    obj = experiment.objectify_by_period(period)
+    return jsonify(obj)
 
 
 # Set winner for an experiment
@@ -112,10 +130,10 @@ def internal_server_error(e):
 
 def find_or_404(experiment_name):
     try:
-        return Experiment.find(experiment_name, REDIS, request.args.get('version', None))
+        return Experiment.find(experiment_name, REDIS,
+                               request.args.get('version', None))
     except:
         abort(404)
-
 
 app.secret_key = cfg.get('secret_key')
 app.jinja_env.filters['number_to_percent'] = utils.number_to_percent

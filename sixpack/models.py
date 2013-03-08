@@ -60,6 +60,19 @@ class Experiment(object):
     def __repr__(self):
         return '<Experiment: {0} (version: {1})>'.format(self.name, self.version())
 
+    def objectify_by_period(self, period):
+        objectified = {
+            'name': self.name,
+            'period': period,
+            'alternatives': []
+        }
+
+        for alternative in self.alternatives:
+            objectified_alt = alternative.objectify_by_period(period)
+            objectified['alternatives'].append(objectified_alt)
+
+        return objectified
+
     def initialize_alternatives(self, alternatives):
         for alternative_name in alternatives:
             if not Alternative.is_valid(alternative_name):
@@ -265,7 +278,7 @@ class Experiment(object):
         if random.random() < self.random_sample:
             return self._random_choice()
         else:
-           return Alternative(self._whiplash(), self, self.redis)
+            return Alternative(self._whiplash(), self, self.redis)
 
     def _random_choice(self):
         return random.choice(self.alternatives)
@@ -407,6 +420,41 @@ class Alternative(object):
     def __repr__(self):
         return "<Alternative {0} (Experiment {1})".format(self.name, self.experiment.name)
 
+    def objectify_by_period(self, period):
+
+        PERIOD_TO_METHOD_MAP = {
+            'day': {
+                'participants': self.participants_by_day,
+                'conversions': self.conversions_by_day
+            },
+            'month': {
+                'participants': self.participants_by_month,
+                'conversions': self.conversions_by_month
+            },
+            'year': {
+                'participants': self.participants_by_year,
+                'conversions': self.conversions_by_year
+            },
+        }
+
+        data = []
+        conversion_fn = PERIOD_TO_METHOD_MAP[period]['conversions']
+        participants_fn = PERIOD_TO_METHOD_MAP[period]['participants']
+
+        conversions = conversion_fn()
+        participants = participants_fn()
+
+        dates = sorted(list(set(conversions.keys() + participants.keys())))
+        for date in dates:
+            _data = {
+                'conversions': conversions.get(date, 0),
+                'participants': participants.get(date, 0),
+                'date': date
+            }
+            data.append(_data)
+
+        return {'name': self.name, 'data': data}
+
     def is_control(self):
         return self.experiment.control().name == self.name
 
@@ -543,7 +591,7 @@ class Alternative(object):
 
         try:
             std_dev = pow(((ctr_e / pow(ctr_c, 3)) * ((e*ctr_e)+(c*ctr_c)-(ctr_c*ctr_e)*(c+e))/(c*e)), 0.5)
-            z_score = ((ctr_e / ctr_c) -1 ) / std_dev
+            z_score = ((ctr_e / ctr_c) - 1) / std_dev
             return z_score
         except ZeroDivisionError:
             return 0
