@@ -453,7 +453,8 @@ class Alternative(object):
             }
             data.append(_data)
 
-        return {'name': self.name, 'data': data}
+        return {'name': self.name, 'data': data,
+                'control': self.is_control()}
 
     def is_control(self):
         return self.experiment.control().name == self.name
