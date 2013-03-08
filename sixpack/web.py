@@ -100,6 +100,10 @@ def favicon():
     return ''
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 def find_or_404(experiment_name):
     try:
         return Experiment.find(experiment_name, REDIS, request.args.get('version', None))
