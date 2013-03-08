@@ -1,5 +1,6 @@
 from flask import Flask, render_template, abort, request, url_for, redirect
 from flask.ext.seasurf import SeaSurf
+from flask.ext.assets import Environment, Bundle
 
 from config import CONFIG as cfg
 from db import REDIS
@@ -8,6 +9,15 @@ import utils
 
 app = Flask(__name__)
 csrf = SeaSurf(app)
+js = Bundle('js/jquery.js', 'js/d3.js', 'js/bootstrap.js', 'js/bootstrap.min.js', 'js/chart.js', 'js/script.js', 'js/underscore-min.js',
+            output='gen/sixpack.js')
+
+css = Bundle('css/bootstrap.css', 'css/bootstrap-responsive.css', 'css/style.css',
+             output='gen/sixpack.css')
+
+assets = Environment(app)
+assets.register('js_all', js)
+assets.register('css_all', css)
 
 
 # List of experiments
