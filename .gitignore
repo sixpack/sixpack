@@ -9,3 +9,4 @@ dist
 pkg
 sixpack/static/gen/sixpack.js
 sixpack/static/gen/sixpack.css
+.webassets-cache
