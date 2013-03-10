@@ -79,53 +79,15 @@
 
       <hr>
 
-      <div id="graphs">
-        <script type="text/javascript">
-          var graph_data = {};
-        </script>
+      <div id="charts">
         {% for alt in experiment.alternatives %}
-
-          <div id="graph-{{ alt.name }}" class="graph">
+          <div id="chart-{{ alt.name }}" class="chart" data-experiment="{{experiment.name}}" data-alternative="{{ alt.name }}">
             <h4>Conversion Rate / Day for <i>{{ alt.name }}</i></h4>
-            <script type="text/javascript">
-              graph_data['{{ alt.name }}'] = {
-                'participants_by_day': [
-                  {% for date in alt.participants_by_day()|sort() %}
-                   [ "{{ date }}", {{ alt.participants_by_day()[date] }} ],
-                  {% endfor %}
-                ],
-                'participants_by_month': [
-                  {% for date in alt.participants_by_month()|sort() %}
-                   [ "{{ date }}", {{ alt.participants_by_month()[date] }} ],
-                  {% endfor %}
-                ],
-                'participants_by_year': [
-                  {% for date in alt.participants_by_year()|sort() %}
-                   [ "{{ date }}", {{ alt.participants_by_year()[date] }} ],
-                  {% endfor %}
-                ],
-                'conversions_by_day': [
-                  {% for date in alt.conversions_by_day()|sort() %}
-                   [ "{{ date }}", {{ alt.conversions_by_day()[date] }} ],
-                  {% endfor %}
-                ],
-                'conversions_by_month': [
-                  {% for date in alt.conversions_by_month()|sort() %}
-                   [ "{{ date }}", {{ alt.conversions_by_month()[date] }} ],
-                  {% endfor %}
-                ],
-                'conversions_by_year': [
-                  {% for date in alt.conversions_by_year()|sort() %}
-                   [ "{{ date }}", {{ alt.conversions_by_year()[date] }} ],
-                  {% endfor %}
-                ]
-              };
-            </script>
           </div>
-
         {% endfor %}
         <div class="clearfix"></div>
       </div>
+
     </li>
   </ul>
 </div>
