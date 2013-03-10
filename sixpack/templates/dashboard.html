@@ -3,10 +3,6 @@
 
 
 {% if experiments|length %}
-<script type="text/javascript">
-    var graph_data = {};
-  </script>
-
   <div id="archive-notice">
     {% if include_archived %}
       <p class="archive-is-not-active"><i class="icon-eye-open icon-white"></i>&nbsp; <span>ARCHIVED EXPERIMENTS INCLUDED</span> <a href="{{ url_for('hello') }}" class="btn btn-inverse">Hide</a> </p>
