@@ -10,3 +10,5 @@ fakeredis==0.3.0
 decorator==3.3.2
 jsmin==2.0.2-1
 python-dateutil==1.5
+yuicompressor==2.4.7
+closure==20121212
