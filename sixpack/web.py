@@ -11,7 +11,7 @@ import utils
 app = Flask(__name__)
 csrf = SeaSurf(app)
 
-js = Bundle('js/jquery.js', 'js/d3.js', 'js/bootstrap.js',
+js = Bundle('js/jquery.js', 'js/d3.js',
             'js/bootstrap.min.js', 'js/chart.js',
             'js/script.js', 'js/underscore-min.js',
             output="{0}/sixpack.js".format(cfg.get('asset_path', 'gen')))
@@ -31,7 +31,6 @@ def hello():
     archived = bool(request.args.get('include_archived', False))
     exclude_archived = not archived
     experiments = Experiment.all(REDIS, exclude_archived)
-
     return render_template('dashboard.html',
                            experiments=experiments, include_archived=archived)
 
