@@ -12,13 +12,15 @@ app = Flask(__name__)
 csrf = SeaSurf(app)
 
 js = Bundle('js/jquery.js', 'js/d3.js',
-            'js/bootstrap.min.js', 'js/chart.js',
+            'js/bootstrap.js', 'js/chart.js',
             'js/script.js', 'js/underscore-min.js',
             'js/waypoints.min.js',
+            filters=['closure_js'],
             output="{0}/sixpack.js".format(cfg.get('asset_path', 'gen')))
 
 css = Bundle('css/bootstrap.css',
              'css/bootstrap-responsive.css', 'css/style.css',
+             filters=['yui_css'],
              output="{0}/sixpack.css".format(cfg.get('asset_path', 'gen')))
 
 assets = Environment(app)

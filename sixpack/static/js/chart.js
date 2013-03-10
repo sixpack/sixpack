@@ -32,7 +32,7 @@ $(function () {
       });
       yMin = _.min(yValues);
       yMax = _.max(yValues);
-      yValues = [yMin, ((yMax - yMin) * 0.5) + yMin, yMax]
+      yValues = [yMin, ((yMax - yMin) * 0.5) + yMin, yMax];
 
       my.xAxis = d3.svg.axis()
         .scale(my.xScale)
@@ -64,7 +64,7 @@ $(function () {
         .datum(data)
         .attr("class", "line")
         .attr("d", line)
-        .attr("style", "stroke:" + color)
+        .attr("style", "stroke:" + color);
     };
 
     my.drawArea = function (data) {
@@ -118,7 +118,7 @@ $(function () {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end");
-        
+
       my.svg.append("g")
         .attr("class", "grid")
         .attr("transform", "translate(0," + my.height + ")")
@@ -145,7 +145,7 @@ $(function () {
         var cumulative = {
           participants: 0,
           conversions: 0
-        }
+        };
         var rate_data = [];
         var rate = 0;
 
@@ -164,7 +164,7 @@ $(function () {
           });
 
           alternatives[alt.name] = {
-            'rate_data': rate_data, 
+            'rate_data': rate_data,
             'd3_data': my.formatChartData(rate_data)
           };
         });
@@ -172,7 +172,7 @@ $(function () {
         callback(alternatives);
       });
     };
-    
+
 
     that.drawExperiment = function (experiment_name, colors) {
       my.el = $('#chart-' + experiment_name);
@@ -196,19 +196,19 @@ $(function () {
       var max_rate = _.max(_.map(aggregate_rates, function (n) {
         return parseFloat(n[1]);
       }));
-      
+
       var rate_data = _.map(data_intervals, function (date, index) {
         return [date, min_rate];
       });
       rate_data[0][1] = max_rate;
-      
+
       var data = {
         rate_data: rate_data,
-        d3_data: my.formatChartData(rate_data),
+        d3_data: my.formatChartData(rate_data)
       };
 
       if (!my.dataExists(data)) return;
-      
+
       my.getMeasurements();
       my.drawBase();
       my.drawLabels(data.rate_data);
@@ -216,7 +216,7 @@ $(function () {
 
       var i = 0;
       _.each(my.data, function (data) {
-        my.drawLine(data.d3_data, colors[i]); 
+        my.drawLine(data.d3_data, colors[i]);
         i++;
       });
     };
@@ -230,7 +230,7 @@ $(function () {
       my.drawBase();
       my.drawLabels(data.rate_data);
       my.drawBackground(data.d3_data);
-      my.drawLine(data.d3_data, color); 
+      my.drawLine(data.d3_data, color);
       my.drawArea(data.d3_data);
     };
 
