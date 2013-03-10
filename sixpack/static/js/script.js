@@ -18,15 +18,25 @@ $(function () {
   }
 
   // Draw charts on Dashboard page.
-  $('#dashboard-page ul.experiments .chart').each(function (index, val) {
-    var colors = []; 
-    var circles = $(this).parent().find('span.circle').get();
-    _.each(circles, function (val, index) {
-      colors.push($(circles[index]).css('stroke'));
+  if ($('#dashboard-page').length) { 
+    $('li').waypoint(function (direction) {
+      var el = $(this).find('.chart');
+
+      // Prevent loading more than once:
+      if (el.data('loaded')) return;
+      el.data('loaded', true);
+      
+      var colors = []; 
+      var circles = el.parent().find('span.circle').get();
+      _.each(circles, function (val, index) {
+        colors.push($(circles[index]).css('stroke'));
+      });
+      var experiment_name = el.data('experiment');
+      var chart = new Chart(experiment_name, function () {
+        chart.drawExperiment(experiment_name, colors);
+      });
+    }, {
+      offset: 'bottom-in-view'
     });
-    var experiment_name = $(this).data('experiment');
-    var chart = new Chart(experiment_name, function () {
-      chart.drawExperiment(experiment_name, colors);
-    });
-  });
+  }
 });
