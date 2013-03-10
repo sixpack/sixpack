@@ -132,7 +132,7 @@ $(function () {
 
     my.dataExists = function (data) {
       if (data.rate_data.length <= 2) {
-        my.el.append("<p>Not enough data to graph</p>");
+        my.el.append("<p>Not enough data to chart</p>");
         return false;
       }
       return true;
@@ -175,7 +175,7 @@ $(function () {
     
 
     that.drawExperiment = function (experiment_name, colors) {
-      my.el = $('#graph-' + experiment_name);
+      my.el = $('#chart-' + experiment_name);
 
       // Get the aggregate data intervals for drawing labels + background
       var aggregate_rates = [];
@@ -223,7 +223,7 @@ $(function () {
 
     that.drawAlternative = function (alternative_name, color) {
       var data = my.data[alternative_name];
-      my.el = $('#graph-' + alternative_name);
+      my.el = $('#chart-' + alternative_name);
       if (!my.dataExists(data)) return;
 
       my.getMeasurements();

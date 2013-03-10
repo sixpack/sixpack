@@ -79,9 +79,9 @@
 
       <hr>
 
-      <div id="graphs">
+      <div id="charts">
         {% for alt in experiment.alternatives %}
-          <div id="graph-{{ alt.name }}" class="graph" data-experiment="{{experiment.name}}" data-alternative="{{ alt.name }}">
+          <div id="chart-{{ alt.name }}" class="chart" data-experiment="{{experiment.name}}" data-alternative="{{ alt.name }}">
             <h4>Conversion Rate / Day for <i>{{ alt.name }}</i></h4>
           </div>
         {% endfor %}
