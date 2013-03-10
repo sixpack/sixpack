@@ -7,6 +7,7 @@ import redis
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
+import dateutil.parser
 
 from . import __version__
 import decorator
@@ -97,7 +98,10 @@ class Sixpack(object):
         try:
             experiment = Experiment.find(experiment_name, self.redis)
             if cfg.get('enabled', True):
-                alternative = experiment.convert(client)
+                dt = None
+                if request.args.get("datetime"):
+                    dt = dateutil.parser.parse(request.args.get("datetime"))
+                alternative = experiment.convert(client, dt=dt)
             else:
                 alternative = experiment.control().name
         except ValueError as e:
@@ -143,7 +147,10 @@ class Sixpack(object):
         elif experiment.has_winner():
             alternative = experiment.get_winner().name
         else:
-            alternative = experiment.get_alternative(client).name
+            dt = None
+            if request.args.get("datetime"):
+                dt = dateutil.parser.parse(request.args.get("datetime"))
+            alternative = experiment.get_alternative(client, dt=dt).name
 
         resp = {
             'alternative': {

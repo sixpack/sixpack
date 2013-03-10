@@ -208,13 +208,13 @@ class Experiment(object):
     def increment_version(self):
         self.redis.incr(_key('experiments:{0}'.format(self.name)))
 
-    def convert(self, client):
+    def convert(self, client, dt=None):
         alternative = self.get_alternative_by_client_id(client)
 
         if not alternative:  # TODO or has already converted?
             raise ValueError('this client was not participaing')
 
-        alternative.record_conversion(client)
+        alternative.record_conversion(client, dt=dt)
 
         return alternative.name
 
@@ -240,14 +240,14 @@ class Experiment(object):
     def _winner_key(self):
         return "{0}:winner".format(self.key())
 
-    def get_alternative(self, client):
+    def get_alternative(self, client, dt=None):
         if self.is_archived():
             return self.control()
 
         chosen_alternative = self.get_alternative_by_client_id(client)
         if not chosen_alternative:
             chosen_alternative = self.choose_alternative(client=client)
-            chosen_alternative.record_participation(client)
+            chosen_alternative.record_participation(client, dt=dt)
 
         return chosen_alternative
 
