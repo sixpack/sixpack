@@ -458,8 +458,15 @@ class Alternative(object):
             }
             data.append(_data)
 
-        return {'name': self.name, 'data': data,
-                'control': self.is_control()}
+        objectified = {
+            'name': self.name,
+            'data': data,
+            'control': self.is_control(),
+            'conversion_rate': self.conversion_rate(),
+            'z_score': self.z_score()
+        }
+
+        return objectified
 
     def is_control(self):
         return self.experiment.control().name == self.name
