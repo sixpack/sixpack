@@ -64,7 +64,12 @@ class Experiment(object):
         objectified = {
             'name': self.name,
             'period': period,
-            'alternatives': []
+            'alternatives': [],
+            'created_at': self.created_at(),
+            'total_participants': self.total_participants(),
+            'total_conversions': self.total_conversions(),
+            'description': self.get_description(),
+            'version': self.version()
         }
 
         for alternative in self.alternatives:
