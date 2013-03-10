@@ -391,6 +391,7 @@ ul.experiments h4 {
   right: 70px;
   width: 400px;
   height: 200px;
+  display: none;
 }
 /* BEGIN: Details page */
 #details-page .header .controls .collapse {

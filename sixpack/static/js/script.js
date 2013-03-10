@@ -25,7 +25,7 @@ $(function () {
       // Prevent loading more than once:
       if (el.data('loaded')) return;
       el.data('loaded', true);
-      
+
       var colors = []; 
       var circles = el.parent().find('span.circle').get();
       _.each(circles, function (val, index) {
@@ -34,6 +34,7 @@ $(function () {
       var experiment_name = el.data('experiment');
       var chart = new Chart(experiment_name, function () {
         chart.drawExperiment(experiment_name, colors);
+        el.fadeIn();
       });
     }, {
       offset: 'bottom-in-view'
