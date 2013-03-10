@@ -7,34 +7,29 @@ $(function () {
 
   // Draw graphs on Details page.
   if ($('#details-page').length) { 
-    line_colors = $('#details-page').find('span.circle').get();
-    $('#details-page .graph').each(function (index, val) {
-      id = $(this).attr('id');
-      alternative_name = id.substring(6, id.length);
-      graph = GraphMaker('#' + id);
-      graph.draw([{
-        participants: graph_data[alternative_name]['participants_by_day'],
-        conversions: graph_data[alternative_name]['conversions_by_day'],
-        color: $(line_colors[index]).css('stroke')
-      }]);
+    var colors = $('#details-page').find('span.circle').get();
+    var chart = new Chart($('.graph').data('experiment'), function () {
+      console.log(chart)
+      $('.graph').each(function (index, val) {
+        id = $(this).attr('id');
+        alternative_name = id.substring(6, id.length);
+        color = $(colors[index]).css('stroke');
+
+        chart.drawAlternative(alternative_name, color);
+      });
     });
   }
 
   // Draw graphs on Dashboard page.
   $('#dashboard-page ul.experiments .graph').each(function (index, val) {
-    id = $(this).attr('id');
-    experiment_name = id.substring(6, id.length);
-    lines = []
-    line_colors = $(this).parent().find('span.circle').get();
-    counter = 0
-    _.each(graph_data[experiment_name], function (alt) {
-      lines.push({
-        participants: alt['participants_by_day'],
-        conversions: alt['conversions_by_day'],
-        color: $(line_colors[counter]).css('stroke')
-      });
-      counter++;
+    var colors = []; 
+    var circles = $(this).parent().find('span.circle').get();
+    _.each(circles, function (val, index) {
+      colors.push($(circles[index]).css('stroke'));
     });
-    GraphMaker('#' + id).draw(lines);
+    var experiment_name = $(this).data('experiment');
+    var chart = new Chart(experiment_name, function () {
+      chart.drawExperiment(experiment_name, colors);
+    });
   });
 });

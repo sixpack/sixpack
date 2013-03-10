@@ -49,28 +49,7 @@
                 </tr>
                 {% endfor %}
             </table>
-              <div id="graph-{{ experiment.name }}" class="graph">
-                <script type="text/javascript">
-                  graph_data['{{ experiment.name }}'] = {};
-                </script>
-                <script type="text/javascript">
-                   {% for alt in experiment.alternatives %}
-
-                        graph_data['{{ experiment.name }}']['{{ alt.name }}'] = {
-                          'participants_by_day': [
-                            {% for date in alt.participants_by_day()|sort() %}
-                             [ "{{ date }}", {{ alt.participants_by_day()[date] }} ],
-                            {% endfor %}
-                          ],
-                          'conversions_by_day': [
-                            {% for date in alt.conversions_by_day()|sort() %}
-                             [ "{{ date }}", {{ alt.conversions_by_day()[date] }} ],
-                            {% endfor %}
-                          ]
-                        };
-
-                  {% endfor %}
-                </script>
+            <div id="graph-{{ experiment.name }}" class="graph" data-experiment="{{experiment.name}}">
             </div>
           </li>
         {% endfor %}
