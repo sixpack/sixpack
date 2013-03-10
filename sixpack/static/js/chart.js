@@ -158,7 +158,7 @@ $(function () {
             cumulative.participants += period.participants;
             cumulative.conversions += period.conversions;
 
-            rate = Number(cumulative.conversions / cumulative.participants).toFixed(2);
+            rate = Number(cumulative.conversions / cumulative.participants).toFixed(5);
             if (isNaN(rate)) rate = 0.00;
             rate_data.push([period.date, rate]);
           });
