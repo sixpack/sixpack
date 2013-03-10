@@ -1,15 +1,12 @@
 $(function () {
-  var id, graph, alternative_name, experiment_name, 
-      conversions, participants, lines, line_colors, counter;
-    
   // Display correct URL on "no-experiments" page.  
   $('#base-domain').html(document.location.origin);
 
   // Draw charts on Details page.
   if ($('#details-page').length) { 
+    var id, alternative_name, color;
     var colors = $('#details-page').find('span.circle').get();
     var chart = new Chart($('.chart').data('experiment'), function () {
-      console.log(chart)
       $('.chart').each(function (index, val) {
         id = $(this).attr('id');
         alternative_name = id.substring(6, id.length);
