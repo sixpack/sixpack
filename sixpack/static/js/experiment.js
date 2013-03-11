@@ -1,13 +1,12 @@
 var Experiment;
 $(function () {
 
-  Experiment = function (name, callback) {
+  Experiment = function (el, name, callback) {
     var that = {}, my = {};
 
     _.templateSettings.variable = 'experiment';
 
-    my.el = null;
-    my.container = $('ul.experiments');
+    my.el = el;
     my.name = name;
     my.callback = callback;
 
@@ -21,7 +20,7 @@ $(function () {
     };
 
     my.getData(function (data) {
-      my.container.append(my.template(data));
+      my.el.append(my.template(data));
       var chart = new Chart(my.name, data);
       chart.draw();
     });
