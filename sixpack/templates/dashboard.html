@@ -11,15 +11,13 @@
   {% endif %}
 </script>
 
-{% if experiments|length %}
-  <div id="archive-notice">
-    {% if include_archived %}
-      <p class="archive-is-not-active"><i class="icon-eye-open icon-white"></i>&nbsp; <span>ARCHIVED EXPERIMENTS INCLUDED</span> <a href="{{ url_for('hello') }}" class="btn btn-inverse">Hide</a> </p>
-    {% else %}
-      <p class="archive-is-active"><i class="icon-eye-close icon-white"></i>&nbsp; <span>ARCHIVED EXPERIMENTS NOT INCLUDED</span> <a href="{{ url_for('hello', include_archived=True) }}" class="btn btn-inverse">Show</a></p>
-    {% endif %}
-  </div>
-{% endif %}
+<div id="archive-notice">
+  {% if include_archived %}
+    <p class="archive-is-not-active"><i class="icon-eye-open icon-white"></i>&nbsp; <span>ARCHIVED EXPERIMENTS INCLUDED</span> <a href="{{ url_for('hello') }}" class="btn btn-inverse">Hide</a> </p>
+  {% else %}
+    <p class="archive-is-active"><i class="icon-eye-close icon-white"></i>&nbsp; <span>ARCHIVED EXPERIMENTS NOT INCLUDED</span> <a href="{{ url_for('hello', include_archived=True) }}" class="btn btn-inverse">Show</a></p>
+  {% endif %}
+</div>
 
 <div id="dashboard-page">
   <ul class="experiments"></ul>
