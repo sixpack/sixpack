@@ -463,7 +463,8 @@ class Alternative(object):
         objectified = {
             'name': self.name,
             'data': data,
-            'control': self.is_control(),
+            'is_control': self.is_control(),
+            'is_winner': self.is_winner(),
             'conversion_rate': self.conversion_rate(),
             'z_score': self.z_score()
         }
