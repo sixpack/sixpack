@@ -4,18 +4,12 @@ $(function () {
 
   // Draw charts on Details page.
   if ($('#details-page').length) { 
-    var id, alternative_name, color;
-    var colors = $('#details-page').find('span.circle').get();
-    var chart = new Chart($('.chart').data('experiment'), function () {
-      $('.chart').each(function (index, val) {
-        id = $(this).attr('id');
-        alternative_name = id.substring(6, id.length);
-        color = $(colors[index]).css('stroke');
+    var path = document.location.pathname;
+    var experiment_name = path.slice(12, path.length - 1);
 
-        chart.drawAlternative(alternative_name, color);
-      });
-    });
+    var experiment = new Experiment(experiment_name);
   }
+
 
   // Draw charts on Dashboard page.
   if ($('#dashboard-page').length) { 
