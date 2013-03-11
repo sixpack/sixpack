@@ -405,6 +405,7 @@ ul.experiments h4 {
   width: 330px;
   height: 200px;
   margin-bottom: 50px;
+  display: none;
 }
 #details-page ul.experiments li table {
   width: auto;
