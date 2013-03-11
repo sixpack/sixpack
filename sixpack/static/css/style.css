@@ -426,7 +426,7 @@ ul.experiments h4 {
 /* BEGIN: Responsive rules */
 @media (max-width: 1200px) {
   #dashboard-page .chart {
-    display: none;
+    display: none !important;
   }
   .container {
     width: 724px;
