@@ -393,6 +393,10 @@ ul.experiments h4 {
   height: 200px;
   display: none;
 }
+#no-data {
+  display: none;
+}
+
 /* BEGIN: Details page */
 #details-page .header .controls .collapse {
   display: inline-block;
