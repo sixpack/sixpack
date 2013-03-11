@@ -70,6 +70,7 @@ class Experiment(object):
             'total_conversions': self.total_conversions(),
             'description': self.get_description(),
             'has_winner': self.has_winner(),
+            'is_archived': self.is_archived(),
             'version': self.version()
         }
 
