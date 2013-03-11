@@ -4,7 +4,7 @@ $(function () {
   Experiment = function (name, callback) {
     var that = {}, my = {};
 
-    _.templateSettings.variable = 'rc';
+    _.templateSettings.variable = 'experiment';
 
     my.el = null;
     my.container = $('ul.experiments');
@@ -12,23 +12,6 @@ $(function () {
     my.callback = callback;
 
     my.template = _.template($('#experiment-template').html());
-
-    my.colors = [
-      '#714A33',
-      '#32587E',
-      '#327E51',
-      '#3A85AC',
-      '#8EBDBC',
-      '#56BDBB',
-      '#BDAB4D',
-      '#33716F',
-      '#7E466F',
-      '#A4433A',
-      '#B8C6D7',
-      '#5D300B',
-      '#D09104',
-      '#E99E62'
-    ];
 
     my.getData = function (callback) {
       var url = '/experiment/' + my.name + '.json?period=day';
@@ -38,12 +21,9 @@ $(function () {
     };
 
     my.getData(function (data) {
-      console.log(data)
-      console.log(my.template(data));
       my.container.append(my.template(data));
-
-      //var chart = new Chart(data);
-      //chart.draw();
+      var chart = new Chart(my.name, data);
+      chart.draw();
     });
 
     return that;
