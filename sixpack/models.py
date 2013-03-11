@@ -69,6 +69,7 @@ class Experiment(object):
             'total_participants': self.total_participants(),
             'total_conversions': self.total_conversions(),
             'description': self.get_description(),
+            'has_winner': self.has_winner(),
             'version': self.version()
         }
 
