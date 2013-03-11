@@ -148,7 +148,7 @@ $(function () {
 
     my.dataExists = function (data) {
       if (data.rate_data.length <= 2) {
-        my.el.append("<p>Not enough data to chart</p>");
+        my.el.append("<p>Not enough data to chart</p>").fadeIn('fast');
         return false;
       }
       return true;
@@ -188,7 +188,7 @@ $(function () {
 
     that.draw = function () {
       my.el = $('#chart-' + my.experiment);
-
+      
       // Get the aggregate data intervals for drawing labels + background
       var aggregate_rates = [];
       _.each(my.data, function (alt, k) {
@@ -231,6 +231,8 @@ $(function () {
         my.drawLine(data.d3_data, my.colors[i]);
         i++;
       });
+
+      my.el.fadeIn('fast');
     };
 
     my.formatData();
