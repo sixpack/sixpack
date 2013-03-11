@@ -1,12 +1,28 @@
 var Chart;
 $(function () {
 
-  Chart = function (experiment, callback) {
+  Chart = function (experiment, data, callback) {
     var that = {}, my = {};
 
+    my.colors = [
+      '#714A33',
+      '#32587E',
+      '#327E51',
+      '#3A85AC',
+      '#8EBDBC',
+      '#56BDBB',
+      '#BDAB4D',
+      '#33716F',
+      '#7E466F',
+      '#A4433A',
+      '#B8C6D7',
+      '#5D300B',
+      '#D09104',
+      '#E99E62'
+    ];
     my.el = null;
+    my.data = data;
     my.experiment = experiment;
-    my.callback = callback;
 
     my.getMeasurements = function () {
       my.margin = {
@@ -138,44 +154,40 @@ $(function () {
       return true;
     };
 
-    my.getData = function (callback) {
-      var url = '/experiment/' + my.experiment + '.json?period=day';
-      $.getJSON(url, function (data) {
-        var alternatives = {};
-        var cumulative = {
-          participants: 0,
-          conversions: 0
-        };
-        var rate_data = [];
-        var rate = 0;
+    my.formatData = function (callback) {
+      var alternatives = {};
+      var cumulative = {
+        participants: 0,
+        conversions: 0
+      };
+      var rate_data = [];
+      var rate = 0;
 
-        _.each(data.alternatives, function (alt, k) {
-          cumulative.participants = 0;
-          cumulative.conversions = 0;
-          rate_data = [];
+      _.each(data.alternatives, function (alt, k) {
+        cumulative.participants = 0;
+        cumulative.conversions = 0;
+        rate_data = [];
 
-          _.each(alt.data, function (period) {
-            cumulative.participants += period.participants;
-            cumulative.conversions += period.conversions;
+        _.each(alt.data, function (period) {
+          cumulative.participants += period.participants;
+          cumulative.conversions += period.conversions;
 
-            rate = Number(cumulative.conversions / cumulative.participants).toFixed(5);
-            if (isNaN(rate)) rate = 0.00;
-            rate_data.push([period.date, rate]);
-          });
-
-          alternatives[alt.name] = {
-            'rate_data': rate_data,
-            'd3_data': my.formatChartData(rate_data)
-          };
+          rate = Number(cumulative.conversions / cumulative.participants).toFixed(5);
+          if (isNaN(rate)) rate = 0.00;
+          rate_data.push([period.date, rate]);
         });
 
-        callback(alternatives);
+        alternatives[alt.name] = {
+          'rate_data': rate_data,
+          'd3_data': my.formatChartData(rate_data)
+        };
       });
+
+      my.data = alternatives;
     };
 
-
-    that.drawExperiment = function (experiment_name, colors) {
-      my.el = $('#chart-' + experiment_name);
+    that.draw = function () {
+      my.el = $('#chart-' + my.experiment);
 
       // Get the aggregate data intervals for drawing labels + background
       var aggregate_rates = [];
@@ -216,28 +228,12 @@ $(function () {
 
       var i = 0;
       _.each(my.data, function (data) {
-        my.drawLine(data.d3_data, colors[i]);
+        my.drawLine(data.d3_data, my.colors[i]);
         i++;
       });
     };
 
-    that.drawAlternative = function (alternative_name, color) {
-      var data = my.data[alternative_name];
-      my.el = $('#chart-' + alternative_name);
-      if (!my.dataExists(data)) return;
-
-      my.getMeasurements();
-      my.drawBase();
-      my.drawLabels(data.rate_data);
-      my.drawBackground(data.d3_data);
-      my.drawLine(data.d3_data, color);
-      my.drawArea(data.d3_data);
-    };
-
-    my.getData(function (data) {
-      my.data = data;
-      my.callback();
-    });
+    my.formatData();
 
     return that;
   };
