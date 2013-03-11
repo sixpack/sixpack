@@ -12,9 +12,14 @@ $(function () {
 
   // Draw charts on Dashboard page.
   if ($('#dashboard-page').length) { 
-    _.each(experiments, function (experiment_name) {
-      $('ul.experiments').append('<li data-name="' + experiment_name + '" style="visibility: hidden;"></li>')
-    });
+    if (experiments.length) {
+      $('#archive-notice').fadeIn('fast');
+      _.each(experiments, function (experiment_name) {
+        $('ul.experiments').append('<li data-name="' + experiment_name + '" style="visibility: hidden;"></li>')
+      });
+    } else {
+      $('#no-data').fadeIn('fast');
+    }
 
     $('li').waypoint(function (direction) {
       var el = $(this);
@@ -23,9 +28,9 @@ $(function () {
       // Prevent loading more than once:
       if (el.data('loaded')) return;
       el.data('loaded', true);
-      
+
       var experiment = new Experiment(el, experiment_name);
-      
+
       el.css('visibility', 'visible');
     }, {
       offset: 'bottom-in-view'

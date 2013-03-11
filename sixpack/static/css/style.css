@@ -393,7 +393,7 @@ ul.experiments h4 {
   height: 200px;
   display: none;
 }
-#no-data {
+#no-data, #archive-notice {
   display: none;
 }
 
