@@ -1,12 +1,28 @@
 var Chart;
 $(function () {
 
-  Chart = function (experiment, callback) {
+  Chart = function (experiment, data, callback) {
     var that = {}, my = {};
 
+    my.colors = [
+      '#714A33',
+      '#32587E',
+      '#327E51',
+      '#3A85AC',
+      '#8EBDBC',
+      '#56BDBB',
+      '#BDAB4D',
+      '#33716F',
+      '#7E466F',
+      '#A4433A',
+      '#B8C6D7',
+      '#5D300B',
+      '#D09104',
+      '#E99E62'
+    ];
     my.el = null;
+    my.data = data;
     my.experiment = experiment;
-    my.callback = callback;
 
     my.getMeasurements = function () {
       my.margin = {
@@ -65,6 +81,18 @@ $(function () {
         .attr("class", "line")
         .attr("d", line)
         .attr("style", "stroke:" + color);
+    };
+
+    my.drawCircle = function (data, color) {
+      color = color || "#9d5012";
+      my.svg.selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("r", 5)
+        .attr("cx", function(d) { return my.xScale(d.date); })
+        .attr("cy", function(d) { return my.yScale(d.close); })
+        .attr("style", "fill:" + color);
     };
 
     my.drawArea = function (data) {
@@ -131,52 +159,48 @@ $(function () {
     };
 
     my.dataExists = function (data) {
-      if (data.rate_data.length <= 2) {
-        my.el.append("<p>Not enough data to chart</p>");
+      if (data.rate_data.length === 0) {
+        my.el.append("<p>Not enough data to chart</p>").fadeIn('fast');
         return false;
       }
       return true;
     };
 
-    my.getData = function (callback) {
-      var url = '/experiment/' + my.experiment + '.json?period=day';
-      $.getJSON(url, function (data) {
-        var alternatives = {};
-        var cumulative = {
-          participants: 0,
-          conversions: 0
-        };
-        var rate_data = [];
-        var rate = 0;
+    my.formatData = function (callback) {
+      var alternatives = {};
+      var cumulative = {
+        participants: 0,
+        conversions: 0
+      };
+      var rate_data = [];
+      var rate = 0;
 
-        _.each(data.alternatives, function (alt, k) {
-          cumulative.participants = 0;
-          cumulative.conversions = 0;
-          rate_data = [];
+      _.each(data.alternatives, function (alt, k) {
+        cumulative.participants = 0;
+        cumulative.conversions = 0;
+        rate_data = [];
 
-          _.each(alt.data, function (period) {
-            cumulative.participants += period.participants;
-            cumulative.conversions += period.conversions;
+        _.each(alt.data, function (period) {
+          cumulative.participants += period.participants;
+          cumulative.conversions += period.conversions;
 
-            rate = Number(cumulative.conversions / cumulative.participants).toFixed(5);
-            if (isNaN(rate)) rate = 0.00;
-            rate_data.push([period.date, rate]);
-          });
-
-          alternatives[alt.name] = {
-            'rate_data': rate_data,
-            'd3_data': my.formatChartData(rate_data)
-          };
+          rate = Number(cumulative.conversions / cumulative.participants).toFixed(5);
+          if (isNaN(rate)) rate = 0.00;
+          rate_data.push([period.date, rate]);
         });
 
-        callback(alternatives);
+        alternatives[alt.name] = {
+          'rate_data': rate_data,
+          'd3_data': my.formatChartData(rate_data)
+        };
       });
+
+      my.data = alternatives;
     };
 
-
-    that.drawExperiment = function (experiment_name, colors) {
-      my.el = $('#chart-' + experiment_name);
-
+    that.draw = function () {
+      my.el = $('#chart-' + my.experiment);
+      
       // Get the aggregate data intervals for drawing labels + background
       var aggregate_rates = [];
       _.each(my.data, function (alt, k) {
@@ -202,6 +226,19 @@ $(function () {
       });
       rate_data[0][1] = max_rate;
 
+
+      var total_periods = rate_data.length;
+      if (total_periods === 1) {
+        var format = d3.time.format("%Y-%m-%d");
+        var d = new Date(rate_data[0][0]);
+        var rate_data = [
+          [format(new Date(d3.time.day.offset(d, -1))), min_rate * 0.80],
+          [rate_data[0][0], rate_data[0][1]],
+          [format(new Date(d3.time.day.offset(d, 2))), max_rate ],
+          [format(new Date(d3.time.day.offset(d, 3))), max_rate * 1.1]
+        ];
+      }
+
       var data = {
         rate_data: rate_data,
         d3_data: my.formatChartData(rate_data)
@@ -216,28 +253,18 @@ $(function () {
 
       var i = 0;
       _.each(my.data, function (data) {
-        my.drawLine(data.d3_data, colors[i]);
+        if (total_periods === 1) {
+          my.drawCircle(data.d3_data, my.colors[i]);
+        } else {
+          my.drawLine(data.d3_data, my.colors[i]);
+        }
         i++;
       });
+
+      my.el.fadeIn('fast');
     };
 
-    that.drawAlternative = function (alternative_name, color) {
-      var data = my.data[alternative_name];
-      my.el = $('#chart-' + alternative_name);
-      if (!my.dataExists(data)) return;
-
-      my.getMeasurements();
-      my.drawBase();
-      my.drawLabels(data.rate_data);
-      my.drawBackground(data.d3_data);
-      my.drawLine(data.d3_data, color);
-      my.drawArea(data.d3_data);
-    };
-
-    my.getData(function (data) {
-      my.data = data;
-      my.callback();
-    });
+    my.formatData();
 
     return that;
   };

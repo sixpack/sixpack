@@ -1,95 +1,105 @@
 {% extends "layout.html" %}
 {% block body %}
 
+<script type="text/javascript">
+  var experiment_name = '{{ experiment.name }}';
+</script>
+
+<script type="text/template" id="experiment-template">
+  <div class="header">
+    <h3 class="name">
+      <a href="/experiment/<%- experiment.name %>"><%- experiment.name %></a>
+    </h3>
+    <% if (experiment.description) { %>
+      <h4><%- experiment.description %></h4>
+    <% } %>
+ 
+
+    <div class="controls">
+
+      <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-small btn-inverse"><% if (experiment.is_archived) { %>Un-<% } %>Archive</button>
+      </form>
+
+      <form>
+        <button class="btn btn-small btn-inverse" data-toggle="modal" data-target="#desc-modal">Update Description</button>
+      </form>
+      <div class="collapse"></div>
+      <% if (experiment.has_winner) { %>
+        <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
+          <input type="hidden" name="_csrf_token" value="">
+          <button class="btn btn-small btn-warning" type="submit">Reset Winner</button>
+        </form>
+      <% } %>
+
+      <form>
+        <button class="btn btn-small btn-warning" data-toggle="modal" data-target="#confirm-reset-modal">Reset</button>
+      </form>
+
+      <form>
+        <button class="btn btn-small btn-danger" data-toggle="modal" data-target="#confirm-delete-modal">Delete</button>
+      </form>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+
+
+  <table>
+    <tbody>
+      <tr>
+        <th>Case</th>
+        <th>Participants</th>
+        <th>Conv Rate</th>
+        <th>Confidence</th>
+        <th>Winner</th>
+      </tr>
+      <% _.each(experiment.alternatives, function (alt, index) { %>
+        <tr>
+          <td>
+            <span class="circle color-<%- (index + 1) %>">
+              <% if (alt.is_winner) { %>
+                <i class="icon-ok"></i>
+              <% } %>
+            </span>
+            <%- alt.name %> 
+            <% if (alt.is_control) { %>
+              <span class="note control">control</span>
+            <% } %>
+          </td>
+          <td><%- alt.participant_count %></td>
+          <td><%- alt.conversion_rate %></td>
+          <td><span title="<%- alt.z_score %>"><%- alt.confidence_level %><span></td>
+          <td>
+            <div class="alt-controls">
+              <% if (alt.is_winner) { %>
+                <span class="label label-success">Winner!</label>
+              <% } else { %>
+                <form action="{{ url_for('set_winner', experiment_name=experiment.name) }}" method="post">
+                  <input type='hidden' name="alternative_name" value="<%- alt.name %>" />
+                  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="btn btn-small btn-inverse">Use This</button>
+                </form>
+              <% } %>
+            </div>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <div id="charts">
+    <div id="chart-{{ experiment.name }}" class="chart" data-experiment="{{experiment.name}}">
+      <h4>Conversion Rate / Day</h4>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</script>
+
 <div id="details-page">
-  <ul class="experiments">
-    <li>
-      <div class="header">
-        {% if not experiment.get_description() %}
-          <h3 class="name">
-            <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }} </a>
-          </h3>
-        {% else %}
-          <h3 class="name">
-            <a href="{{ url_for('details', experiment_name=experiment.name) }}">{{ experiment.name }}</a>
-          </h3>
-          <h4>{{ experiment.get_description() }}</h4>
-        {% endif %}
-        <div class="controls">
-
-          <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-            <button class="btn btn-small btn-inverse">{% if experiment.is_archived() %}Un-{% endif %}Archive</button>
-          </form>
-
-          <form>
-            <button class="btn btn-small btn-inverse" data-toggle="modal" data-target="#desc-modal">Update Description</button>
-          </form>
-          <div class="collapse"></div>
-          {% if experiment.has_winner() %}
-            <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
-              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-              <button class="btn btn-small btn-warning" type="submit">Reset Winner</button>
-            </form>
-          {% endif %}
-
-          <form>
-            <button class="btn btn-small btn-warning" data-toggle="modal" data-target="#confirm-reset-modal">Reset</button>
-          </form>
-
-          <form>
-            <button class="btn btn-small btn-danger" data-toggle="modal" data-target="#confirm-delete-modal">Delete</button>
-          </form>
-        </div>
-      </div>
-      <div class="clearfix"></div>
-
-      <table>
-        <tbody>
-          <tr>
-            <th>Case</th>
-            <th>Participants</th>
-            <th>Conv Rate</th>
-            <th>Confidence</th>
-            <th>Winner</th>
-          </tr>
-          {% for alt in experiment.alternatives %}
-            <tr>
-              <td><span class="circle color-{{ loop.index }}">{% if alt.is_winner() %}<i class="icon-ok"></i>{% endif %}</span>{{ alt.name }} {% if alt.is_control() %}<span class="note control">control</span>{% endif %} </td>
-              <td>{{ alt.participant_count()|number_format }}</td>
-              <td>{{ alt.conversion_rate()|number_to_percent }}</td>
-              <td><span title="{{ alt.z_score() }}">{{ alt.confidence_level() }}<span></td>
-              <td>
-                <div class="alt-controls">
-                  {% if alt.is_winner() %}
-                    <span class="label label-success">Winner!</label>
-                  {% else %}
-                    <form action="{{ url_for('set_winner', experiment_name=experiment.name) }}" method="post">
-                      <input type='hidden' name="alternative_name" value="{{ alt.name }}" />
-                      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                      <button type="submit" class="btn btn-small btn-inverse">Use This</button>
-                    </form>
-                  {% endif %}
-                </div>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
-      <hr>
-
-      <div id="charts">
-        {% for alt in experiment.alternatives %}
-          <div id="chart-{{ alt.name }}" class="chart" data-experiment="{{experiment.name}}" data-alternative="{{ alt.name }}">
-            <h4>Conversion Rate / Day for <i>{{ alt.name }}</i></h4>
-          </div>
-        {% endfor %}
-        <div class="clearfix"></div>
-      </div>
-
-    </li>
-  </ul>
+  <ul class="experiments"><li></li></ul>
 </div>
 
 <div class="modal hide fade" id="desc-modal">
@@ -99,7 +109,7 @@
       <h3>Update Description</h3>
     </div>
     <div class="modal-body">
-      <textarea type="text" name="description">{% if experiment.get_description() %}{{ experiment.get_description() }}{% endif %}</textarea>
+      <textarea type="text" name="description">{{ experiment.description }}</textarea>
     </div>
     <div class="modal-footer">
       <button href="#" class="btn btn-primary">Save description</a>
@@ -107,7 +117,6 @@
     <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
   </form>
 </div>
-
 
 <div class="modal hide fade" id="confirm-reset-modal">
   <form action="{{ url_for('reset_experiment', experiment_name=experiment.name) }}" method="post">

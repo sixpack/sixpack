@@ -2,6 +2,7 @@ from flask import Flask
 from flask import render_template, abort, request, url_for, redirect, jsonify
 from flask.ext.seasurf import SeaSurf
 from flask.ext.assets import Environment, Bundle
+from flask_debugtoolbar import DebugToolbarExtension
 
 from config import CONFIG as cfg
 from db import REDIS
@@ -12,8 +13,8 @@ app = Flask(__name__)
 csrf = SeaSurf(app)
 
 js = Bundle('js/jquery.js', 'js/d3.js',
-            'js/bootstrap.js', 'js/chart.js',
-            'js/script.js', 'js/underscore-min.js',
+            'js/bootstrap.js', 'js/experiment.js', 'js/chart.js',
+            'js/script.js', 'js/underscore-min.js', 'js/spin.min.js',
             'js/waypoints.min.js',
             filters=['closure_js'],
             output="{0}/sixpack.js".format(cfg.get('asset_path', 'gen')))
@@ -31,11 +32,11 @@ assets.register('css_all', css)
 # List of experiments
 @app.route("/")
 def hello():
-    archived = bool(request.args.get('include_archived', False))
-    exclude_archived = not archived
-    experiments = Experiment.all(REDIS, exclude_archived)
-    return render_template('dashboard.html',
-                           experiments=experiments, include_archived=archived)
+    #archived = bool(request.args.get('include_archived', False))
+    #exclude_archived = not archived
+    # TODO: these need to be sorted
+    experiments = Experiment.all_names(REDIS)
+    return render_template('dashboard.html', experiments=experiments)
 
 
 # Details for experiment
@@ -140,6 +141,7 @@ def find_or_404(experiment_name):
 app.secret_key = cfg.get('secret_key')
 app.jinja_env.filters['number_to_percent'] = utils.number_to_percent
 app.jinja_env.filters['number_format'] = utils.number_format
+toolbar = DebugToolbarExtension(app)
 
 
 def start(environ, start_response):
