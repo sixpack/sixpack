@@ -2,13 +2,11 @@
 {% block body %}
 
 <script type="text/javascript">
-  {% if experiments|length %}
-    var experiments = [
-      {% for experiment in experiments %}
-        '{{ experiment }}',     
-      {% endfor %}
-    ];
-  {% endif %}
+  var experiments = [
+    {% for experiment in experiments %}
+      '{{ experiment }}',     
+    {% endfor %}
+  ];
 </script>
 
 <div id="archive-notice">
