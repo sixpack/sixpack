@@ -1,4 +1,6 @@
 $(function () {
+  var viewport_height = window.innerHeight;
+
   // Display correct URL on "no-experiments" page.  
   $('#base-domain').html(document.location.origin);
 
@@ -33,7 +35,7 @@ $(function () {
 
       el.css('visibility', 'visible');
     }, {
-      offset: 'bottom-in-view'
+      offset: viewport_height + (viewport_height * 0.5)
     });
   }
 });
