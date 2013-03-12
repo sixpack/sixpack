@@ -7,10 +7,7 @@ $(function () {
   $('#base-domain').html(document.location.origin);
 
   // Draw charts on Details page.
-  if ($('#details-page').length) { 
-    var path = document.location.pathname;
-    var experiment_name = path.slice(12, path.length - 1);
-
+  if ($('#details-page').length) {
     var experiment = new Experiment($('ul.experiments'), experiment_name, true);
   }
 
