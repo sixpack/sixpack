@@ -2,11 +2,7 @@
 {% block body %}
 
 <script type="text/javascript">
-  var experiments = [
-    {% for experiment in experiments %}
-      '{{ experiment }}',     
-    {% endfor %}
-  ];
+  var experiments = {{ experiments|list|tojson|safe }};
 </script>
 
 <div id="archive-notice">
