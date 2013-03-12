@@ -1,6 +1,8 @@
 $(function () {
   var viewport_height = window.innerHeight;
 
+  var include_archived = getParameterByName('include_archived') === 'True' ? true : false;
+
   // Display correct URL on "no-experiments" page.  
   $('#base-domain').html(document.location.origin);
 
@@ -9,7 +11,7 @@ $(function () {
     var path = document.location.pathname;
     var experiment_name = path.slice(12, path.length - 1);
 
-    var experiment = new Experiment($('ul.experiments'), experiment_name);
+    var experiment = new Experiment($('ul.experiments'), experiment_name, true);
   }
 
   // Draw charts on Dashboard page.
@@ -31,7 +33,7 @@ $(function () {
       if (el.data('loaded')) return;
       el.data('loaded', true);
 
-      var experiment = new Experiment(el, experiment_name);
+      var experiment = new Experiment(el, experiment_name, include_archived);
 
       el.css('visibility', 'visible');
     }, {
@@ -39,3 +41,16 @@ $(function () {
     });
   }
 });
+
+function getParameterByName (name) {
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regexS = "[\\?&]" + name + "=([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.search);
+
+  if (results == null) {
+    return '';
+  } else { 
+    return decodeURIComponent(results[1].replace(/\+/g, ' '));
+  }
+}

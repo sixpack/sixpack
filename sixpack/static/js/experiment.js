@@ -1,13 +1,14 @@
 var Experiment;
 $(function () {
 
-  Experiment = function (el, name, callback) {
+  Experiment = function (el, name, include_archived, callback) {
     var that = {}, my = {};
 
     _.templateSettings.variable = 'experiment';
 
     my.el = el;
     my.name = name;
+    my.include_archived = include_archived;
     my.callback = callback;
 
     my.template = _.template($('#experiment-template').html());
@@ -28,6 +29,12 @@ $(function () {
     };
 
     my.getData(function (data) {
+      // Remove archived experiments
+      if (!my.include_archived && data.is_archived) {
+          console.log (my.name, data.is_archived);
+          my.el.remove()
+          return;
+      }
       // Format some of the data before printing
       _.each(data.alternatives, function (alt, k) {
         data.alternatives[k].participant_count = my.addCommas(data.alternatives[k].participant_count);
