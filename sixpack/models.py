@@ -374,6 +374,10 @@ class Experiment(object):
         return None
 
     @staticmethod
+    def all_names(redis_conn):
+        return redis_conn.smembers(_key('experiments'))
+
+    @staticmethod
     def all(redis_conn, exclude_archived=True):
         experiments = []
         keys = redis_conn.smembers(_key('experiments'))

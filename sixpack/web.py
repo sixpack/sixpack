@@ -31,11 +31,10 @@ assets.register('css_all', css)
 # List of experiments
 @app.route("/")
 def hello():
-    archived = bool(request.args.get('include_archived', False))
-    exclude_archived = not archived
-    experiments = Experiment.all(REDIS, exclude_archived)
-    return render_template('dashboard.html',
-                           experiments=experiments, include_archived=archived)
+    #archived = bool(request.args.get('include_archived', False))
+    #exclude_archived = not archived
+    experiments = Experiment.all_names(REDIS)
+    return render_template('dashboard.html', experiments=experiments)
 
 
 # Details for experiment
