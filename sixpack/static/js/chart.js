@@ -83,6 +83,18 @@ $(function () {
         .attr("style", "stroke:" + color);
     };
 
+    my.drawCircle = function (data, color) {
+      color = color || "#9d5012";
+      my.svg.selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("r", 5)
+        .attr("cx", function(d) { return my.xScale(d.date); })
+        .attr("cy", function(d) { return my.yScale(d.close); })
+        .attr("style", "fill:" + color);
+    };
+
     my.drawArea = function (data) {
       var area = d3.svg.area()
         .x(function (d) {
@@ -147,7 +159,7 @@ $(function () {
     };
 
     my.dataExists = function (data) {
-      if (data.rate_data.length <= 2) {
+      if (data.rate_data.length === 0) {
         my.el.append("<p>Not enough data to chart</p>").fadeIn('fast');
         return false;
       }
@@ -214,6 +226,20 @@ $(function () {
       });
       rate_data[0][1] = max_rate;
 
+
+      var total_periods = rate_data.length;
+      console.log ('total_periods', total_periods)
+      if (total_periods === 1) {
+        var format = d3.time.format("%Y-%m-%d");
+        var d = new Date(rate_data[0][0]);
+        var rate_data = [
+          [format(new Date(d3.time.day.offset(d, -1))), min_rate * 0.80],
+          [rate_data[0][0], rate_data[0][1]],
+          [format(new Date(d3.time.day.offset(d, 2))), max_rate ],
+          [format(new Date(d3.time.day.offset(d, 3))), max_rate * 1.1]
+        ];
+      }
+
       var data = {
         rate_data: rate_data,
         d3_data: my.formatChartData(rate_data)
@@ -228,7 +254,11 @@ $(function () {
 
       var i = 0;
       _.each(my.data, function (data) {
-        my.drawLine(data.d3_data, my.colors[i]);
+        if (total_periods === 1) {
+          my.drawCircle(data.d3_data, my.colors[i]);
+        } else {
+          my.drawLine(data.d3_data, my.colors[i]);
+        }
         i++;
       });
 
