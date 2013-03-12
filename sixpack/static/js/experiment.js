@@ -19,8 +19,21 @@ $(function () {
       });
     };
 
+    // Add commas to a number
+    my.addCommas = function (n) {
+      while (/(\d+)(\d{3})/.test(n.toString())) {
+        n = n.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+      }
+      return n;
+    };
+
     my.getData(function (data) {
+      // Add commas to the participant count
+      _.each(data.alternatives, function (alt, k) {
+        data.alternatives[k].participant_count = my.addCommas(data.alternatives[k].participant_count);
+      });
       my.el.append(my.template(data));
+
       var chart = new Chart(my.name, data);
       chart.draw();
     });
