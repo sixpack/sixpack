@@ -31,7 +31,6 @@ $(function () {
     my.getData(function (data) {
       // Remove archived experiments
       if (!my.include_archived && data.is_archived) {
-          console.log (my.name, data.is_archived);
           my.el.remove()
           return;
       }
@@ -44,6 +43,7 @@ $(function () {
 
       var chart = new Chart(my.name, data);
       chart.draw();
+      my.callback();
     });
 
     return that;

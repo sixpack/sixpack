@@ -49,6 +49,7 @@
     margin: 0;
   }
   ul.experiments li {
+    opacity: 0.5;
     min-height: 240px;
     position: relative;
     padding: 8px 38px 20px;

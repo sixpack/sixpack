@@ -228,7 +228,6 @@ $(function () {
 
 
       var total_periods = rate_data.length;
-      console.log ('total_periods', total_periods)
       if (total_periods === 1) {
         var format = d3.time.format("%Y-%m-%d");
         var d = new Date(rate_data[0][0]);
