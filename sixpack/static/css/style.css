@@ -364,6 +364,10 @@ ul.experiments h4 {
   right: 38px;
   font-size: 12px;
 }
+.archive-is-not-active, 
+.archive-is-active {
+  display: none;
+}
 #dashboard-page ul.experiments li table {
   width: auto;
 }

@@ -16,6 +16,14 @@ $(function () {
 
   // Draw charts on Dashboard page.
   if ($('#dashboard-page').length) { 
+
+    // Toggle archive toolbar
+    if (include_archived) {
+      $('.archive-is-not-active').fadeIn('fast');
+    } else {
+      $('.archive-is-active').fadeIn('fast');
+    }
+
     if (experiments.length) {
       $('#archive-notice').fadeIn('fast');
       _.each(experiments, function (experiment_name) {
