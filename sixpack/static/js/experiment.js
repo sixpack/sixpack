@@ -31,7 +31,7 @@ $(function () {
       // Format some of the data before printing
       _.each(data.alternatives, function (alt, k) {
         data.alternatives[k].participant_count = my.addCommas(data.alternatives[k].participant_count);
-        data.alternatives[k].conversion_rate = data.alternatives[k].conversion_rate.toFixed(2)
+        data.alternatives[k].conversion_rate = data.alternatives[k].conversion_rate.toFixed(2) + '%'
       });
       my.el.append(my.template(data));
 
