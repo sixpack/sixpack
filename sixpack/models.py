@@ -462,7 +462,7 @@ class Alternative(object):
             'name': self.name,
             'data': data,
             'control': self.is_control(),
-            'conversion_rate': self.conversion_rate(),
+            'conversion_rate': float('%.2f' % (self.conversion_rate() * 100)),
             'z_score': self.z_score()
         }
 
