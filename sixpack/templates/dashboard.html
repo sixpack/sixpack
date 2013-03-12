@@ -5,7 +5,7 @@
   {% if experiments|length %}
     var experiments = [
       {% for experiment in experiments %}
-        '{{ experiment.name }}',     
+        '{{ experiment }}',     
       {% endfor %}
     ];
   {% endif %}
