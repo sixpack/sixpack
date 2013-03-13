@@ -318,10 +318,16 @@ class Experiment(object):
 
     @classmethod
     def find(cls, experiment_name, redis_conn, version=None):
-        if redis_conn.sismember(_key("experiments"), experiment_name):
-            return cls(experiment_name, Experiment.load_alternatives(experiment_name, redis_conn, version), redis_conn, version)
-        else:
-            raise ValueError('experiment does not exist')
+        if version is None:
+            version = redis_conn.get(_key("experiments:{0}".format(experiment_name)))
+            if version is None:
+                raise ValueError('experiment does not exist')
+
+        version = int(version)
+        return cls(experiment_name,
+                   Experiment.load_alternatives(experiment_name, redis_conn, version=version),
+                   redis_conn,
+                   version=version)
 
     @classmethod
     def find_or_create(cls, experiment_name, alternatives, redis_conn):
@@ -330,18 +336,12 @@ class Experiment(object):
 
         # We don't use the class method key here
         try:
-            # Note during refactor:
-            # We're not instantiating a new Experiment, rather than this load_alternatives hackery
+            # Get the most recent version of experiment_name
             exp = Experiment.find(experiment_name, redis_conn)
 
-            # get the existing alternatives
-            current_alternatives = exp.get_alternative_names()
-
-            # Make sure the alternative options are correct.
-            # If they are not, then we have to make a new version
-            # above `experiment` is then returned eventually
-            if sorted(current_alternatives) != sorted(alternatives):
-
+            # Make sure the alternative options are correct. If they are not,
+            # we have to make a new version.
+            if sorted(exp.get_alternative_names()) != sorted(alternatives):
                 # First, let's try to find a version of the experiment that -did- have this argument list
                 found = Experiment.find_with_alternatives(experiment_name, alternatives, redis_conn)
                 if found is not None:

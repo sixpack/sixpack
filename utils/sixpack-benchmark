@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+
+import time
+import random
+
+import sixpack_client
+
+
+exp_name = "benchmark-test"
+exp_alternatives = ["default", "alt1", "alt2", "alt3"]
+participants = 10000
+conversion_rates = dict(default=0.1, alt1=0.12, alt2=0.087, alt3=0.01)
+
+participate_time = 0.0
+convert_time = 0.0
+participate_count = 0
+convert_count = 0
+
+for i in xrange(0, participants):
+    # participate
+    sess = sixpack_client.Session()
+    start = time.time()
+    resp = sess.participate(exp_name, exp_alternatives)
+    participate_time += time.time() - start
+    participate_count += 1
+    alt = resp['alternative']['name']
+
+    # convert at approximately conversion_rate
+    if random.random() < conversion_rates[alt]:
+        start = time.time()
+        sess.convert(exp_name)
+        convert_time += time.time() - start
+        convert_count += 1
+
+print "Participate: %fs (%d)" % (participate_time / participate_count, participate_count)
+print "Convert: %fs (%d)" % (convert_time / convert_count, convert_count)
