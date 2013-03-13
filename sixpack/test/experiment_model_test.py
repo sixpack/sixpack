@@ -111,32 +111,27 @@ class TestExperimentModel(unittest.TestCase):
     def test_set_winner(self):
         exp = Experiment('test-winner', ['1', '2'], self.redis)
         exp.set_winner('1')
-        self.assertTrue(exp.has_winner())
+        self.assertTrue(exp.winner is not None)
 
         exp.set_winner('1')
-        winner = exp.get_winner()
-        self.assertEqual(winner, '1')
+        self.assertEqual(exp.winner, '1')
 
-    def test_has_winner(self):
-        exp = Experiment('test-winner', ['1', '2'], self.redis)
-        self.assertFalse(exp.has_winner())
-
-    def test_get_winner(self):
+    def test_winner(self):
         exp = Experiment.find_or_create('test-get-winner', ['1', '2'], self.redis)
-        self.assertIsNone(exp.get_winner())
+        self.assertIsNone(exp.winner)
 
         exp.set_winner('1')
-        self.assertEqual(exp.get_winner(), '1')
+        self.assertEqual(exp.winner, '1')
 
     def test_reset_winner(self):
         exp = Experiment('show-something-reset-winner', self.alternatives, self.redis)
         exp.save()
         exp.set_winner('yes')
-        self.assertTrue(exp.has_winner())
-        self.assertEqual(exp.get_winner(), 'yes')
+        self.assertTrue(exp.winner is not None)
+        self.assertEqual(exp.winner, 'yes')
 
         exp.reset_winner()
-        self.assertFalse(exp.has_winner())
+        self.assertIsNone(exp.winner)
 
     def test_winner_key(self):
         exp = Experiment.find_or_create('winner-key', ['win', 'lose'], self.redis)

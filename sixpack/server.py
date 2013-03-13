@@ -133,23 +133,22 @@ class Sixpack(object):
         if client_id is None or experiment_name is None or alts is None:
             return json_error({'message': 'missing arguments'}, request, 400)
 
-        # Get the experiment ready for action
-        client = Client(client_id, self.redis)
         experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
 
-        resp = {}
-
+        alternative = None
         if force and force in alts:
             alternative = force
-        elif not cfg.get('enabled', True) or should_exclude_visitor(request):
+        elif not cfg.get('enabled', True):
             alternative = alts[0]
-            resp['excluded'] = True
-        elif experiment.has_winner():
-            alternative = experiment.get_winner().name
+        elif experiment.winner is not None:
+            alternative = experiment.winner
+        elif should_exclude_visitor(request):
+            alternative = alts[0]
         else:
             dt = None
             if request.args.get("datetime"):
                 dt = dateutil.parser.parse(request.args.get("datetime"))
+            client = Client(client_id, self.redis)
             alternative = experiment.get_alternative(client, dt=dt).name
 
         resp = {
