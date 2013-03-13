@@ -145,7 +145,7 @@ class Sixpack(object):
             alternative = alts[0]
             resp['excluded'] = True
         elif experiment.has_winner():
-            alternative = experiment.get_winner().name
+            alternative = experiment.get_winner()
         else:
             dt = None
             if request.args.get("datetime"):
