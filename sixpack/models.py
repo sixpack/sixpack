@@ -220,7 +220,7 @@ class Experiment(object):
     def convert(self, client, dt=None):
         alternative = self.get_alternative_by_client_id(client)
 
-        if not alternative:  # TODO or has already converted?
+        if not alternative:
             raise ValueError('this client was not participaing')
 
         alternative.record_conversion(client, dt=dt)
