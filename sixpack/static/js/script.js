@@ -21,7 +21,7 @@ $(function () {
     left: 'auto' // Left position relative to parent in px
   };
 
-  // Display correct URL on "no-experiments" page.  
+  // Display correct URL on "no-experiments" page.
   $('#base-domain').html(document.location.origin);
 
   // Draw charts on Details page.
@@ -37,7 +37,7 @@ $(function () {
   }
 
   // Draw charts on Dashboard page.
-  if ($('#dashboard-page').length) { 
+  if ($('#dashboard-page').length) {
 
     // Toggle archive toolbar
     if (include_archived) {
@@ -73,6 +73,8 @@ $(function () {
         });
       });
       el.css('visibility', 'visible');
+    }, {
+      offset: viewport_height + (viewport_height)
     });
   }
 });
@@ -83,9 +85,9 @@ function getParameterByName (name) {
   var regex = new RegExp(regexS);
   var results = regex.exec(window.location.search);
 
-  if (results == null) {
+  if (results === null) {
     return '';
-  } else { 
+  } else {
     return decodeURIComponent(results[1].replace(/\+/g, ' '));
   }
 }

@@ -2,6 +2,7 @@ from flask import Flask
 from flask import render_template, abort, request, url_for, redirect, jsonify
 from flask.ext.seasurf import SeaSurf
 from flask.ext.assets import Environment, Bundle
+from flask_debugtoolbar import DebugToolbarExtension
 
 from config import CONFIG as cfg
 from db import REDIS
@@ -9,13 +10,14 @@ from models import Experiment
 import utils
 
 app = Flask(__name__)
+app.debug = True
 csrf = SeaSurf(app)
 
 js = Bundle('js/jquery.js', 'js/d3.js',
             'js/bootstrap.js', 'js/experiment.js', 'js/chart.js',
             'js/script.js', 'js/underscore-min.js', 'js/spin.min.js',
             'js/waypoints.min.js',
-            filters=['closure_js'],
+            # filters=['closure_js'],
             output="{0}/sixpack.js".format(cfg.get('asset_path', 'gen')))
 
 css = Bundle('css/bootstrap.css',
@@ -140,6 +142,7 @@ def find_or_404(experiment_name):
 app.secret_key = cfg.get('secret_key')
 app.jinja_env.filters['number_to_percent'] = utils.number_to_percent
 app.jinja_env.filters['number_format'] = utils.number_format
+toolbar = DebugToolbarExtension(app)
 
 
 def start(environ, start_response):
