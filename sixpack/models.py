@@ -56,6 +56,8 @@ class Experiment(object):
         self.random_sample = RANDOM_SAMPLE
         self.alternatives = self.initialize_alternatives(alternatives)
         self._version = version
+        # False here is a sentinal value for "not looked up yet"
+        self._winner = False
 
     def __repr__(self):
         return '<Experiment: {0} (version: {1})>'.format(self.name, self.version())
@@ -69,7 +71,7 @@ class Experiment(object):
             'total_participants': self.total_participants(),
             'total_conversions': self.total_conversions(),
             'description': self.get_description(),
-            'has_winner': self.has_winner(),
+            'has_winner': self.winner is not None,
             'is_archived': self.is_archived(),
             'version': self.version()
         }
@@ -225,22 +227,20 @@ class Experiment(object):
 
         return alternative.name
 
+    @property
+    def winner(self):
+        if self._winner == False:
+            self._winner = self.redis.get(self._winner_key)
+        return self._winner
+
     def set_winner(self, alternative_name):
         if alternative_name not in self.get_alternative_names():
             raise ValueError('this alternative is not in this experiment')
-
+        self._winner = alternative_name
         self.redis.set(self._winner_key, alternative_name)
 
-    def has_winner(self):
-        return self.redis.exists(self._winner_key)
-
-    def get_winner(self):
-        if self.has_winner():
-            return self.redis.get(self._winner_key)
-
-        return None
-
     def reset_winner(self):
+        self._winner = None
         self.redis.delete(self._winner_key)
 
     @property
@@ -480,7 +480,7 @@ class Alternative(object):
         return self.experiment.control().name == self.name
 
     def is_winner(self):
-        return self.experiment.has_winner() and self.experiment.get_winner() == self.name
+        return self.experiment.winner == self.name
 
     def participant_count(self):
         key = _key("participations:{0}:{1}:all".format(self.experiment.rawkey(), self.name))

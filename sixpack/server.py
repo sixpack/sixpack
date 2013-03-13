@@ -140,8 +140,8 @@ class Sixpack(object):
             alternative = force
         elif not cfg.get('enabled', True):
             alternative = alts[0]
-        elif experiment.has_winner():
-            alternative = experiment.get_winner()
+        elif experiment.winner is not None:
+            alternative = experiment.winner
         elif should_exclude_visitor(request):
             alternative = alts[0]
         else:
