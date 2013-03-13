@@ -6,7 +6,7 @@ $(function () {
   var spinner_config = {
     lines: 13, // The number of lines to draw
     length: 8, // The length of each line
-    width: 20, // The line thickness
+    width: 15, // The line thickness
     radius: 40, // The radius of the inner circle
     corners: 1, // Corner roundness (0..1)
     rotate: 0, // The rotation offset
