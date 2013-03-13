@@ -1,6 +1,6 @@
 /* BEGIN: Background */
   body {
-    background: url('../img/background-tile.png') repeat;
+    background: #212425 url('../img/background-tile.png') repeat;
     font-family: 'Helvetica Neue',Helvetica,Arial Geneva,sans-serif;
     font-weight: 300;
     color: #FAF3EE;
