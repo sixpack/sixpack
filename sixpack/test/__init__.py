@@ -4,3 +4,9 @@ import os
 config_path = os.environ.get('SIXPACK_CONFIG', None)
 if config_path is None:
     os.environ['SIXPACK_CONFIG'] = os.path.abspath(os.path.join(os.path.abspath(__file__), '..', '..', '..', 'config.yml'))
+
+
+from sixpack import db
+
+for key in db.REDIS.keys("sixpack:*"):
+    db.REDIS.delete(key)
