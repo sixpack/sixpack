@@ -209,6 +209,10 @@ $(function () {
         });
       });
 
+      if (aggregate_rates.length === 0) {
+        return;
+      }
+      
       var data_intervals = _.uniq(_.map(aggregate_rates, function (d, k) {
         return d[0];
       }));
