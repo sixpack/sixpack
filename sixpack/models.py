@@ -470,7 +470,6 @@ class Alternative(object):
             'conversion_rate': float('%.2f' % (self.conversion_rate() * 100)),
             'is_control': self.is_control(),
             'is_winner': self.is_winner(),
-            'conversion_rate': self.conversion_rate(),
             'z_score': self.z_score(),
             'participant_count': self.participant_count(),
             'confidence_level': self.confidence_level()
