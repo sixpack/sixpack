@@ -74,7 +74,7 @@ $(function () {
       });
       el.css('visibility', 'visible');
     }, {
-      offset: viewport_height + (viewport_height)
+      offset: viewport_height + (viewport_height * 0.5)
     });
   }
 });
