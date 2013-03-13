@@ -69,6 +69,8 @@ class Experiment(object):
             'total_participants': self.total_participants(),
             'total_conversions': self.total_conversions(),
             'description': self.get_description(),
+            'has_winner': self.has_winner(),
+            'is_archived': self.is_archived(),
             'version': self.version()
         }
 
@@ -372,6 +374,10 @@ class Experiment(object):
         return None
 
     @staticmethod
+    def all_names(redis_conn):
+        return redis_conn.smembers(_key('experiments'))
+
+    @staticmethod
     def all(redis_conn, exclude_archived=True):
         experiments = []
         keys = redis_conn.smembers(_key('experiments'))
@@ -461,9 +467,12 @@ class Alternative(object):
         objectified = {
             'name': self.name,
             'data': data,
-            'control': self.is_control(),
-            'conversion_rate': float('%.2f' % (self.conversion_rate() * 100)),
-            'z_score': self.z_score()
+            'is_control': self.is_control(),
+            'is_winner': self.is_winner(),
+            'z_score': self.z_score(),
+            'participant_count': self.participant_count(),
+            'confidence_level': self.confidence_level(),
+            'conversion_rate': float('%.2f' % (self.conversion_rate() * 100))
         }
 
         return objectified
