@@ -1,4 +1,4 @@
-# use hiredis
+hiredis==0.1.1
 redis==2.7.0
 mock==1.0b1
 Werkzeug==0.8.3
@@ -12,3 +12,4 @@ jsmin==2.0.2-1
 python-dateutil==1.5
 yuicompressor==2.4.7
 closure==20121212
+Flask-DebugToolbar==0.7.1
