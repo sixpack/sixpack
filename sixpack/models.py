@@ -330,9 +330,8 @@ class Experiment(object):
 
         # We don't use the class method key here
         try:
-            Experiment.find(experiment_name, redis_conn)
             # Note during refactor:
-            # We're not instanciating a new Experiment, rather than this load_alternatives hackery
+            # We're not instantiating a new Experiment, rather than this load_alternatives hackery
             exp = Experiment.find(experiment_name, redis_conn)
 
             # get the existing alternatives
