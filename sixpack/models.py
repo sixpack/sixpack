@@ -187,14 +187,14 @@ class Experiment(object):
         return range(0, (current_version + 1))
 
     def version(self):
-        if self._version is not None:
-            return self._version
-
-        version = self.redis.get(_key("e:{0}".format(self.name)))
-        return int(version) if version else 0
+        if self._version is None:
+            v = self.redis.get(_key("e:{0}".format(self.name)))
+            self._version = int(v) if v else 0
+        return self._version
 
     def increment_version(self):
         self.redis.incr(_key('e:{0}'.format(self.name)))
+        self._version = None
 
     def convert(self, client, dt=None):
         alternative = self.existing_alternative(client)
