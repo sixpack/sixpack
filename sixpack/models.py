@@ -86,6 +86,7 @@ class Experiment(object):
 
         pipe.execute()
 
+    @property
     def control(self):
         return self.alternatives[0]
 
@@ -235,7 +236,7 @@ class Experiment(object):
 
     def get_alternative(self, client, dt=None):
         if self.is_archived():
-            return self.control()
+            return self.control
 
         chosen_alternative = self.get_alternative_by_client_id(client)
         if not chosen_alternative:
@@ -435,7 +436,7 @@ class Alternative(object):
         return objectified
 
     def is_control(self):
-        return self.experiment.control().name == self.name
+        return self.experiment.control.name == self.name
 
     def is_winner(self):
         return self.experiment.winner == self.name
@@ -565,7 +566,7 @@ class Alternative(object):
         if self.is_control():
             return 'N/A'
 
-        control = self.experiment.control()
+        control = self.experiment.control
         ctr_e = self.conversion_rate()
         ctr_c = control.conversion_rate()
 

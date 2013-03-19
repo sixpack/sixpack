@@ -102,7 +102,7 @@ class Sixpack(object):
                     dt = dateutil.parser.parse(request.args.get("datetime"))
                 alternative = experiment.convert(client, dt=dt)
             else:
-                alternative = experiment.control().name
+                alternative = experiment.control.name
         except ValueError as e:
             return json_error({'message': str(e)}, request, 400)
 

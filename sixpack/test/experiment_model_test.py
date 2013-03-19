@@ -31,7 +31,7 @@ class TestExperimentModel(unittest.TestCase):
         pass
 
     def test_control(self):
-        control = self.exp_1.control()
+        control = self.exp_1.control
         self.assertEqual(control.name, 'yes')
 
     def test_created_at(self):
