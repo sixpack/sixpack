@@ -51,7 +51,7 @@ for d in range(1, 8):
             client_id, exp = tup
             client = Client(client_id, REDIS)
             experiment = Experiment.find(exp.name, REDIS)
-            alternative = experiment.get_alternative_by_client_id(client)
+            alternative = experiment.existing_alternative(client)
             alternative.record_conversion(client, _date)
             #alternative = experiment.convert(client, _date)
 

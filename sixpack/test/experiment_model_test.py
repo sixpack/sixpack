@@ -159,7 +159,7 @@ class TestExperimentModel(unittest.TestCase):
         # most likely integration tests
 
     # See above note for the next 5 tests
-    def _test_get_alternative_by_client_id(self):
+    def _test_existing_alternative(self):
         pass
 
     def _test_has_converted_by_client(self):

@@ -205,7 +205,7 @@ class Experiment(object):
         self.redis.incr(_key('e:{0}'.format(self.name)))
 
     def convert(self, client, dt=None):
-        alternative = self.get_alternative_by_client_id(client)
+        alternative = self.existing_alternative(client)
 
         if not alternative:
             raise ValueError('this client was not participaing')
@@ -238,14 +238,14 @@ class Experiment(object):
         if self.is_archived():
             return self.control
 
-        chosen_alternative = self.get_alternative_by_client_id(client)
+        chosen_alternative = self.existing_alternative(client)
         if not chosen_alternative:
             chosen_alternative = self.choose_alternative(client=client)
             chosen_alternative.record_participation(client, dt=dt)
 
         return chosen_alternative
 
-    def get_alternative_by_client_id(self, client):
+    def existing_alternative(self, client):
         alts = self.get_alternative_names()
         keys = [_key("p:{0}:{1}:all".format(self.rawkey(), alt)) for alt in alts]
         altkey = first_key_with_bit_set(keys=keys, args=[client.sequential_id])
