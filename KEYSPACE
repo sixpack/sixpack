@@ -8,6 +8,7 @@
 e                                                     # SET containing all experiment names
   e:test-name                                         # KEY containing current version id
   e:test-name/0                                       # HASH containing metadata about the experiment (created_at, etc.)
+  e:test-name/0:users                                 # SORTED SET mapping external user ids to internal ones
   e:test-name/0:alternatives                          # LIST containing alternative names
   e:test-name/0:winner                                # KEY containing the winning alternative name
 

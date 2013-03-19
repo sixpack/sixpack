@@ -136,7 +136,6 @@ class TestExperimentModel(unittest.TestCase):
 
     def test_get_alternative(self):
         client = Client(10, self.redis)
-        client._sequential_id = 100
 
         exp = Experiment.find_or_create('archived-control', ['w', 'l'], self.redis)
         exp.archive()

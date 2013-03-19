@@ -18,14 +18,6 @@ class Client(object):
         self.client_id = client_id
         self._sequential_id = None
 
-    @property
-    def sequential_id(self):
-        if self._sequential_id is None:
-            self._sequential_id = sequential_id(
-                'internal_user_ids',
-                self.client_id)
-        return self._sequential_id
-
 
 class Experiment(object):
 
@@ -234,6 +226,10 @@ class Experiment(object):
     def _winner_key(self):
         return "{0}:winner".format(self.key())
 
+    def sequential_id(self, client):
+        """Return the sequential id for this test for the passed in client"""
+        return sequential_id("e:{0}:users".format(self.rawkey()), client.client_id)
+
     def get_alternative(self, client, dt=None):
         if self.is_archived():
             return self.control
@@ -248,7 +244,7 @@ class Experiment(object):
     def existing_alternative(self, client):
         alts = self.get_alternative_names()
         keys = [_key("p:{0}:{1}:all".format(self.rawkey(), alt)) for alt in alts]
-        altkey = first_key_with_bit_set(keys=keys, args=[client.sequential_id])
+        altkey = first_key_with_bit_set(keys=keys, args=[self.sequential_id(client)])
         if altkey:
             idx = keys.index(altkey)
             return Alternative(alts[idx], self, self.redis)
@@ -523,7 +519,7 @@ class Alternative(object):
             _key("p:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y-%m'))),
             _key("p:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y-%m-%d'))),
         ]
-        msetbit(keys=keys, args=([client.sequential_id, 1] * len(keys)))
+        msetbit(keys=keys, args=([self.experiment.sequential_id(client), 1] * len(keys)))
 
     def record_conversion(self, client, dt=None):
         """Record a user's conversion in a test along with a given variation"""
@@ -552,7 +548,7 @@ class Alternative(object):
             _key("c:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y-%m'))),
             _key("c:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y-%m-%d'))),
         ]
-        msetbit(keys=keys, args=([client.sequential_id, 1] * len(keys)))
+        msetbit(keys=keys, args=([self.experiment.sequential_id(client), 1] * len(keys)))
 
     def conversion_rate(self):
         try:
