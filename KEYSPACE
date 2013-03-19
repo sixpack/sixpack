@@ -1,56 +1,56 @@
 # Notes:
-#   - sixpack prefix omitted
+#   - sxp prefix omitted
 #   - test/alternative names cannot start with an underscore
 #   - we should be careful to ensure that clients which have not participated in the current experiment version cannot convert on that version
 #   - we should probably use shorter type names (experiments -> exps) just to be judicious about memory
 #   - all keys should be versioned, not just tests after the first
 
-experiments                                                     # SET containing all experiment names
-  experiments:test-name                                         # KEY containing current version id
-  experiments:test-name/0                                       # HASH containing metadata about the experiment (created_at, etc.)
-  experiments:test-name/0:alternatives                          # LIST containing alternative names
-  experiments:test-name/0:winner                                # KEY containing the winning alternative name
+e                                                     # SET containing all experiment names
+  e:test-name                                         # KEY containing current version id
+  e:test-name/0                                       # HASH containing metadata about the experiment (created_at, etc.)
+  e:test-name/0:alternatives                          # LIST containing alternative names
+  e:test-name/0:winner                                # KEY containing the winning alternative name
 
-participations
-  participations:test-name/0:_all:all                           # BITMAP containing all participations
-  participations:test-name/0:_all:2013
-  participations:test-name/0:_all:2013-01
-  participations:test-name/0:_all:2013-01-28
-  participations:test-name/0:alternative-name:all               # BITMAP containing all participations for an alternative
-  participations:test-name/0:alternative-name:2013
-  participations:test-name/0:alternative-name:2013-01
-  participations:test-name/0:alternative-name:2013-01-28
+p
+  p:test-name/0:_all:all                              # BITMAP containing all participations
+  p:test-name/0:_all:2013
+  p:test-name/0:_all:2013-01
+  p:test-name/0:_all:2013-01-28
+  p:test-name/0:alternative-name:all                  # BITMAP containing all participations for an alternative
+  p:test-name/0:alternative-name:2013
+  p:test-name/0:alternative-name:2013-01
+  p:test-name/0:alternative-name:2013-01-28
 
-conversions
-  conversions:test-name/0:_all:users:all                        # BITMAP containing conversion for all alternatives for all time
-  conversions:test-name/0:_all:users:2013
-  conversions:test-name/0:_all:users:2013-01
-  conversions:test-name/0:_all:users:2013-01-28
-  conversions:test-name/0:alternative-name:users:all            # BITMAP containing all conversions for a single alternative for all time
-  conversions:test-name/0:alternative-name:users:2013
-  conversions:test-name/0:alternative-name:users:2013-01
-  conversions:test-name/0:alternative-name:users:2013-01-28
-  conversions:test-name/0:_all:sum:all                          # KEY containing the total conversion magnitude for all alternatives for all time
-  conversions:test-name/0:_all:sum:2013
-  conversions:test-name/0:_all:sum:2013-01
-  conversions:test-name/0:_all:sum:2013-01-28
-  conversions:test-name/0:alternative-name:sum:all              # KEY containing the total conversion magnitude for a single alternative for all time
-  conversions:test-name/0:alternative-name:sum:2013
-  conversions:test-name/0:alternative-name:sum:2013-01
-  conversions:test-name/0:alternative-name:sum:2013-01-28
-  conversions:test-name/0:_all:vals:all                         # LIST containing conversion magnitudes for all alternatives for all time
-  conversions:test-name/0:_all:vals:2013
-  conversions:test-name/0:_all:vals:2013-01
-  conversions:test-name/0:_all:vals:2013-01-28
-  conversions:test-name/0:alternative-name:vals:all             # LIST containing conversion magnitudes for a single alternative for all time
-  conversions:test-name/0:alternative-name:vals:2013
-  conversions:test-name/0:alternative-name:vals:2013-01
-  conversions:test-name/0:alternative-name:vals:2013-01-28
-  conversions:test-name/0:_all:stddev:all                       # KEY containing the stddev of conversion magnitudes for all alternatives for all time
-  conversions:test-name/0:_all:stddev:2013
-  conversions:test-name/0:_all:stddev:2013-01
-  conversions:test-name/0:_all:stddev:2013-01-28
-  conversions:test-name/0:alternative-name:stddev:all           # KEY containing the stddev of conversion magnitudes for a single alternative for all time
-  conversions:test-name/0:alternative-name:stddev:2013
-  conversions:test-name/0:alternative-name:stddev:2013-01
-  conversions:test-name/0:alternative-name:stddev:2013-01-28
+c
+  c:test-name/0:_all:users:all                        # BITMAP containing conversion for all alternatives for all time
+  c:test-name/0:_all:users:2013
+  c:test-name/0:_all:users:2013-01
+  c:test-name/0:_all:users:2013-01-28
+  c:test-name/0:alternative-name:users:all            # BITMAP containing all conversions for a single alternative for all time
+  c:test-name/0:alternative-name:users:2013
+  c:test-name/0:alternative-name:users:2013-01
+  c:test-name/0:alternative-name:users:2013-01-28
+  c:test-name/0:_all:sum:all                          # KEY containing the total conversion magnitude for all alternatives for all time
+  c:test-name/0:_all:sum:2013
+  c:test-name/0:_all:sum:2013-01
+  c:test-name/0:_all:sum:2013-01-28
+  c:test-name/0:alternative-name:sum:all              # KEY containing the total conversion magnitude for a single alternative for all time
+  c:test-name/0:alternative-name:sum:2013
+  c:test-name/0:alternative-name:sum:2013-01
+  c:test-name/0:alternative-name:sum:2013-01-28
+  c:test-name/0:_all:vals:all                         # LIST containing conversion magnitudes for all alternatives for all time
+  c:test-name/0:_all:vals:2013
+  c:test-name/0:_all:vals:2013-01
+  c:test-name/0:_all:vals:2013-01-28
+  c:test-name/0:alternative-name:vals:all             # LIST containing conversion magnitudes for a single alternative for all time
+  c:test-name/0:alternative-name:vals:2013
+  c:test-name/0:alternative-name:vals:2013-01
+  c:test-name/0:alternative-name:vals:2013-01-28
+  c:test-name/0:_all:stddev:all                       # KEY containing the stddev of conversion magnitudes for all alternatives for all time
+  c:test-name/0:_all:stddev:2013
+  c:test-name/0:_all:stddev:2013-01
+  c:test-name/0:_all:stddev:2013-01-28
+  c:test-name/0:alternative-name:stddev:all           # KEY containing the stddev of conversion magnitudes for a single alternative for all time
+  c:test-name/0:alternative-name:stddev:2013
+  c:test-name/0:alternative-name:stddev:2013-01
+  c:test-name/0:alternative-name:stddev:2013-01-28
