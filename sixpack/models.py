@@ -32,6 +32,7 @@ class Experiment(object):
         self._version = version
         # False here is a sentinal value for "not looked up yet"
         self._winner = False
+        self._sequential_ids = dict()
 
     def __repr__(self):
         return '<Experiment: {0} (version: {1})>'.format(self.name, self.version())
@@ -228,7 +229,10 @@ class Experiment(object):
 
     def sequential_id(self, client):
         """Return the sequential id for this test for the passed in client"""
-        return sequential_id("e:{0}:users".format(self.rawkey()), client.client_id)
+        if client.client_id not in self._sequential_ids:
+            id_ = sequential_id("e:{0}:users".format(self.rawkey()), client.client_id)
+            self._sequential_ids[client.client_id] = id_
+        return self._sequential_ids[client.client_id]
 
     def get_alternative(self, client, dt=None):
         if self.is_archived():
