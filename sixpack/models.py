@@ -143,11 +143,15 @@ class Experiment(object):
         return self._get_stats('conversions', 'years')
 
     def _get_stats(self, stat_type, stat_range):
-        if stat_type not in ['participations', 'conversions']:
-            raise ValueError
+        if stat_type == 'participations':
+            stat_type = 'p'
+        elif stat_type == 'conversions':
+            stat_type = 'c'
+        else:
+            raise ValueError("Unrecognized stat type: {0}".format(stat_type))
 
         if stat_range not in ['days', 'months', 'years']:
-            raise ValueError
+            raise ValueError("Unrecognized stat range: {0}".format(stat_range))
 
         pipe = self.redis.pipe()
 
@@ -155,7 +159,7 @@ class Experiment(object):
         search_key = _key("{0}:{1}:{2}".format(stat_type, self.rawkey(), stat_range))
         keys = self.redis.smembers(search_key)
         for k in keys:
-            mod = '' if stat_type == 'participations' else "users:"
+            mod = '' if stat_type == 'p' else "users:"
             range_key = _key("{0}:{1}:_all:{2}{3}".format(stat_type, self.rawkey(), mod, k))
             pipe.bitcount(range_key)
 
@@ -259,10 +263,12 @@ class Experiment(object):
         return chosen_alternative
 
     def get_alternative_by_client_id(self, client):
-        keys = [_key("p:{0}:{1}:all".format(self.rawkey(), alt)) for alt in self.get_alternative_names()]
-        alt = first_key_with_bit_set(keys=keys, args=[client.sequential_id])
-        if alt:
-            return Alternative(alt, self, self.redis)
+        alts = self.get_alternative_names()
+        keys = [_key("p:{0}:{1}:all".format(self.rawkey(), alt)) for alt in alts]
+        altkey = first_key_with_bit_set(keys=keys, args=[client.sequential_id])
+        if altkey:
+            idx = keys.index(altkey)
+            return Alternative(alts[idx], self, self.redis)
 
         return None
 
