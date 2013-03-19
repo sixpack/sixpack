@@ -218,12 +218,10 @@ def _json_resp(in_dict, request, status=None):
 # Method to run with built-in server
 def create_app():
     app = Sixpack(db.REDIS)
-
     return app
 
 
 # Method to run with gunicorn
 def start(environ, start_response):
     app = Sixpack(db.REDIS)
-
     return app(environ, start_response)

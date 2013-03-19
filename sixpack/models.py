@@ -390,7 +390,6 @@ class Alternative(object):
         return "<Alternative {0} (Experiment {1})".format(self.name, self.experiment.name)
 
     def objectify_by_period(self, period):
-
         PERIOD_TO_METHOD_MAP = {
             'day': {
                 'participants': self.participants_by_day,
@@ -562,7 +561,6 @@ class Alternative(object):
             return 0
 
     def z_score(self):
-
         if self.is_control():
             return 'N/A'
 
