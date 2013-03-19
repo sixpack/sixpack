@@ -48,7 +48,6 @@ def details(experiment_name):
 
 @app.route("/experiment/<experiment_name>.json")
 def json_details(experiment_name):
-
     period = request.args.get('period', None)
     if period not in ['day', 'week', 'month', 'year']:
         err = {'error': 'invalid argument: {0}'.format(period), 'status': 400}

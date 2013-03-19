@@ -87,7 +87,6 @@ class Sixpack(object):
             return json_success({'excluded': 'true'}, request)
 
         experiment_name = request.args.get('experiment')
-
         client_id = request.args.get('client_id')
 
         if client_id is None or experiment_name is None:
