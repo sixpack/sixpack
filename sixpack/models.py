@@ -16,7 +16,6 @@ class Client(object):
     def __init__(self, client_id, redis_conn):
         self.redis = redis_conn
         self.client_id = client_id
-        self._sequential_id = None
 
 
 class Experiment(object):
