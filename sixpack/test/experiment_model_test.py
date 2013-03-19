@@ -105,9 +105,6 @@ class TestExperimentModel(unittest.TestCase):
         difference = new_version - original_version
         self.assertEqual(difference, 1)
 
-    def test_convert(self):
-        pass
-
     def test_set_winner(self):
         exp = Experiment('test-winner', ['1', '2'], self.redis)
         exp.set_winner('1')
