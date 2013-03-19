@@ -27,24 +27,6 @@ class Client(object):
         return self._sequential_id
 
 
-class ExperimentCollection(object):
-
-    def __init__(self, redis_conn):
-        self.redis = redis_conn
-        self.experiments = []
-
-    def __iter__(self):
-        self.experiments = []
-        for exp_key in self.redis.smembers(_key('e')):
-            self.experiments.append(exp_key)
-
-        return self
-
-    def __next__(self):
-        for i in self.experiments:
-            yield Experiment.find(i, self.redis)
-
-
 class Experiment(object):
 
     def __init__(self, name, alternatives, redis_conn, version=None):
@@ -394,24 +376,6 @@ class Experiment(object):
     def is_valid(experiment_name):
         return (isinstance(experiment_name, basestring) and
                 VALID_EXPERIMENT_ALTERNATIVE_RE.match(experiment_name) is not None)
-
-
-class AlternativeCollection(object):
-
-    def __init__(self, redis_conn):
-        self.redis = redis_conn
-        self.alternatives = []
-
-    # def __iter__(self):
-    #     self.alternatives = []
-    #     for exp_key in self.redis.smembers(_key('e')):
-    #         self.experiments.append(exp_key)
-
-    #     return self
-
-    # def __next__(self):
-    #     for i in self.alternatives:
-    #         yield Experiment.find(i)
 
 
 class Alternative(object):
