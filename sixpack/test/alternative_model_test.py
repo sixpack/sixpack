@@ -17,7 +17,7 @@ class TestAlternativeModel(unittest.TestCase):
 
         alt = Alternative('yes', exp, self.redis)
         key = alt.key()
-        self.assertEqual(key, 'sixpack:show-something:yes')
+        self.assertEqual(key, 'sxp:show-something:yes')
 
     def test_is_valid(self):
         valid = Alternative.is_valid('1')

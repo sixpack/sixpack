@@ -2,7 +2,7 @@ enabled: True
 
 redis_port: 6379
 redis_host: localhost
-redis_prefix: sixpack
+redis_prefix: sxp
 redis_db: 15
 
 full_response: True
