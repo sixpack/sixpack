@@ -183,15 +183,15 @@ class TestExperimentModel(unittest.TestCase):
 
     def test_key(self):
         key = self.exp_1.key()
-        self.assertEqual(key, 'sxp:experiments:show-something-awesome/0')
+        self.assertEqual(key, 'sxp:e:show-something-awesome/0')
 
         key_2 = self.exp_2.key()
-        self.assertEqual(key_2, 'sxp:experiments:dales-lagunitas/0')
+        self.assertEqual(key_2, 'sxp:e:dales-lagunitas/0')
 
         exp = Experiment('brews', ['mgd', 'bud-heavy'], self.redis)
         exp.increment_version()
         key_3 = exp.key()
-        self.assertEqual(key_3, 'sxp:experiments:brews/1')
+        self.assertEqual(key_3, 'sxp:e:brews/1')
 
     def test_find(self):
         exp = Experiment('crunches-situps', ['crunches', 'situps'], self.redis)

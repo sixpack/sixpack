@@ -75,7 +75,7 @@ class TestAlternativeModel(unittest.TestCase):
         # alt = Alternative('yes', 'show-something', self.redis)
         # count = alt.completed_count()
 
-        # key = _key("conversions:{0}/1:{1}".format(alt.experiment_name, alt.name))
+        # key = _key("c:{0}/1:{1}".format(alt.experiment_name, alt.name))
         # self.redis.bitcount.assert_called_once_with(key)
         # self.assertTrue(isinstance(count, Number))
 

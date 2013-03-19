@@ -35,7 +35,7 @@ class ExperimentCollection(object):
 
     def __iter__(self):
         self.experiments = []
-        for exp_key in self.redis.smembers(_key('experiments')):
+        for exp_key in self.redis.smembers(_key('e')):
             self.experiments.append(exp_key)
 
         return self
@@ -92,10 +92,10 @@ class Experiment(object):
     def save(self):
         pipe = self.redis.pipeline()
         if self.is_new_record():
-            pipe.sadd(_key('experiments'), self.name)
+            pipe.sadd(_key('e'), self.name)
 
             # Set version to zero
-            pipe.set(_key("experiments:{0}".format(self.name)), 0)
+            pipe.set(_key("e:{0}".format(self.name)), 0)
 
         pipe.hset(self.key(), 'created_at', datetime.now())
         # reverse here and use lpush to keep consistent with using lrange
@@ -114,10 +114,10 @@ class Experiment(object):
         return [alt.name for alt in self.alternatives]
 
     def is_new_record(self):
-        return not self.redis.sismember(_key("experiments"), self.name)
+        return not self.redis.sismember(_key("e"), self.name)
 
     def total_participants(self):
-        key = _key("participations:{0}:_all:all".format(self.rawkey()))
+        key = _key("p:{0}:_all:all".format(self.rawkey()))
         return self.redis.bitcount(key)
 
     def participants_by_day(self):
@@ -130,7 +130,7 @@ class Experiment(object):
         return self._get_stats('participations', 'years')
 
     def total_conversions(self):
-        key = _key("conversions:{0}:_all:users:all".format(self.rawkey()))
+        key = _key("c:{0}:_all:users:all".format(self.rawkey()))
         return self.redis.bitcount(key)
 
     def conversions_by_day(self):
@@ -182,10 +182,10 @@ class Experiment(object):
 
     def delete(self):
         pipe = self.redis.pipeline()
-        pipe.srem(_key('experiments'), self.name)
+        pipe.srem(_key('e'), self.name)
         pipe.delete(self.key())
         pipe.delete(_key(self.rawkey()))
-        pipe.delete(_key('experiments:{0}'.format(self.name)))
+        pipe.delete(_key('e:{0}'.format(self.name)))
 
         # Consider a 'non-keys' implementation of this
         keys = self.redis.keys('*{0}*'.format(self.rawkey()))
@@ -211,11 +211,11 @@ class Experiment(object):
         if self._version is not None:
             return self._version
 
-        version = self.redis.get(_key("experiments:{0}".format(self.name)))
+        version = self.redis.get(_key("e:{0}".format(self.name)))
         return int(version) if version else 0
 
     def increment_version(self):
-        self.redis.incr(_key('experiments:{0}'.format(self.name)))
+        self.redis.incr(_key('e:{0}'.format(self.name)))
 
     def convert(self, client, dt=None):
         alternative = self.get_alternative_by_client_id(client)
@@ -259,7 +259,7 @@ class Experiment(object):
         return chosen_alternative
 
     def get_alternative_by_client_id(self, client):
-        keys = [_key("participations:{0}:{1}:all".format(self.rawkey(), alt)) for alt in self.get_alternative_names()]
+        keys = [_key("p:{0}:{1}:all".format(self.rawkey(), alt)) for alt in self.get_alternative_names()]
         alt = first_key_with_bit_set(keys=keys, args=[client.sequential_id])
         if alt:
             return Alternative(alt, self, self.redis)
@@ -301,13 +301,13 @@ class Experiment(object):
         return "{0}/{1}".format(self.name, self.version())
 
     def key(self):
-        key = "experiments:{0}".format(self.rawkey())
+        key = "e:{0}".format(self.rawkey())
         return _key(key)
 
     @classmethod
     def find(cls, experiment_name, redis_conn, version=None):
         if version is None:
-            version = redis_conn.get(_key("experiments:{0}".format(experiment_name)))
+            version = redis_conn.get(_key("e:{0}".format(experiment_name)))
             if version is None:
                 raise ValueError('experiment does not exist')
 
@@ -351,9 +351,9 @@ class Experiment(object):
 
     @classmethod
     def find_with_alternatives(cls, experiment_name, alternatives, redis_conn):
-        versions = int(redis_conn.get(_key("experiments:{0}".format(experiment_name))))
+        versions = int(redis_conn.get(_key("e:{0}".format(experiment_name))))
         for i in reversed(range(0, versions + 1)):
-            _a_key = _key("experiments:{0}/{1}:alternatives".format(experiment_name, i))
+            _a_key = _key("e:{0}/{1}:alternatives".format(experiment_name, i))
             _alts = redis_conn.lrange(_a_key, 0, -1)
             if sorted(_alts) == sorted(alternatives):
                 return cls(experiment_name, alternatives, redis_conn, i)
@@ -362,12 +362,12 @@ class Experiment(object):
 
     @staticmethod
     def all_names(redis_conn):
-        return redis_conn.smembers(_key('experiments'))
+        return redis_conn.smembers(_key('e'))
 
     @staticmethod
     def all(redis_conn, exclude_archived=True):
         experiments = []
-        keys = redis_conn.smembers(_key('experiments'))
+        keys = redis_conn.smembers(_key('e'))
 
         for key in keys:
             experiment = Experiment.find(key, redis_conn)
@@ -380,8 +380,8 @@ class Experiment(object):
     def load_alternatives(experiment_name, redis_conn, version=None):
         # get latest version of experiment
         if version is None:
-            version = redis_conn.get(_key("experiments:{0}".format(experiment_name)))
-        key = _key("experiments:{0}/{1}:alternatives".format(experiment_name, version))
+            version = redis_conn.get(_key("e:{0}".format(experiment_name)))
+        key = _key("e:{0}/{1}:alternatives".format(experiment_name, version))
         return redis_conn.lrange(key, 0, -1)
 
     @staticmethod
@@ -398,7 +398,7 @@ class AlternativeCollection(object):
 
     # def __iter__(self):
     #     self.alternatives = []
-    #     for exp_key in self.redis.smembers(_key('experiments')):
+    #     for exp_key in self.redis.smembers(_key('e')):
     #         self.experiments.append(exp_key)
 
     #     return self
@@ -471,7 +471,7 @@ class Alternative(object):
         return self.experiment.winner == self.name
 
     def participant_count(self):
-        key = _key("participations:{0}:{1}:all".format(self.experiment.rawkey(), self.name))
+        key = _key("p:{0}:{1}:all".format(self.experiment.rawkey(), self.name))
         return self.redis.bitcount(key)
 
     def participants_by_day(self):
@@ -484,7 +484,7 @@ class Alternative(object):
         return self._get_stats('participations', 'years')
 
     def completed_count(self):
-        key = _key("conversions:{0}:{1}:users:all".format(self.experiment.rawkey(), self.name))
+        key = _key("c:{0}:{1}:users:all".format(self.experiment.rawkey(), self.name))
         return self.redis.bitcount(key)
 
     def conversions_by_day(self):
@@ -497,11 +497,15 @@ class Alternative(object):
         return self._get_stats('conversions', 'years')
 
     def _get_stats(self, stat_type, stat_range):
-        if stat_type not in ['participations', 'conversions']:
-            raise ValueError
+        if stat_type == 'participations':
+            stat_type = 'p'
+        elif stat_type == 'conversions':
+            stat_type = 'c'
+        else:
+            raise ValueError("Unrecognized stat type: {0}".format(stat_type))
 
         if stat_range not in ['days', 'months', 'years']:
-            raise ValueError
+            raise ValueError("Unrecognized stat range: {0}".format(stat_range))
 
         stats = {}
 
@@ -512,7 +516,7 @@ class Alternative(object):
 
         keys = self.redis.smembers(search_key)
         for k in keys:
-            name = self.name if stat_type == 'participations' else "{0}:users".format(self.name)
+            name = self.name if stat_type == 'p' else "{0}:users".format(self.name)
             range_key = _key("{0}:{1}:{2}:{3}".format(stat_type, exp_key, name, k))
             pipe.bitcount(range_key)
 
@@ -533,21 +537,21 @@ class Alternative(object):
 
         pipe = self.redis.pipeline()
 
-        pipe.sadd(_key("participations:{0}:years".format(experiment_key)), date.strftime('%Y'))
-        pipe.sadd(_key("participations:{0}:months".format(experiment_key)), date.strftime('%Y-%m'))
-        pipe.sadd(_key("participations:{0}:days".format(experiment_key)), date.strftime('%Y-%m-%d'))
+        pipe.sadd(_key("p:{0}:years".format(experiment_key)), date.strftime('%Y'))
+        pipe.sadd(_key("p:{0}:months".format(experiment_key)), date.strftime('%Y-%m'))
+        pipe.sadd(_key("p:{0}:days".format(experiment_key)), date.strftime('%Y-%m-%d'))
 
         pipe.execute()
 
         keys = [
-            _key("participations:{0}:_all:all".format(experiment_key)),
-            _key("participations:{0}:_all:{1}".format(experiment_key, date.strftime('%Y'))),
-            _key("participations:{0}:_all:{1}".format(experiment_key, date.strftime('%Y-%m'))),
-            _key("participations:{0}:_all:{1}".format(experiment_key, date.strftime('%Y-%m-%d'))),
-            _key("participations:{0}:{1}:all".format(experiment_key, self.name)),
-            _key("participations:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y'))),
-            _key("participations:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y-%m'))),
-            _key("participations:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y-%m-%d'))),
+            _key("p:{0}:_all:all".format(experiment_key)),
+            _key("p:{0}:_all:{1}".format(experiment_key, date.strftime('%Y'))),
+            _key("p:{0}:_all:{1}".format(experiment_key, date.strftime('%Y-%m'))),
+            _key("p:{0}:_all:{1}".format(experiment_key, date.strftime('%Y-%m-%d'))),
+            _key("p:{0}:{1}:all".format(experiment_key, self.name)),
+            _key("p:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y'))),
+            _key("p:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y-%m'))),
+            _key("p:{0}:{1}:{2}".format(experiment_key, self.name, date.strftime('%Y-%m-%d'))),
         ]
         msetbit(keys=keys, args=([client.sequential_id, 1] * len(keys)))
 
@@ -562,21 +566,21 @@ class Alternative(object):
 
         pipe = self.redis.pipeline()
 
-        pipe.sadd(_key("conversions:{0}:years".format(experiment_key)), date.strftime('%Y'))
-        pipe.sadd(_key("conversions:{0}:months".format(experiment_key)), date.strftime('%Y-%m'))
-        pipe.sadd(_key("conversions:{0}:days".format(experiment_key)), date.strftime('%Y-%m-%d'))
+        pipe.sadd(_key("c:{0}:years".format(experiment_key)), date.strftime('%Y'))
+        pipe.sadd(_key("c:{0}:months".format(experiment_key)), date.strftime('%Y-%m'))
+        pipe.sadd(_key("c:{0}:days".format(experiment_key)), date.strftime('%Y-%m-%d'))
 
         pipe.execute()
 
         keys = [
-            _key("conversions:{0}:_all:users:all".format(experiment_key)),
-            _key("conversions:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y'))),
-            _key("conversions:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y-%m'))),
-            _key("conversions:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y-%m-%d'))),
-            _key("conversions:{0}:{1}:users:all".format(experiment_key, self.name)),
-            _key("conversions:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y'))),
-            _key("conversions:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y-%m'))),
-            _key("conversions:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y-%m-%d'))),
+            _key("c:{0}:_all:users:all".format(experiment_key)),
+            _key("c:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y'))),
+            _key("c:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y-%m'))),
+            _key("c:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y-%m-%d'))),
+            _key("c:{0}:{1}:users:all".format(experiment_key, self.name)),
+            _key("c:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y'))),
+            _key("c:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y-%m'))),
+            _key("c:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y-%m-%d'))),
         ]
         msetbit(keys=keys, args=([client.sequential_id, 1] * len(keys)))
 
