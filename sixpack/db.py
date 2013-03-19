@@ -40,3 +40,14 @@ msetbit = REDIS.register_script("""
     end
     return redis.status_reply('ok')
 """)
+
+
+first_key_with_bit_set = REDIS.register_script("""
+    for index, value in ipairs(KEYS) do
+        local bit = redis.call('getbit', value, ARGV[1])
+        if bit == 1 then
+             return value
+        end
+    end
+    return false
+""")

@@ -4,7 +4,7 @@ import random
 import re
 
 from config import CONFIG as cfg
-from db import _key, msetbit, sequential_id
+from db import _key, msetbit, sequential_id, first_key_with_bit_set
 
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
@@ -259,24 +259,12 @@ class Experiment(object):
         return chosen_alternative
 
     def get_alternative_by_client_id(self, client):
-        # TODO, THIS IS SCRATCH/PROTO
-        # MOVE INTO A LUA SCRIPT
-        for alternative in self.get_alternative_names():
-            key = _key("participations:{0}:{1}:all".format(self.rawkey(), alternative))
-            if self.redis.getbit(key, client.sequential_id):
-                return Alternative(alternative, self, self.redis)
+        keys = [_key("participations:{0}:{1}:all".format(self.rawkey(), alt)) for alt in self.get_alternative_names()]
+        alt = first_key_with_bit_set(keys=keys, args=[client.sequential_id])
+        if alt:
+            return Alternative(alt, self, self.redis)
 
         return None
-
-    def has_converted_by_client_id(self, client_id):
-        # TODO, THIS IS SCRATCH/PROTO
-        # MOVE INTO A LUA SCRIPT
-        for alternative in self.get_alternative_names():
-            key = _key("conversions:{0}:{1}:all".format(self.rawkey(), alternative))
-            if self.redis.getbit(key, client_id):
-                return True
-
-        return False
 
     def choose_alternative(self, client=None):
         if cfg.get('disable_whiplash'):
