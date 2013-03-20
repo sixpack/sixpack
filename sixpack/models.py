@@ -198,11 +198,11 @@ class Experiment(object):
 
     def convert(self, client, dt=None):
         alternative = self.existing_alternative(client)
-
         if not alternative:
             raise ValueError('this client was not participaing')
 
-        alternative.record_conversion(client, dt=dt)
+        if not self.existing_conversion(client):
+            alternative.record_conversion(client, dt=dt)
 
         return alternative.name
 
@@ -284,6 +284,16 @@ class Experiment(object):
         b = max([participant_count - completed_count, 0])
 
         return random.betavariate(a + fairness_score, b + fairness_score)
+
+    def existing_conversion(self, client):
+        alts = self.get_alternative_names()
+        keys = [_key("c:{0}:{1}:users:all".format(self.rawkey(), alt)) for alt in alts]
+        altkey = first_key_with_bit_set(keys=keys, args=[self.sequential_id(client)])
+        if altkey:
+            idx = keys.index(altkey)
+            return Alternative(alts[idx], self, self.redis)
+
+        return None
 
     def rawkey(self):
         return "{0}/{1}".format(self.name, self.version())

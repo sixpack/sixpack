@@ -20,7 +20,7 @@ class TestExperimentLua(unittest.TestCase):
         self.assertEqual(exp.total_conversions(), 1)
 
     def test_cant_convert_twice(self):
-        exp = Experiment('test-convert', ['1', '2'], self.app.redis)
+        exp = Experiment('test-cant-convert-twice', ['1', '2'], self.app.redis)
         client = Client("eric", self.app.redis)
         alt = exp.get_alternative(client)
         exp.convert(client)
@@ -28,9 +28,22 @@ class TestExperimentLua(unittest.TestCase):
 
         exp.convert(client, dt=dateutil.parser.parse("2012-01-01"))
         self.assertEqual(exp.total_conversions(), 1)
+
         data = exp.objectify_by_period("day")
         altdata = [a for a in data["alternatives"] if a["name"] == alt.name][0]["data"]
-        total_participations = sum([d["participations"] for d in altdata])
-        self.assertEqual(total_participations, 1)
+        total_participants = sum([d["participants"] for d in altdata])
+        self.assertEqual(total_participants, 1)
         total_conversions = sum([d["conversions"] for d in altdata])
         self.assertEqual(total_conversions, 1)
+
+    def test_find_existing_conversion(self):
+        exp = Experiment('test-find-existing-conversion', ['1', '2'], self.app.redis)
+        client = Client("eric", self.app.redis)
+        alt = exp.get_alternative(client)
+        exp.convert(client)
+        alt2 = exp.existing_conversion(client)
+        self.assertIsNotNone(alt2)
+        self.assertTrue(alt.name == alt2.name)
+        client2 = Client("zack", self.app.redis)
+        alt3 = exp.existing_conversion(client2)
+        self.assertIsNone(alt3)
