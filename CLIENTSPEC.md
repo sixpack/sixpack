@@ -35,6 +35,8 @@ Clients SHOULD forward to the server the ip address and user agent of the user w
 
 It's RECOMMENDED that clients expose the concept of a user "Session" in a way that allows advanced users to instantiate and manipulate it directly. Instantiating a Session SHOULD allow for specifying a user's ip address, user agent and user token.
 
+Clients SHOULD be able to return a "forced" alternative via query string to aid in testing web development and viewing alternatives without effecting conversion rates. The client SHOULD use the pattern of `?sixpack-force-EXPERIMENT-NAME=ALTERNATIVE`
+
 ## 4. Performance considerations
 
 Sixpack clients run the risk of negatively impacting the performance of the application that is being tested. In order to minimize this risk, sixpack clients SHOULD use short timeouts when connecting to the server. Clients SHOULD also consider the use of HTTP Keep-Alive and HTTP connection pooling.
