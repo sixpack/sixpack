@@ -30,7 +30,7 @@ Next, create a Sixpack configuration. A configuration must be created for sixpac
     redis_db: 15                            # DB number in redis
 
     full_response: True                     # Not In Use
-    disable_whiplash: True                  # Disable the whiplash/multi-armed bandit choice Algorithm
+    enable_whiplash: False                  # Disable the whiplash/multi-armed bandit choice Algorithm
 
     # The regex to match for robots
     robot_regex: $^|trivial|facebook|MetaURI|butterfly|google|amazon|goldfire|sleuth|xenu|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|pingdom|bot|yahoo|slurp|java|fetch|spider|url|crawl|oneriot|abby|commentreader|twiceler
