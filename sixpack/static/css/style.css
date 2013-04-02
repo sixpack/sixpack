@@ -70,6 +70,7 @@
     width: 735px;
     margin-left: -20px;
   }
+  ul.experiments h3.name,
   ul.experiments h3.name a {
     color: #faf3ee;
     font-size: 30px;
