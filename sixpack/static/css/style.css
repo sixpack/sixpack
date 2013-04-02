@@ -221,6 +221,11 @@
 .chart .x.axis path {
   display: none
 }
+.chart .x-axis path {
+  fill: none; 
+  stroke: #2e3335;
+  stroke-width: 1px;
+}
 .chart .line {
   fill: none;
   stroke-width: 2.2px;

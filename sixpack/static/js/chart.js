@@ -52,9 +52,9 @@ $(function () {
 
       my.xAxis = d3.svg.axis()
         .scale(my.xScale)
-        .ticks(4)
+        .ticks(xValues.length)
         .tickSize(0)
-        .tickValues(xValues)
+        .tickFormat(d3.time.format("%m/%d"))
         .orient("bottom");
 
       my.yAxis = d3.svg.axis()
@@ -139,17 +139,21 @@ $(function () {
       }));
 
       my.svg.append("g")
-        .attr("class", "y axis")
-        .call(my.yAxis)
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end");
+        .attr("class", "y-axis")
+        .call(my.yAxis);
+
+      my.svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", "translate(0," + (my.height) + ")")
+        .call(my.xAxis)
+        .selectAll("text")
+        .attr("dy", function(d) {
+          return "1.15em";
+        });
 
       my.svg.append("g")
         .attr("class", "grid")
-        .attr("transform", "translate(0," + my.height + ")")
+        .attr("transform", "translate(0," + (my.height) + ")")
         .call(d3.svg.axis()
           .scale(my.xScale)
           .orient("bottom")
