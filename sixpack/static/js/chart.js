@@ -52,11 +52,16 @@ $(function () {
 
       my.xAxis = d3.svg.axis()
         .scale(my.xScale)
-        .ticks(xValues.length)
         .tickSize(0)
         .tickFormat(d3.time.format("%m/%d"))
         .orient("bottom");
-
+        
+      if (xValues.length > 10) {
+        my.xAxis.ticks(d3.time.days, 4)
+      } else {
+        my.xAxis.ticks(xValues.length)
+      }
+        
       my.yAxis = d3.svg.axis()
         .scale(my.yScale)
         .ticks(yValues.length)
