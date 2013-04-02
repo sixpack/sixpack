@@ -255,13 +255,10 @@ class Experiment(object):
         return None
 
     def choose_alternative(self, client=None):
-        if cfg.get('disable_whiplash'):
-            return self._random_choice()
-
-        if random.random() < self.random_sample:
-            return self._random_choice()
-        else:
+        if cfg.get('enable_whiplash') and random.random() >= self.random_sample:
             return Alternative(self._whiplash(), self, self.redis)
+
+        return self._random_choice()
 
     def _random_choice(self):
         return random.choice(self.alternatives)
