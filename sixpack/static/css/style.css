@@ -397,8 +397,8 @@ ul.experiments h4 {
 }
 #dashboard-page .chart {
   position: absolute;
-  bottom: 40px;
-  right: 70px;
+  bottom: 60px;
+  right: 80px;
   width: 400px;
   height: 200px;
   display: none;
