@@ -55,7 +55,7 @@
         <th>Winner</th>
       </tr>
       <% _.each(experiment.alternatives, function (alt, index) { %>
-        <tr>
+        <tr class="line-<%- index %>">
           <td>
             <span class="circle color-<%- (index + 1) %>">
               <% if (alt.is_winner) { %>

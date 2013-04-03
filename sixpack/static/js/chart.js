@@ -23,6 +23,9 @@ $(function () {
     my.el = null;
     my.data = data;
     my.experiment = experiment;
+    my.tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
 
     my.getMeasurements = function () {
       my.margin = {
@@ -75,6 +78,7 @@ $(function () {
 
     my.drawLine = function (data, color) {
       color = color || "#9d5012";
+      var line_id = "line-" + _.indexOf(my.colors, color);
       var line = d3.svg.line()
         .x(function (d) {
           return my.xScale(d.date);
@@ -86,8 +90,36 @@ $(function () {
       my.svg.append("path")
         .datum(data)
         .attr("class", "line")
+        .attr("id", line_id)
         .attr("d", line)
         .attr("style", "stroke:" + color);
+
+      my.svg.select("#" + line_id)
+        .data(data)
+        .on("mouseover", function (d) {
+          $('.' + d3.event.target.id).closest('table').find('tr').removeClass('highlight');
+          $('.' + d3.event.target.id).addClass('highlight');
+
+          my.tooltip.html(d.date + "<br/>"  + d.close)
+              .style("left", (d3.event.pageX) + "px")
+              .style("top", (d3.event.pageY - 28) + "px");
+
+          my.tooltip.transition()
+              .duration(50)
+              .style("opacity", 1);
+        })
+        .on("mouseout", function (d) {
+          var id = d3.event.target.id;
+
+          setTimeout(function () {
+            $('.' + id).removeClass('highlight');
+
+            my.tooltip
+              .transition()
+              .duration(250)
+              .style("opacity", 0);
+          }, 850);
+        });
     };
 
     my.drawCircle = function (data, color) {
