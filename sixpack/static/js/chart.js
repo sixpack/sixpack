@@ -97,6 +97,8 @@ $(function () {
       my.svg.select("#" + line_id)
         .data(data)
         .on("mouseover", function (d) {
+          var currClass = d3.select(this).attr("class");
+          d3.select(this).attr("class", currClass + " line-hover");
           $('.' + d3.event.target.id).closest('table').find('tr').removeClass('highlight');
           $('.' + d3.event.target.id).addClass('highlight');
 
@@ -109,6 +111,7 @@ $(function () {
               .style("opacity", 1);
         })
         .on("mouseout", function (d) {
+          d3.select(this).attr("class", "line");
           var id = d3.event.target.id;
 
           setTimeout(function () {

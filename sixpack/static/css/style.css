@@ -235,6 +235,9 @@
   fill: none;
   stroke-width: 2.2px;
 }
+.chart .line-hover {
+  stroke-width: 6px;
+}
 .chart g.tick text {
   font-weight: 400;
   font-size: 12px;
