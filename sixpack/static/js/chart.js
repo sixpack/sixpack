@@ -58,6 +58,8 @@ $(function () {
         
       if (xValues.length > 10) {
         my.xAxis.ticks(d3.time.days, 4)
+      } else if (xValues.length === 2) {
+        my.xAxis.ticks(d3.time.days, 1)
       } else {
         my.xAxis.ticks(xValues.length)
       }
@@ -159,12 +161,10 @@ $(function () {
       my.svg.append("g")
         .attr("class", "grid")
         .attr("transform", "translate(0," + (my.height) + ")")
-        .call(d3.svg.axis()
-          .scale(my.xScale)
-          .orient("bottom")
-          .ticks(data.length)
-        .tickSize(-my.height, 0, 0)
-        .tickFormat(""));
+        .call(my.xAxis
+              .ticks(d3.time.days, 1)
+              .tickSize(-my.height, 0, 0)
+              .tickFormat(""));
     };
 
     my.dataExists = function (data) {
