@@ -208,7 +208,7 @@ class Experiment(object):
 
     @property
     def winner(self):
-        if self._winner == False:
+        if not self._winner:
             self._winner = self.redis.get(self._winner_key)
         return self._winner
 
