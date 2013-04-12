@@ -41,6 +41,22 @@ $(function () {
       });
       my.el.append(my.template(data));
 
+      $('table tr').hover(
+        function () {
+          var alt_name = $(this).attr('class');
+          if (!alt_name) return;
+
+          $(this).addClass('highlight');
+
+          var line = d3.select("#" + alt_name);
+          line.attr('class', line.attr('class') + " line-hover")
+        },
+        function () {
+          $(this).removeClass('highlight');
+          d3.select('#' + $(this).attr('class')).attr('class', 'line');
+        }
+      );
+
       var chart = new Chart(my.name, data);
       chart.draw();
       my.callback();
