@@ -78,7 +78,7 @@ $(function () {
 
     my.drawLine = function (data, color) {
       color = color || "#9d5012";
-      var line_id = "line-" + _.indexOf(my.colors, color);
+      var line_id = my.experiment + "-line-" + _.indexOf(my.colors, color);
       var line = d3.svg.line()
         .x(function (d) {
           return my.xScale(d.date);
@@ -99,8 +99,10 @@ $(function () {
         .on("mouseover", function (d) {
           var currClass = d3.select(this).attr("class");
           d3.select(this).attr("class", currClass + " line-hover");
-          $('.' + d3.event.target.id).closest('table').find('tr').removeClass('highlight');
-          $('.' + d3.event.target.id).addClass('highlight');
+
+          var table = $('.' + d3.event.target.id).closest('div').find('table')
+          table.find('tr').removeClass('highlight');
+          table.find('.' + d3.event.target.id).addClass('highlight');
 
           my.tooltip.html(d.date + "<br/>"  + d.close)
               .style("left", (d3.event.pageX) + "px")
