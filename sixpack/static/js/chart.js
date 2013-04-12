@@ -23,9 +23,6 @@ $(function () {
     my.el = null;
     my.data = data;
     my.experiment = experiment;
-    my.tooltip = d3.select("body").append("div")
-                .attr("class", "tooltip")
-                .style("opacity", 0);
 
     my.getMeasurements = function () {
       my.margin = {
@@ -106,29 +103,14 @@ $(function () {
           table.find('tr').removeClass('highlight');
           table.find('.' + d3.event.target.id).addClass('highlight');
 
-          my.tooltip.html(d.date + "<br/>"  + d.close)
-              .style("left", (d3.event.pageX) + "px")
-              .style("top", (d3.event.pageY - 28) + "px");
-
-          my.tooltip.transition()
-              .duration(50)
-              .style("opacity", 1);
         })
         .on("mouseout", function (d) {
           // Remove line highlight
           d3.select(this).attr("class", "line");
           var id = d3.event.target.id;
 
-          setTimeout(function () {
-            // Remove table highlight
-            $('.' + id).removeClass('highlight');
-
-            // Hide tooltip object
-            my.tooltip
-              .transition()
-              .duration(250)
-              .style("opacity", 0);
-          }, 850);
+          // Remove table highlight
+          $('.' + id).removeClass('highlight');
         });
     };
 
