@@ -41,7 +41,7 @@ $(function () {
       });
       my.el.append(my.template(data));
 
-      $('table tr').hover(
+      $("li[data-name='" + my.name + "'] tr").hover(
         function () {
           var alt_name = $(this).attr('class');
           if (!alt_name) return;
@@ -50,6 +50,7 @@ $(function () {
 
           var line = d3.select("#" + alt_name);
           line.attr('class', line.attr('class') + " line-hover")
+          line.attr('class', line.attr('class') + " line-hover");
         },
         function () {
           $(this).removeClass('highlight');
