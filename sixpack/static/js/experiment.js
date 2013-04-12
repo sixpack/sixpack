@@ -47,14 +47,19 @@ $(function () {
           if (!alt_name) return;
 
           $(this).addClass('highlight');
-
+          
           var line = d3.select("#" + alt_name);
           var id = line.attr('id');
+          var el = d3.select('#' + id)[0][0];
+
           if (line.attr('class') === 'circle') {
             line.attr('r', 7);
           } else {
             line.attr('class', line.attr('class') + " line-hover");
           }
+
+          // Sort the lines so the current line is "above" the non-hovered lines
+          el.parentNode.appendChild(el);
         },
         function () {
           $(this).removeClass('highlight');

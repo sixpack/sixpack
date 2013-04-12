@@ -94,6 +94,9 @@ $(function () {
       my.svg.select("#" + line_id)
         .data(data)
         .on("mouseover", function (d) {
+          // Sort the lines so the current line is "above" the non-hovered lines
+          d3.select(this.parentNode.appendChild(this));
+
           // Highlight line
           var currClass = d3.select(this).attr("class");
           d3.select(this).attr("class", currClass + " line-hover");
@@ -102,7 +105,6 @@ $(function () {
           var table = $('.' + d3.event.target.id).closest('div').find('table')
           table.find('tr').removeClass('highlight');
           table.find('.' + d3.event.target.id).addClass('highlight');
-
         })
         .on("mouseout", function (d) {
           // Remove line highlight
@@ -126,7 +128,11 @@ $(function () {
         .attr("r", 5)
         .attr("cx", function(d) { return my.xScale(d.date); })
         .attr("cy", function(d) { return my.yScale(d.close); })
-        .attr("style", "fill:" + color);
+        .attr("style", "fill:" + color)
+        .on("mouseover", function (d) {
+          // Sort the lines so the current line is "above" the non-hovered lines
+          d3.select(this.parentNode.appendChild(this));
+        });
     };
 
     my.drawArea = function (data) {
