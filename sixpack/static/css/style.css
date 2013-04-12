@@ -174,6 +174,10 @@
   ul.experiments li table tr td:nth-child(even) {
     background: none repeat scroll 0 0 rgba(170, 170, 170, 0.02);
   }
+  ul.experiments li table tr.highlight td {
+    color: #fff;
+    background: none repeat scroll 0 0 rgba(170,170,170,0.05);
+  }
 
   /* The following lines are to combat a Chrome bug: http://code.google.com/p/chromium/issues/detail?id=62445 */
   ul.experiments li table tr {
@@ -230,6 +234,9 @@
 .chart .line {
   fill: none;
   stroke-width: 2.2px;
+}
+.chart .line-hover {
+  stroke-width: 6px;
 }
 .chart g.tick text {
   font-weight: 400;
@@ -549,6 +556,18 @@ hr {
   margin-left: 15px;
   margin-top: 90px;
   text-align: center;
+}
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  height: 12px;
+  padding: 8px;
+  font: 10px sans-serif;
+  background: #ddd;
+  border: solid 1px #aaa;
+  border-radius: 8px;
+  pointer-events: none;
 }
 
 /* Chart color values.*/
