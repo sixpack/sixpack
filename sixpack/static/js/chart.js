@@ -134,10 +134,13 @@ $(function () {
 
     my.drawCircle = function (data, color) {
       color = color || "#9d5012";
+      var id = my.experiment + "-line-" + _.indexOf(my.colors, color);
       my.svg.selectAll("dot")
         .data(data)
         .enter()
         .append("circle")
+        .attr("class", "circle")
+        .attr("id", id)
         .attr("r", 5)
         .attr("cx", function(d) { return my.xScale(d.date); })
         .attr("cy", function(d) { return my.yScale(d.close); })

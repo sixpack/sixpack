@@ -49,12 +49,26 @@ $(function () {
           $(this).addClass('highlight');
 
           var line = d3.select("#" + alt_name);
-          line.attr('class', line.attr('class') + " line-hover")
-          line.attr('class', line.attr('class') + " line-hover");
+          var id = line.attr('id');
+          if (line.attr('class') === 'circle') {
+            line.attr('r', 7);
+          } else {
+            line.attr('class', line.attr('class') + " line-hover");
+          }
         },
         function () {
           $(this).removeClass('highlight');
-          d3.select('#' + $(this).attr('class')).attr('class', 'line');
+
+          var alt_name = $(this).attr('class');
+          if (!alt_name) return;
+
+          var line = d3.select('#' + alt_name);
+
+          if (line.attr('class') === 'circle') {
+            line.attr('r', 5);
+          } else {
+            line.attr('class', 'line');
+          }
         }
       );
 
