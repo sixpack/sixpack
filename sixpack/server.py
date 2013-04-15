@@ -173,11 +173,10 @@ def should_exclude_visitor(request):
 
 
 def is_robot(user_agent):
-    try:
-        regex = re.compile(r"{0}".format(cfg.get('robot_regex')), re.I)
-        return regex.match(unquote(user_agent))
-    except:
-        return False  # TODO Not sure if default should be true or false
+    if user_agent is None:
+        return False
+    regex = re.compile(r"{0}".format(cfg.get('robot_regex')), re.I)
+    return regex.search(unquote(user_agent)) is not None
 
 
 def is_ignored_ip(ip_address):
