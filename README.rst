@@ -29,7 +29,6 @@ Next, create a Sixpack configuration. A configuration must be created for sixpac
     redis_prefix: sixpack                   # all Redis keys will be prefixed with this
     redis_db: 15                            # DB number in redis
 
-    full_response: True                     # Not In Use
     enable_whiplash: False                  # Disable the whiplash/multi-armed bandit choice Algorithm
 
     # The regex to match for robots
