@@ -34,7 +34,6 @@ Next, create a Sixpack configuration. A configuration must be created for sixpac
     # The regex to match for robots
     robot_regex: $^|trivial|facebook|MetaURI|butterfly|google|amazon|goldfire|sleuth|xenu|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|pingdom|bot|yahoo|slurp|java|fetch|spider|url|crawl|oneriot|abby|commentreader|twiceler
     ignored_ip_addresses: []                # List of IP
-    control_on_db_failure: True             # Not in use
     allow_multiple_experiments: False       # Not in Use
 
     asset_path: gen                         # Path for compressed assets to live. This path is RELATIVE to sixpack/static
