@@ -340,6 +340,16 @@ ul.experiments h4 {
 .modal form {
   margin: 0;
 }
+.modal .close {
+  color: #CCC;
+  text-shadow: 0 1px 0 #EEE;
+  opacity: .65;
+  filter: alpha(opacity=65);
+}
+.modal .close:hover {
+  color: #fff;
+  text-shadow: 0 1px 0 #eee;
+}
 #content {
   padding-top: 90px; 
 }
