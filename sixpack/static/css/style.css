@@ -552,10 +552,8 @@ hr {
   float:left;
   padding-bottom: 50px;
   padding-right: 125px;
-}
-#details-page #charts {
-  max-width: 910px;
-  margin: 0 auto;
+  width: 500px;
+  height: 300px;
 }
 .chart p {
   color: #6D6D6D;
