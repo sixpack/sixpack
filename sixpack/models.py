@@ -434,7 +434,7 @@ class Alternative(object):
             'conversion_rate': float('%.2f' % (self.conversion_rate() * 100)),
             'is_control': self.is_control(),
             'is_winner': self.is_winner(),
-            'z_score': self.z_score(),
+            'g_stat': self.g_stat(),
             'participant_count': self.participant_count(),
             'confidence_level': self.confidence_level()
         }
@@ -567,7 +567,7 @@ class Alternative(object):
         except ZeroDivisionError:
             return 0
 
-    def g_test(self):
+    def g_stat(self):
         # http://en.wikipedia.org/wiki/G-test
 
         if self.is_control():
@@ -599,7 +599,7 @@ class Alternative(object):
                         +   control_conversions * log(control_conversions / expected_control_conversions) \
                         +   control_failures * log(control_failures / expected_control_failures) )
 
-        return g_stat
+        return round(g_stat,2)
 
     def z_score(self):
         if self.is_control():
@@ -623,7 +623,7 @@ class Alternative(object):
         # g stat is approximated by chi-square, we will use
         # critical values from chi-square distribution with one degree of freedom
 
-        g_stat = self.g_test()
+        g_stat = self.g_stat()
         if g_stat == 'N/A':
             return g_stat
 
