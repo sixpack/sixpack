@@ -601,7 +601,6 @@ class Alternative(object):
 
         return g_stat
 
-
     def z_score(self):
         if self.is_control():
             return 'N/A'
