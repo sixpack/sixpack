@@ -434,7 +434,7 @@ class Alternative(object):
             'conversion_rate': float('%.2f' % (self.conversion_rate() * 100)),
             'is_control': self.is_control(),
             'is_winner': self.is_winner(),
-            'g_stat': self.g_stat(),
+            'test_statistic': self.g_stat(),
             'participant_count': self.participant_count(),
             'confidence_level': self.confidence_level()
         }
