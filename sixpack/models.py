@@ -5,6 +5,7 @@ import re
 
 from config import CONFIG as cfg
 from db import _key, msetbit, sequential_id, first_key_with_bit_set
+from math import log
 
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
@@ -566,6 +567,41 @@ class Alternative(object):
         except ZeroDivisionError:
             return 0
 
+    def g_test(self):
+        # http://en.wikipedia.org/wiki/G-test
+
+        if self.is_control():
+            return 'N/A'
+
+        control = self.experiment.control
+        
+        alt_conversions = self.completed_count()
+        control_conversions = control.completed_count()
+        alt_failures = self.participant_count() - alt_conversions
+        control_failures = control.participant_count() - control_conversions
+
+        total_conversions = alt_conversions + control_conversions
+
+        if total_conversions < 20:
+            # small sample size of conversions, see where it goes for a bit
+            return 'N/A'
+
+        total_failures = alt_failures + control_failures
+        total_participants = self.participant_count() + control.participant_count()
+
+        expected_control_conversions = control.participant_count() * total_conversions / float(total_participants)
+        expected_alt_conversions = self.participant_count() * total_conversions / float(total_participants)
+        expected_control_failures = control.participant_count() - expected_control_conversions
+        expected_alt_failures = self.participant_count() - expected_alt_conversions
+
+        g_stat = 2 * (      alt_conversions * log(alt_conversions / expected_alt_conversions) \
+                        +   alt_failures * log(alt_failures / expected_alt_failures) \
+                        +   control_conversions * log(control_conversions / expected_control_conversions) \
+                        +   control_failures * log(control_failures / expected_control_failures) )
+
+        return g_stat
+
+
     def z_score(self):
         if self.is_control():
             return 'N/A'
@@ -584,7 +620,29 @@ class Alternative(object):
         except ZeroDivisionError:
             return 0
 
-    def confidence_level(self):
+    def g_confidence_level(self):
+        # g stat is approximated by chi-square, we will use
+        # critical values from chi-square distribution with one degree of freedom
+
+        g_stat = self.g_test()
+        if g_stat == 'N/A':
+            return g_stat
+
+        ret = ''
+        if g_stat == 0.0:
+            ret = 'No Change'
+        elif g_stat < 3.841:
+            ret = 'No Confidence'
+        elif g_stat < 6.635:
+            ret = '95% Confidence'
+        elif g_stat < 10.83:
+            ret = '99% Confidence'
+        else:
+            ret = '99.9% Confidence'
+
+        return ret
+
+    def z_confidence_level(self):
         z_score = self.z_score()
         if z_score == 'N/A':
             return z_score
@@ -604,6 +662,12 @@ class Alternative(object):
             ret = '99.9% Confidence'
 
         return ret
+
+    def confidence_level(self, conf_type="g"):
+        if conf_type == "z":
+            return self.z_confidence_level()
+        else:
+            return self.g_confidence_level()
 
     def key(self):
         return _key("{0}:{1}".format(self.experiment.name, self.name))
