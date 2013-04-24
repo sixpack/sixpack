@@ -574,7 +574,7 @@ class Alternative(object):
             return 'N/A'
 
         control = self.experiment.control
-        
+
         alt_conversions = self.completed_count()
         control_conversions = control.completed_count()
         alt_failures = self.participant_count() - alt_conversions
@@ -597,9 +597,9 @@ class Alternative(object):
         g_stat = 2 * (      alt_conversions * log(alt_conversions / expected_alt_conversions) \
                         +   alt_failures * log(alt_failures / expected_alt_failures) \
                         +   control_conversions * log(control_conversions / expected_control_conversions) \
-                        +   control_failures * log(control_failures / expected_control_failures) )
+                        +   control_failures * log(control_failures / expected_control_failures))
 
-        return round(g_stat,2)
+        return round(g_stat, 2)
 
     def z_score(self):
         if self.is_control():
@@ -613,7 +613,7 @@ class Alternative(object):
         c = control.participant_count()
 
         try:
-            std_dev = pow(((ctr_e / pow(ctr_c, 3)) * ((e*ctr_e)+(c*ctr_c)-(ctr_c*ctr_e)*(c+e))/(c*e)), 0.5)
+            std_dev = pow(((ctr_e / pow(ctr_c, 3)) * ((e * ctr_e) + (c * ctr_c) - (ctr_c * ctr_e) * (c + e)) / (c * e)), 0.5)
             z_score = ((ctr_e / ctr_c) - 1) / std_dev
             return z_score
         except ZeroDivisionError:

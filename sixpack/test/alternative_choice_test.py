@@ -29,6 +29,7 @@ class TestAlternativeChoice(unittest.TestCase):
     def test_force_param_always_wins(self):
         alts = ["one", "two", "three"]
         e = Experiment.find_or_create("force-param-always-wins", alts, self.app.redis)
+
         def test_force():
             for f in alts:
                 data = json.loads(self.client.get("/participate?experiment=force-param-always-wins&alternatives=one&alternatives=two&alternatives=three&client_id=rand&force={0}".format(f)).data)
