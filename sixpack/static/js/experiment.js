@@ -1,7 +1,7 @@
 var Experiment;
 $(function () {
 
-  Experiment = function (el, name, include_archived, callback) {
+  Experiment = function (el, name, version, include_archived, callback) {
     var that = {}, my = {};
 
     _.templateSettings.variable = 'experiment';
@@ -15,6 +15,9 @@ $(function () {
 
     my.getData = function (callback) {
       var url = '/experiment/' + my.name + '.json?period=day';
+      if (version) {
+        url += '&version=' + version;
+      }
       $.getJSON(url, function (data) {
         callback(data);
       });
@@ -47,7 +50,7 @@ $(function () {
           if (!alt_name) return;
 
           $(this).addClass('highlight');
-          
+
           var line = d3.select("#" + alt_name);
           var id = line.attr('id');
           var el = d3.select('#' + id)[0][0];

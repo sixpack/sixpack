@@ -3,6 +3,7 @@
 
 <script type="text/javascript">
   var experiment_name = '{{ experiment.name }}';
+  var experiment_version = '{{ experiment.version() }}';
 </script>
 
 <script type="text/template" id="experiment-template">
@@ -13,7 +14,7 @@
     <% if (experiment.description) { %>
       <h4><%- experiment.description %></h4>
     <% } %>
- 
+
 
     <div class="controls">
 
@@ -62,7 +63,7 @@
                 <i class="icon-ok"></i>
               <% } %>
             </span>
-            <%- alt.name %> 
+            <%- alt.name %>
             <% if (alt.is_control) { %>
               <span class="note control">control</span>
             <% } %>
