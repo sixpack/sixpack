@@ -586,7 +586,6 @@ class Alternative(object):
             # small sample size of conversions, see where it goes for a bit
             return 'N/A'
 
-        total_failures = alt_failures + control_failures
         total_participants = self.participant_count() + control.participant_count()
 
         expected_control_conversions = control.participant_count() * total_conversions / float(total_participants)
