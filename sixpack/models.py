@@ -21,7 +21,7 @@ class Client(object):
 
 class Experiment(object):
 
-    def __init__(self, name, alternatives, redis_conn, version=None):
+    def __init__(self, name, alternatives, redis_conn):
         if len(alternatives) < 2:
             raise ValueError('experiments require at least two alternatives')
 
@@ -29,13 +29,12 @@ class Experiment(object):
         self.redis = redis_conn
         self.random_sample = RANDOM_SAMPLE
         self.alternatives = self.initialize_alternatives(alternatives)
-        self._version = version
         # False here is a sentinal value for "not looked up yet"
         self._winner = False
         self._sequential_ids = dict()
 
     def __repr__(self):
-        return '<Experiment: {0} (version: {1})>'.format(self.name, self.version())
+        return '<Experiment: {0})>'.format(self.name)
 
     def objectify_by_period(self, period):
         objectified = {
@@ -48,7 +47,6 @@ class Experiment(object):
             'description': self.get_description(),
             'has_winner': self.winner is not None,
             'is_archived': self.is_archived(),
-            'version': self.version()
         }
 
         for alternative in self.alternatives:
@@ -68,9 +66,6 @@ class Experiment(object):
         pipe = self.redis.pipeline()
         if self.is_new_record():
             pipe.sadd(_key('e'), self.name)
-
-            # Set version to zero
-            pipe.set(_key("e:{0}".format(self.name)), 0)
 
         pipe.hset(self.key(), 'created_at', datetime.now())
         # reverse here and use lpush to keep consistent with using lrange
@@ -93,7 +88,7 @@ class Experiment(object):
         return not self.redis.sismember(_key("e"), self.name)
 
     def total_participants(self):
-        key = _key("p:{0}:_all:all".format(self.rawkey()))
+        key = _key("p:{0}:_all:all".format(self.name))
         return self.redis.bitcount(key)
 
     def participants_by_day(self):
@@ -106,7 +101,7 @@ class Experiment(object):
         return self._get_stats('participations', 'years')
 
     def total_conversions(self):
-        key = _key("c:{0}:_all:users:all".format(self.rawkey()))
+        key = _key("c:{0}:_all:users:all".format(self.name))
         return self.redis.bitcount(key)
 
     def conversions_by_day(self):
@@ -132,11 +127,11 @@ class Experiment(object):
         pipe = self.redis.pipe()
 
         stats = {}
-        search_key = _key("{0}:{1}:{2}".format(stat_type, self.rawkey(), stat_range))
+        search_key = _key("{0}:{1}:{2}".format(stat_type, self.name, stat_range))
         keys = self.redis.smembers(search_key)
         for k in keys:
             mod = '' if stat_type == 'p' else "users:"
-            range_key = _key("{0}:{1}:_all:{2}{3}".format(stat_type, self.rawkey(), mod, k))
+            range_key = _key("{0}:{1}:_all:{2}{3}".format(stat_type, self.name, mod, k))
             pipe.bitcount(range_key)
 
         redis_results = pipe.execute()
@@ -155,20 +150,23 @@ class Experiment(object):
         return self.redis.hget(self.key(), 'description')
 
     def reset(self):
-        self.increment_version()
+        self.delete()
 
-        experiment = Experiment(self.name, self.get_alternative_names(), self.redis)
+        name = self.name
+        alts = self.get_alternative_names()
+
+        experiment = Experiment(name, alts, self.redis)
         experiment.save()
 
     def delete(self):
         pipe = self.redis.pipeline()
         pipe.srem(_key('e'), self.name)
         pipe.delete(self.key())
-        pipe.delete(_key(self.rawkey()))
+        pipe.delete(_key(self.name))
         pipe.delete(_key('e:{0}'.format(self.name)))
 
         # Consider a 'non-keys' implementation of this
-        keys = self.redis.keys('*{0}*'.format(self.rawkey()))
+        keys = self.redis.keys('*:{0}:*'.format(self.name))
         for key in keys:
             pipe.delete(key)
 
@@ -182,20 +180,6 @@ class Experiment(object):
 
     def is_archived(self):
         return self.redis.hexists(self.key(), 'archived')
-
-    def versions(self):
-        current_version = self.version()
-        return range(0, (current_version + 1))
-
-    def version(self):
-        if self._version is None:
-            v = self.redis.get(_key("e:{0}".format(self.name)))
-            self._version = int(v) if v else 0
-        return self._version
-
-    def increment_version(self):
-        self.redis.incr(_key('e:{0}'.format(self.name)))
-        self._version = None
 
     def convert(self, client, dt=None):
         alternative = self.existing_alternative(client)
@@ -230,7 +214,7 @@ class Experiment(object):
     def sequential_id(self, client):
         """Return the sequential id for this test for the passed in client"""
         if client.client_id not in self._sequential_ids:
-            id_ = sequential_id("e:{0}:users".format(self.rawkey()), client.client_id)
+            id_ = sequential_id("e:{0}:users".format(self.name), client.client_id)
             self._sequential_ids[client.client_id] = id_
         return self._sequential_ids[client.client_id]
 
@@ -247,7 +231,7 @@ class Experiment(object):
 
     def existing_alternative(self, client):
         alts = self.get_alternative_names()
-        keys = [_key("p:{0}:{1}:all".format(self.rawkey(), alt)) for alt in alts]
+        keys = [_key("p:{0}:{1}:all".format(self.name, alt)) for alt in alts]
         altkey = first_key_with_bit_set(keys=keys, args=[self.sequential_id(client)])
         if altkey:
             idx = keys.index(altkey)
@@ -285,7 +269,7 @@ class Experiment(object):
 
     def existing_conversion(self, client):
         alts = self.get_alternative_names()
-        keys = [_key("c:{0}:{1}:users:all".format(self.rawkey(), alt)) for alt in alts]
+        keys = [_key("c:{0}:{1}:users:all".format(self.name, alt)) for alt in alts]
         altkey = first_key_with_bit_set(keys=keys, args=[self.sequential_id(client)])
         if altkey:
             idx = keys.index(altkey)
@@ -293,25 +277,17 @@ class Experiment(object):
 
         return None
 
-    def rawkey(self):
-        return "{0}/{1}".format(self.name, self.version())
-
     def key(self):
-        key = "e:{0}".format(self.rawkey())
-        return _key(key)
+        return _key("e:{0}".format(self.name))
 
     @classmethod
-    def find(cls, experiment_name, redis_conn, version=None):
-        if version is None:
-            version = redis_conn.get(_key("e:{0}".format(experiment_name)))
-            if version is None:
-                raise ValueError('experiment does not exist')
+    def find(cls, experiment_name, redis_conn):
+        if not redis_conn.sismember(_key("e"), experiment_name):
+            raise ValueError('experiment does not exist')
 
-        version = int(version)
         return cls(experiment_name,
-                   Experiment.load_alternatives(experiment_name, redis_conn, version=version),
-                   redis_conn,
-                   version=version)
+                   Experiment.load_alternatives(experiment_name, redis_conn),
+                   redis_conn)
 
     @classmethod
     def find_or_create(cls, experiment_name, alternatives, redis_conn):
@@ -320,41 +296,17 @@ class Experiment(object):
 
         # We don't use the class method key here
         try:
-            # Get the most recent version of experiment_name
-            exp = Experiment.find(experiment_name, redis_conn)
-
-            # Make sure the alternative options are correct. If they are not,
-            # we have to make a new version.
-            if sorted(exp.get_alternative_names()) != sorted(alternatives):
-                # First, let's try to find a version of the experiment that -did- have this argument list
-                found = Experiment.find_with_alternatives(experiment_name, alternatives, redis_conn)
-                if found is not None:
-                    experiment = found
-                else:
-                    exp.increment_version()
-
-                    # initialize a new one
-                    experiment = cls(experiment_name, alternatives, redis_conn)
-                    experiment.save()
-            else:
-                experiment = exp
-        # completely new experiment
+            experiment = Experiment.find(experiment_name, redis_conn)
         except ValueError:
             experiment = cls(experiment_name, alternatives, redis_conn)
             experiment.save()
 
+        # Make sure the alternative options are correct. If they are not,
+        # raise an error.
+        if sorted(experiment.get_alternative_names()) != sorted(alternatives):
+            raise ValueError('experiment alternatives have changed. please delete in the admin')
+
         return experiment
-
-    @classmethod
-    def find_with_alternatives(cls, experiment_name, alternatives, redis_conn):
-        versions = int(redis_conn.get(_key("e:{0}".format(experiment_name))))
-        for i in reversed(range(0, versions + 1)):
-            _a_key = _key("e:{0}/{1}:alternatives".format(experiment_name, i))
-            _alts = redis_conn.lrange(_a_key, 0, -1)
-            if sorted(_alts) == sorted(alternatives):
-                return cls(experiment_name, alternatives, redis_conn, i)
-
-        return None
 
     @staticmethod
     def all_names(redis_conn):
@@ -373,11 +325,8 @@ class Experiment(object):
         return experiments
 
     @staticmethod
-    def load_alternatives(experiment_name, redis_conn, version=None):
-        # get latest version of experiment
-        if version is None:
-            version = redis_conn.get(_key("e:{0}".format(experiment_name)))
-        key = _key("e:{0}/{1}:alternatives".format(experiment_name, version))
+    def load_alternatives(experiment_name, redis_conn):
+        key = _key("e:{0}:alternatives".format(experiment_name))
         return redis_conn.lrange(key, 0, -1)
 
     @staticmethod
@@ -448,7 +397,7 @@ class Alternative(object):
         return self.experiment.winner == self.name
 
     def participant_count(self):
-        key = _key("p:{0}:{1}:all".format(self.experiment.rawkey(), self.name))
+        key = _key("p:{0}:{1}:all".format(self.experiment.name, self.name))
         return self.redis.bitcount(key)
 
     def participants_by_day(self):
@@ -461,7 +410,7 @@ class Alternative(object):
         return self._get_stats('participations', 'years')
 
     def completed_count(self):
-        key = _key("c:{0}:{1}:users:all".format(self.experiment.rawkey(), self.name))
+        key = _key("c:{0}:{1}:users:all".format(self.experiment.name, self.name))
         return self.redis.bitcount(key)
 
     def conversions_by_day(self):
@@ -488,7 +437,7 @@ class Alternative(object):
 
         pipe = self.redis.pipeline()
 
-        exp_key = self.experiment.rawkey()
+        exp_key = self.experiment.name
         search_key = _key("{0}:{1}:{2}".format(stat_type, exp_key, stat_range))
 
         keys = self.redis.smembers(search_key)
@@ -510,7 +459,7 @@ class Alternative(object):
         else:
             date = dt
 
-        experiment_key = self.experiment.rawkey()
+        experiment_key = self.experiment.name
 
         pipe = self.redis.pipeline()
 
@@ -539,7 +488,7 @@ class Alternative(object):
         else:
             date = dt
 
-        experiment_key = self.experiment.rawkey()
+        experiment_key = self.experiment.name
 
         pipe = self.redis.pipeline()
 

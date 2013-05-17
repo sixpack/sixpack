@@ -28,7 +28,7 @@ $(function () {
   if ($('#details-page').length) {
     var el = $('ul.experiments li');
     new Spinner(spinner_config).spin(el.get(0));
-    var experiment = new Experiment($('ul.experiments li'), experiment_name, experiment_version, true, function () {
+    var experiment = new Experiment($('ul.experiments li'), experiment_name, true, function () {
       el.find('.spinner').fadeOut('fast').remove();
       el.animate({
         opacity: 1
@@ -66,7 +66,7 @@ $(function () {
       if (el.data('loaded')) return;
       el.data('loaded', true);
 
-      var experiment = new Experiment(el, experiment_name, false, include_archived, function () {
+      var experiment = new Experiment(el, experiment_name, include_archived, function () {
         el.find('.spinner').fadeOut('fast').remove();
         el.animate({
           opacity: 1

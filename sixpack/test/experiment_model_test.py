@@ -68,11 +68,15 @@ class TestExperimentModel(unittest.TestCase):
         exp.update_description('hallo')
         self.assertEqual(exp.get_description(), 'hallo')
 
-    def test_reset(self):
+    def test_change_alternatives(self):
         exp = Experiment.find_or_create('never-gonna-x', ['let', 'you', 'down'], self.redis)
-        exp.reset()
 
-        self.assertEqual(exp.version(), 1)
+        with self.assertRaises(ValueError):
+            Experiment.find_or_create('never-gonna-x', ['let', 'you', 'down', 'give', 'you', 'up'], self.redis)
+
+        exp.delete()
+
+        Experiment.find_or_create('never-gonna-x', ['let', 'you', 'down', 'give', 'you', 'up'], self.redis)
 
     def test_delete(self):
         exp = Experiment('delete-me', self.alternatives, self.redis)
@@ -81,6 +85,17 @@ class TestExperimentModel(unittest.TestCase):
         exp.delete()
         with self.assertRaises(ValueError):
             Experiment.find('delete-me', self.redis)
+
+    def test_leaky_delete(self):
+        exp = Experiment('delete-me-1', self.alternatives, self.redis)
+        exp.save()
+
+        exp2 = Experiment('delete', self.alternatives, self.redis)
+        exp2.save()
+
+        exp2.delete()
+        exp3 = Experiment.find('delete-me-1', self.redis)
+        self.assertEqual(exp3.get_alternative_names(), self.alternatives)
 
     def test_archive(self):
         self.assertFalse(self.exp_1.is_archived())
@@ -94,16 +109,6 @@ class TestExperimentModel(unittest.TestCase):
         self.assertTrue(self.exp_1.is_archived())
         self.exp_1.unarchive()
         self.assertFalse(self.exp_1.is_archived())
-
-    def test_version(self):
-        pass
-
-    def test_increment_version(self):
-        original_version = self.exp_3.version()
-        self.exp_3.increment_version()
-        new_version = self.exp_3.version()
-        difference = new_version - original_version
-        self.assertEqual(difference, 1)
 
     def test_set_winner(self):
         exp = Experiment('test-winner', ['1', '2'], self.redis)
@@ -173,27 +178,20 @@ class TestExperimentModel(unittest.TestCase):
     def _test_whiplash(self):
         pass
 
-    def test_raw_key(self):
-        exp = Experiment.find_or_create('monkey', ['patch', 'banana'], self.redis)
-        self.assertEqual(exp.rawkey(), 'monkey/0')
-
     def test_key(self):
         key = self.exp_1.key()
-        self.assertEqual(key, 'sxp:e:show-something-awesome/0')
+        self.assertEqual(key, 'sxp:e:show-something-awesome')
 
         key_2 = self.exp_2.key()
-        self.assertEqual(key_2, 'sxp:e:dales-lagunitas/0')
+        self.assertEqual(key_2, 'sxp:e:dales-lagunitas')
 
         exp = Experiment('brews', ['mgd', 'bud-heavy'], self.redis)
-        exp.increment_version()
         key_3 = exp.key()
-        self.assertEqual(key_3, 'sxp:e:brews/1')
+        self.assertEqual(key_3, 'sxp:e:brews')
 
     def test_find(self):
         exp = Experiment('crunches-situps', ['crunches', 'situps'], self.redis)
         exp.save()
-
-        self.assertEqual(exp.version(), 0)
 
         with self.assertRaises(ValueError):
             Experiment.find('this-does-not-exist', self.redis)
@@ -214,20 +212,6 @@ class TestExperimentModel(unittest.TestCase):
         # should create a -NEW- experiment if experiment has never been used
         with self.assertRaises(ValueError):
             Experiment.find('dance-dance', self.redis)
-
-        exp_1 = Experiment.find_or_create('dance-dance', ['1', '2'], self.redis)
-        self.assertEqual(exp_1.version(), 0)
-
-        # should return an -existing- experiment if found correctly
-        try:
-            exp_2 = Experiment.find('dance-dance', self.redis)
-            self.assertEqual(exp_2.version(), 0)
-        except:
-            self.fail('known exp not found')
-
-        # should increment version if the experiment exists but alts changed
-        exp_3 = Experiment.find_or_create('dance-dance', ['2', '3'], self.redis)
-        self.assertEqual(exp_3.version(), 1)
 
     def test_all(self):
         # there are three created in setUp()
@@ -252,9 +236,13 @@ class TestExperimentModel(unittest.TestCase):
         alts = Experiment.load_alternatives(exp.name, self.redis)
         self.assertEqual(sorted(alts), sorted(['yes', 'no', 'call-me-maybe']))
 
-        exp = Experiment.find_or_create('load-alts-test', ['yes', 'no'], self.redis)
+    def test_differing_alternatives_fails(self):
+        exp = Experiment.find_or_create('load-differing-alts', ['yes', 'zack', 'PBR'], self.redis)
         alts = Experiment.load_alternatives(exp.name, self.redis)
-        self.assertEqual(sorted(alts), sorted(['yes', 'no']))
+        self.assertEqual(sorted(alts), sorted(['PBR', 'yes', 'zack']))
+
+        with self.assertRaises(ValueError):
+            exp = Experiment.find_or_create('load-differing-alts', ['kyle', 'zack', 'PBR'], self.redis)
 
     def _test_initialize_alternatives(self):
         # Should throw ValueError

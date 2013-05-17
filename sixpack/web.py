@@ -132,8 +132,7 @@ def internal_server_error(e):
 
 def find_or_404(experiment_name):
     try:
-        return Experiment.find(experiment_name, REDIS,
-                               request.args.get('version', None))
+        return Experiment.find(experiment_name, REDIS)
     except:
         abort(404)
 
