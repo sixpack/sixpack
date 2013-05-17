@@ -82,6 +82,16 @@ class TestExperimentModel(unittest.TestCase):
         with self.assertRaises(ValueError):
             Experiment.find('delete-me', self.redis)
 
+    def test_leaky_delete(self):
+        exp = Experiment('delete-me-1', self.alternatives, self.redis)
+        exp.save()
+
+        exp2 = Experiment('delete', self.alternatives, self.redis)
+        exp2.save()
+
+        exp2.delete()
+        exp3 = Experiment.find('delete-me-1', self.redis)
+        self.assertEqual(exp3.get_alternative_names(), self.alternatives)
     def test_archive(self):
         self.assertFalse(self.exp_1.is_archived())
         self.exp_1.archive()

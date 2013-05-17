@@ -168,7 +168,7 @@ class Experiment(object):
         pipe.delete(_key('e:{0}'.format(self.name)))
 
         # Consider a 'non-keys' implementation of this
-        keys = self.redis.keys('*{0}*'.format(self.rawkey()))
+        keys = self.redis.keys('*:{0}:*'.format(self.name))
         for key in keys:
             pipe.delete(key)
 
