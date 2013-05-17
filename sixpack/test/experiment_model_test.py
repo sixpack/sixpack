@@ -92,6 +92,7 @@ class TestExperimentModel(unittest.TestCase):
         exp2.delete()
         exp3 = Experiment.find('delete-me-1', self.redis)
         self.assertEqual(exp3.get_alternative_names(), self.alternatives)
+
     def test_archive(self):
         self.assertFalse(self.exp_1.is_archived())
         self.exp_1.archive()
