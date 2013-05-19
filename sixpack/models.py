@@ -55,6 +55,32 @@ class Experiment(object):
 
         return objectified
 
+    def csvify(self):
+        import cStringIO as StringIO
+        import csv
+        csvfile = StringIO.StringIO()
+        writer = csv.writer(csvfile)
+        writer.writerow(['Alternative Details'])
+        writer.writerow(['date', 'alternative', 'participants', 'conversions'])
+        obj = self.objectify_by_period('day')
+        for alt in obj['alternatives']:
+            for datum in alt['data']:
+                writer.writerow([datum['date'], alt['name'], datum['participants'], datum['conversions']])
+        writer.writerow([])
+
+        writer.writerow(['"{0}" Summary'.format(obj['name'])])
+        writer.writerow(['total participants', 'total_conversions', 'has_winner', 'description'])
+        writer.writerow([obj['total_participants'], obj['total_conversions'], obj['has_winner'], obj['description']])
+
+        writer.writerow([])
+        writer.writerow(['Alternative Summary'])
+
+        writer.writerow(['name', 'participant_count', 'completed_count'])
+        for alt in obj['alternatives']:
+            writer.writerow([alt['name'], alt['participant_count'], alt['completed_count']])
+
+        return csvfile.getvalue()
+
     def initialize_alternatives(self, alternatives):
         for alternative_name in alternatives:
             if not Alternative.is_valid(alternative_name):
@@ -385,6 +411,7 @@ class Alternative(object):
             'is_winner': self.is_winner(),
             'test_statistic': self.g_stat(),
             'participant_count': self.participant_count(),
+            'completed_count': self.completed_count(),
             'confidence_level': self.confidence_level()
         }
 

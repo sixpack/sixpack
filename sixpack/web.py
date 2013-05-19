@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, abort, request, url_for, redirect, jsonify
+from flask import render_template, abort, request, url_for, redirect, jsonify, make_response
 from flask.ext.seasurf import SeaSurf
 from flask.ext.assets import Environment, Bundle
 from flask_debugtoolbar import DebugToolbarExtension
@@ -56,6 +56,19 @@ def json_details(experiment_name):
     experiment = find_or_404(experiment_name)
     obj = experiment.objectify_by_period(period)
     return jsonify(obj)
+
+
+@app.route("/experiment/<experiment_name>/export", methods=['POST'])
+def export(experiment_name):
+    experiment = find_or_404(experiment_name)
+
+    response = make_response(experiment.csvify())
+    response.headers["Content-Type"] = "text/csv"
+    # force a download with the content-disposition headers
+    filename = "sixpack_export_{0}".format(experiment_name)
+    response.headers["Content-Disposition"] = "attachment; filename={0}.csv".format(filename)
+
+    return response
 
 
 # Set winner for an experiment
