@@ -65,7 +65,8 @@ def export(experiment_name):
     response = make_response(experiment.csvify())
     response.headers["Content-Type"] = "text/csv"
     # force a download with the content-disposition headers
-    response.headers["Content-Disposition"] = "attachment; filename=sixpack_export.csv"
+    filename = "sixpack_export_{0}".format(experiment_name)
+    response.headers["Content-Disposition"] = "attachment; filename={0}.csv".format(filename)
 
     return response
 
