@@ -29,7 +29,7 @@
       <div class="collapse"></div>
       <% if (experiment.has_winner) { %>
         <form action="{{ url_for('reset_winner', experiment_name=experiment.name) }}" method="post">
-          <input type="hidden" name="_csrf_token" value="">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
           <button class="btn btn-small btn-warning" type="submit">Reset Winner</button>
         </form>
       <% } %>
@@ -41,6 +41,12 @@
       <form>
         <button class="btn btn-small btn-danger" data-toggle="modal" data-target="#confirm-delete-modal">Delete</button>
       </form>
+
+      <form method="post" action="{{ url_for('export', experiment_name=experiment.name) }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-small btn-info">Export</button>
+      </form>
+
     </div>
   </div>
   <div class="clearfix"></div>
