@@ -32,9 +32,6 @@ assets.register('css_all', css)
 # List of experiments
 @app.route("/")
 def hello():
-    #archived = bool(request.args.get('include_archived', False))
-    #exclude_archived = not archived
-    # TODO: these need to be sorted
     experiments = Experiment.all_names(REDIS)
     return render_template('dashboard.html', experiments=experiments)
 
