@@ -5,10 +5,10 @@
   var experiments = {{ experiments|list|tojson|safe }};
 </script>
 
-<div id="archive-notice">
-  <p class="archive-is-not-active"><i class="icon-eye-open icon-white"></i>&nbsp; <span>ARCHIVED EXPERIMENTS INCLUDED</span> <a href="{{ url_for('hello') }}" class="btn btn-inverse">Hide</a> </p>
-  <p class="archive-is-active"><i class="icon-eye-close icon-white"></i>&nbsp; <span>ARCHIVED EXPERIMENTS NOT INCLUDED</span> <a href="{{ url_for('hello', include_archived=True) }}" class="btn btn-inverse">Show</a></p>
-</div>
+<ul class="nav nav-pills">
+  <li id="js-active-experiments"><a href="/">active</a></li>
+  <li id="js-non-active-experiments"><a href="/?archived=true">archived</a></li>
+</ul>
 
 <div id="dashboard-page">
   <ul class="experiments"></ul>
@@ -48,7 +48,7 @@
                 <i class="icon-ok"></i>
               <% } %>
             </span>
-            <%- alt.name %> 
+            <%- alt.name %>
             <% if (alt.is_control) { %>
               <span class="note control">control</span>
             <% } %>

@@ -1,7 +1,7 @@
 $(function () {
   var viewport_height = window.innerHeight;
 
-  var include_archived = getParameterByName('include_archived') === 'True' ? true : false;
+  var archived_only = getParameterByName('archived') == 'true' ? true : false;
 
   var spinner_config = {
     lines: 13, // The number of lines to draw
@@ -40,10 +40,10 @@ $(function () {
   if ($('#dashboard-page').length) {
 
     // Toggle archive toolbar
-    if (include_archived) {
-      $('.archive-is-not-active').fadeIn('fast');
+    if (archived_only) {
+      $('#js-non-active-experiments').addClass('active');
     } else {
-      $('.archive-is-active').fadeIn('fast');
+      $('#js-active-experiments').addClass('active');
     }
 
     if (experiments.length) {
@@ -66,7 +66,7 @@ $(function () {
       if (el.data('loaded')) return;
       el.data('loaded', true);
 
-      var experiment = new Experiment(el, experiment_name, false, include_archived, function () {
+      var experiment = new Experiment(el, experiment_name, false, archived_only, function () {
         el.find('.spinner').fadeOut('fast').remove();
         el.animate({
           opacity: 1
