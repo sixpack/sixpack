@@ -1,7 +1,7 @@
 var Experiment;
 $(function () {
 
-  Experiment = function (el, name, version, archived_only, callback) {
+  Experiment = function (el, name, archived_only, callback) {
     var that = {}, my = {};
 
     _.templateSettings.variable = 'experiment';
@@ -15,9 +15,6 @@ $(function () {
 
     my.getData = function (callback) {
       var url = '/experiment/' + my.name + '.json?period=day';
-      if (version) {
-        url += '&version=' + version;
-      }
       $.getJSON(url, function (data) {
         callback(data);
       });

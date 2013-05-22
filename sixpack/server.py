@@ -112,7 +112,6 @@ class Sixpack(object):
             },
             'experiment': {
                 'name': experiment.name,
-                'version': experiment.version()
             },
             'conversion': {
                 'value': None
@@ -156,7 +155,6 @@ class Sixpack(object):
             },
             'experiment': {
                 'name': experiment.name,
-                'version': experiment.version()
             },
             'client_id': client_id,
             'status': 'ok'

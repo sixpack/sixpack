@@ -88,7 +88,6 @@ A typical Sixpack participation response will look something like this::
             name: "red"
         },
         experiment: {
-            version: 0,
             name: "button_color"
         },
         client_id: "12345678-1234-5678-1234-567812345678"
