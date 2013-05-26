@@ -36,6 +36,14 @@ def hello():
     return render_template('dashboard.html', experiments=experiments)
 
 
+@app.route('/experiments.json')
+def experiment_list():
+    experiments = Experiment.all(REDIS)
+    period = determine_period()
+    experiments = [exp.objectify_by_period(period) for exp in experiments]
+    return jsonify({'experiments': experiments})
+
+
 # Details for experiment
 @app.route("/experiment/<experiment_name>/")
 def details(experiment_name):
@@ -45,12 +53,8 @@ def details(experiment_name):
 
 @app.route("/experiment/<experiment_name>.json")
 def json_details(experiment_name):
-    period = request.args.get('period', None)
-    if period not in ['day', 'week', 'month', 'year']:
-        err = {'error': 'invalid argument: {0}'.format(period), 'status': 400}
-        return jsonify(err)
-
     experiment = find_or_404(experiment_name)
+    period = determine_period()
     obj = experiment.objectify_by_period(period)
     return jsonify(obj)
 
@@ -145,6 +149,15 @@ def find_or_404(experiment_name):
         return Experiment.find(experiment_name, REDIS)
     except:
         abort(404)
+
+
+def determine_period():
+    period = request.args.get('period', 'day')
+    if period not in ['day', 'week', 'month', 'year']:
+        err = {'error': 'invalid argument: {0}'.format(period), 'status': 400}
+        abort(400, jsonify(err))
+    return period
+
 
 app.secret_key = cfg.get('secret_key')
 app.jinja_env.filters['number_to_percent'] = utils.number_to_percent
