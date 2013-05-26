@@ -274,8 +274,6 @@ class Experiment(object):
     def _random_choice(self):
         return random.choice(self.alternatives)
 
-    # my best attempt at implementing whiplash/multi-armed-bandit
-    # math guy steve, help!
     def _whiplash(self):
         stats = {}
         for alternative in self.alternatives:
