@@ -351,6 +351,11 @@ class Experiment(object):
         return experiments
 
     @staticmethod
+    def archived(redis_conn):
+        experiments = Experiment.all(redis_conn, False)
+        return [exp for exp in experiments if exp.is_archived()]
+
+    @staticmethod
     def load_alternatives(experiment_name, redis_conn):
         key = _key("e:{0}:alternatives".format(experiment_name))
         return redis_conn.lrange(key, 0, -1)

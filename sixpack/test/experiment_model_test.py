@@ -231,6 +231,9 @@ class TestExperimentModel(unittest.TestCase):
         all_with_archived = Experiment.all(self.redis, False)
         self.assertEqual(len(all_with_archived), 4)
 
+        all_archived = Experiment.archived(self.redis)
+        self.assertEqual(len(all_archived), 1)
+
     def test_load_alternatives(self):
         exp = Experiment.find_or_create('load-alts-test', ['yes', 'no', 'call-me-maybe'], self.redis)
         alts = Experiment.load_alternatives(exp.name, self.redis)
