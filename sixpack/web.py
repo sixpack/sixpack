@@ -1,4 +1,3 @@
-from bs4 import BeautifulSoup
 from flask import Flask
 from flask import render_template, abort, request, url_for, redirect, jsonify, make_response
 from flask.ext.seasurf import SeaSurf
@@ -164,16 +163,8 @@ def determine_period():
 def simple_markdown(experiment):
     description = experiment['description']
     if description and description != '':
-        description = markdown(description)
-
-        soup = BeautifulSoup(description)
-
-        for tag in soup.findAll(True):
-            if tag.name not in ('a', 'br', 'p'):
-                tag.hidden = True
-
-        description = soup.renderContents()
-        experiment['pretty_description'] = soup.renderContents()
+        markdown(description)
+        experiment['pretty_description'] = markdown(description)
     return experiment
 
 
