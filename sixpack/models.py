@@ -45,7 +45,6 @@ class Experiment(object):
             'total_participants': self.total_participants(),
             'total_conversions': self.total_conversions(),
             'description': self.get_description(),
-            'pretty_description': self.get_pretty_description(),
             'has_winner': self.winner is not None,
             'is_archived': self.is_archived(),
         }
@@ -175,11 +174,6 @@ class Experiment(object):
 
     def get_description(self):
         return self.redis.hget(self.key(), 'description')
-
-    def get_pretty_description(self):
-        if self.get_description():
-            from markdown import markdown
-            return markdown(self.get_description())
 
     def reset(self):
         self.delete()
