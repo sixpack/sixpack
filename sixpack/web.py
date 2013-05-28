@@ -169,7 +169,7 @@ def simple_markdown(experiment):
         soup = BeautifulSoup(description)
 
         for tag in soup.findAll(True):
-            if tag.name not in ('a', 'br'):
+            if tag.name not in ('a', 'br', 'p'):
                 tag.hidden = True
 
         description = soup.renderContents()
