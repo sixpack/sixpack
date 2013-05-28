@@ -1,8 +1,10 @@
+from bs4 import BeautifulSoup
 from flask import Flask
 from flask import render_template, abort, request, url_for, redirect, jsonify, make_response
 from flask.ext.seasurf import SeaSurf
 from flask.ext.assets import Environment, Bundle
 from flask_debugtoolbar import DebugToolbarExtension
+from markdown import markdown
 
 from config import CONFIG as cfg
 from db import REDIS
@@ -40,7 +42,7 @@ def hello():
 def experiment_list():
     experiments = Experiment.all(REDIS)
     period = determine_period()
-    experiments = [exp.objectify_by_period(period) for exp in experiments]
+    experiments = [simple_markdown(exp.objectify_by_period(period)) for exp in experiments]
     return jsonify({'experiments': experiments})
 
 
@@ -55,7 +57,7 @@ def details(experiment_name):
 def json_details(experiment_name):
     experiment = find_or_404(experiment_name)
     period = determine_period()
-    obj = experiment.objectify_by_period(period)
+    obj = simple_markdown(experiment.objectify_by_period(period))
     return jsonify(obj)
 
 
@@ -157,6 +159,21 @@ def determine_period():
         err = {'error': 'invalid argument: {0}'.format(period), 'status': 400}
         abort(400, jsonify(err))
     return period
+
+
+def simple_markdown(experiment):
+    if experiment['description'] != '':
+        description = markdown(experiment['description'])
+
+        soup = BeautifulSoup(description)
+
+        for tag in soup.findAll(True):
+            if tag.name not in ('a', 'br'):
+                tag.hidden = True
+
+        description = soup.renderContents()
+        experiment['pretty_description'] = soup.renderContents()
+    return experiment
 
 
 app.secret_key = cfg.get('secret_key')
