@@ -162,8 +162,9 @@ def determine_period():
 
 
 def simple_markdown(experiment):
-    if experiment['description'] != '':
-        description = markdown(experiment['description'])
+    description = experiment['description']
+    if description and description != '':
+        description = markdown(description)
 
         soup = BeautifulSoup(description)
 
