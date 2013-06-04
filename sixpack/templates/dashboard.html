@@ -5,17 +5,12 @@
   var experiments = {{ experiments|list|tojson|safe }};
 </script>
 
-<ul class="nav nav-pills">
-  <li id="js-active-experiments"><a href="/">active</a></li>
-  <li id="js-non-active-experiments"><a href="/?archived=true">archived</a></li>
-</ul>
-
 <div id="dashboard-page">
   <ul class="experiments"></ul>
   <div id="no-data">
     <h2>Oh No.</h2>
     <p>It seems you haven't created any experiments, yet. To do this simply make a <code>GET</code> request to your sixpack server's 'participate' endpoint.</p>
-    <pre><code>$ curl <span id="base-domain">http://127.0.0.1:5000</span>/participate?experiment=new-header&amp;alternatives=red&amp;alternatives=blue&amp;client_id=&lt;A UNIQUIE CLIENT ID&gt;</code></pre>
+    <pre><code>$ curl <span id="base-domain">http://127.0.0.1:5000</span>/participate?experiment=new-header&amp;alternatives=red&amp;alternatives=blue&amp;client_id=&lt;A UNIQUE CLIENT ID&gt;</code></pre>
   </div>
 </div>
 
@@ -33,13 +28,15 @@
   <div class="clearfix"></div>
 
   <table>
-    <tbody>
+    <thead>
       <tr>
         <th>Case</th>
         <th>Participants</th>
         <th>Conv Rate</th>
         <th>Confidence</th>
       </tr>
+    </thead>
+    <tbody>
       <% _.each(experiment.alternatives, function (alt, index) { %>
         <tr class="<%- experiment.name %>-line-<%- index %>">
           <td>

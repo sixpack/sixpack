@@ -7,8 +7,12 @@
     font-size: 14px;
   }
   .top-gradient {
-    background: url('../img/background-gradient.png') repeat-x;
-    position: absolute;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, .1)), to(rgba(255, 255, 255, 0)));
+    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, .1), rgba(255, 255, 255, 0));
+    background-image:    -moz-linear-gradient(top, rgba(255, 255, 255, .1), rgba(255, 255, 255, 0));
+    background-image:     -ms-linear-gradient(top, rgba(255, 255, 255, .1), rgba(255, 255, 255, 0));
+    background-image:         linear-gradient(top, rgba(255, 255, 255, .1), rgba(255, 255, 255, 0));
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -19,16 +23,16 @@
 
 /* BEGIN: Navbar */
   .navbar-inverse .navbar-inner {
-    background-color: rgba(0,0,0,0);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(172, 89, 17, 0.93)), to(rgba(162, 79, 15, 0.93)));
-    background-image: -webkit-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
-    background-image: -moz-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
-    background-image: -o-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
-    background-image: -ms-linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
-    background-image: linear-gradient(top, rgba(172, 89, 17, 0.93), rgba(162, 79, 15, 0.93));
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ac5911', EndColorStr='#a24f0f');
+    background-color: #cc6d00;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#cc6d00), to(#994d00));
+    background-image: -webkit-linear-gradient(top, #cc6d00, #994d00);
+    background-image:    -moz-linear-gradient(top, #cc6d00, #994d00);
+    background-image:     -ms-linear-gradient(top, #cc6d00, #994d00);
+    background-image:         linear-gradient(top, #cc6d00, #994d00);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#cc6d00', EndColorStr='#994d00');
+
     border: none;
-    box-shadow: 1px 0 4px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .5);
   }
   .navbar-inner {
     height: 56px
@@ -39,7 +43,19 @@
     background-image: url('../img/logo.png');
     padding: 0;
     margin-top: 14px;
-    margin-left: 35px;
+    margin-left: 10px;
+  }
+  .navbar-inverse .nav-pills {
+    margin-top: 7px;
+  }
+  .navbar-inverse .nav-pills li a {
+    color: #FFF;
+  }
+  .navbar-inverse .nav-pills li.active a {
+    color: #000;
+    background: #FFF;
+    text-shadow: none;
+    box-shadow: none;
   }
 /* END: Navbar */
 
@@ -48,27 +64,21 @@
     list-style: none;
     margin: 0;
   }
-  ul.experiments li {
-    opacity: 0.5;
+  ul.experiments > li {
+    background: rgba(0, 0, 0, .2);
     min-height: 240px;
     position: relative;
     padding: 8px 38px 20px;
     margin-bottom: 45px;
-    border-radius: 5px;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.02)), to(rgba(255, 255, 255, 0.03)));
-    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
-    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
-    background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
-    background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
-    background-image: linear-gradient(top, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ffffff', EndColorStr='#ffffff');
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
-    -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
-    -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
+    border-radius: 8px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4) inset, 0 1px 1px rgba(255, 255, 255, .1);
   }
-  ul.experiments li table {
-    width: 735px;
+  ul.experiments > li table {
     margin-left: -20px;
+    border-collapse: separate;
+    background: rgba(255, 255, 255, .03);
+    border-radius: 5px;
+    overflow: hidden;
   }
   ul.experiments h3.name,
   ul.experiments h3.name a {
@@ -76,145 +86,58 @@
     font-size: 30px;
     font-family: 'Lato', sans-serif;
     font-weight: 100;
-    transition: all .5s;
-    -moz-transition: all .5s;
-    -webkit-transition: all .5s;
   }
-  h3.name h3.name a:hover {
+  ul.experiments h3.name a:hover {
     text-decoration: underline;
-    text-shadow: 0 0 2px #fff;
-    color: #fff;
   }
-  ul.experiments li table tr th, ul.experiments li table tr td {
+  ul.experiments > li table tr th,
+  ul.experiments > li table tr td {
     padding-right: 22px;
     font-weight: 300;
     text-align: right;
-    border-left: 1px solid #1e1f20;
+    border-top:    1px solid rgba(255, 255, 255, .05);
+    border-left:   1px solid rgba(0, 0, 0, .2);
+    border-bottom: 1px solid rgba(0, 0, 0, .5);
   }
-  ul.experiments li table tr {
-    border-bottom: 1px solid #1e1f20;
-    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, .04);
-    -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, .04);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, .04);
+
+  ul.experiments > li table tr th {
+    padding: 10px 20px 10px 0;
   }
-  /* Styles for the header row */
-  ul.experiments li table tr:first-child {
-    font-weight: 300;
-    color: #eeeae6;
-    border-bottom: 1px solid #1b1a1a;
-    -moz-border-radius: 5px 5px 0 0;
-    -webkit-border-radius: 5px 5px 0 0;
-    border-radius: 5px 5px 0 0;
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
-    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
-    box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(43, 44, 45, 0.40)), to(rgba(37, 38, 39, 0.40)));
-    background-image: -webkit-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-    background-image: -moz-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-    background-image: -o-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-    background-image: -ms-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-    background-image: linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#2b2c2d', EndColorStr='#252627');
-  }
-  /* Row directly under header needs some extra padding */
-  ul.experiments li table tr:nth-child(2) td {
-    padding-top: 9px
-  }
-  ul.experiments li table tr:last-child {
-    border-bottom: none;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-  }
-  ul.experiments li table tr:last-child td {
-    padding-bottom: 16px
-  }
-  ul.experiments li table tr th {
-    line-height: 31px;
-    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.03) inset;
-  }
-  ul.experiments li table tr th:last-child {
+  ul.experiments > li table tr th:last-child {
     border-right: 0;
   }
-  ul.experiments li table tr td {
+  ul.experiments > li table tr td {
     color: #C2BDB9;
-    padding-top: 7px;
-    padding-bottom: 11px;
-    padding-left: 0;
-    box-shadow: 1px 0 0 rgba(255, 255, 255, .02) inset;
+    padding: 10px 20px 10px 0;
   }
-  ul.experiments li table tr td span.circle {
+  ul.experiments > li table tr td span.circle {
     width: 14px;
     height: 14px;
     border-radius: 50%;
     display: inline-block;
     position: relative;
-    top: 3px;
+    top: 2px;
     margin-right: 7px;
   }
-  ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
+  ul.experiments > li table tr > :first-child {
     padding-left: 20px;
+    text-align: left;
+    border-left: 0;
   }
-  ul.experiments li table tr th:last-child, ul.experiments li table tr td:last-child {
-    padding-right: 20px;
-  }
-  ul.experiments li table tr td:last-child {
+  ul.experiments > li table tr > :last-child {
     border-right: 0;
   }
-  ul.experiments li table tr th:first-child, ul.experiments li table tr td:first-child {
-    text-align: left;
-    box-shadow: none;
-    border-left: none;
+
+  /* Alternating column shading */
+  ul.experiments > li table tr > :nth-child(even) {
+    background: rgba(170, 170, 170, 0.02);
   }
 
-  /* Styles for alternating column shading */
-  ul.experiments li table tr th:nth-child(even) {
-    background: none repeat scroll 0 0 rgba(170, 170, 170, 0.02);
-  }
-  ul.experiments li table tr td:nth-child(even) {
-    background: none repeat scroll 0 0 rgba(170, 170, 170, 0.02);
-  }
-  ul.experiments li table tr.highlight td {
+  ul.experiments > li table tr.highlight td {
     color: #fff;
-    background: none repeat scroll 0 0 rgba(170,170,170,0.05);
+    background: none repeat scroll 0 0 rgba(170,170,170,0.1);
   }
 
-  /* The following lines are to combat a Chrome bug: http://code.google.com/p/chromium/issues/detail?id=62445 */
-  ul.experiments li table tr {
-    display: block
-  }
-  ul.experiments li table tr th:nth-child(1) {
-    width: 151px
-  }
-  ul.experiments li table tr td:nth-child(1) {
-    width: 149px;
-    border-left: none;
-  }
-  ul.experiments li table tr:first-child th:nth-child(2) {
-    width: 109px
-  }
-  ul.experiments li table tr td:nth-child(2) {
-    width: 110px
-  }
-  ul.experiments li table tr:first-child th:nth-child(3) {
-    width: 99px
-  }
-  ul.experiments li table tr td:nth-child(3) {
-    width: 100px
-  }
-  ul.experiments li table tr:first-child th:nth-child(4) {
-    width: 134px
-  }
-  ul.experiments li table tr td:nth-child(4) {
-    width: 135px
-  }
-  ul.experiments li table tr:first-child th:nth-child(5) {
-    width: 109px;
-  }
-  ul.experiments li table tr td:nth-child(5) {
-    width: 110px
-  }
-  /*End Chrome bug workaround*/
 /* END: Experiments */
 
 /* BEGIN: Placeholder rules for D3 chart */
@@ -301,18 +224,13 @@ ul.experiments h4 {
 }
 .modal-header {
   border-bottom: 1px solid #1b1a1a;
-  -moz-border-radius: 5px 5px 0 0;
-  -webkit-border-radius: 5px 5px 0 0;
   border-radius: 5px 5px 0 0;
-  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
-  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
   box-shadow: 0 1px 2px rgba(0,0,0,.1), inset 0 1px rgba(255,255,255,.05), 1px 0 0 rgba(0,0,0,.04), -1px 0 0 rgba(0,0,0,.04);
   background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(43, 44, 45, 0.40)), to(rgba(37, 38, 39, 0.40)));
   background-image: -webkit-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-  background-image: -moz-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-  background-image: -o-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-  background-image: -ms-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
-  background-image: linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image:    -moz-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image:     -ms-linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
+  background-image:         linear-gradient(top, rgba(43, 44, 45, 0.40), rgba(37, 38, 39, 0.40));
   filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#2b2c2d', EndColorStr='#252627');
 }
 .modal-header h3 {
@@ -327,10 +245,9 @@ ul.experiments h4 {
   width: 500px;
   height: 125px;
   display: block;
-  color: #dedede;
-  background-color: rgba(170, 170, 170, 0.08);
-  border: 1px solid #444;
-  box-shadow: rgba(0, 0, 0, 0.0980392) 0px 1px 2px 0px, rgba(255, 255, 255, 0.0470588) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0392157) 1px 0px 0px 0px, rgba(0, 0, 0, 0.0392157) -1px 0px 0px 0px;
+  color: #FFF;
+  background: #555;
+  border: 0;
 }
 .modal-footer {
   background-color: rgba(170, 170, 170, 0.08);
@@ -363,14 +280,11 @@ ul.experiments h4 {
   border-radius: 5px;
   background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.04)), to(rgba(255, 255, 255, 0.05)));
   background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
-  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
-  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
-  background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
-  background-image: linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
+  background-image:    -moz-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
+  background-image:     -ms-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
+  background-image:         linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
   filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ffffff', EndColorStr='#ffffff');
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
-  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
-  -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
 }
 #archive-notice p {
   padding: 10px 38px;
@@ -392,27 +306,14 @@ ul.experiments h4 {
 .archive-is-active {
   display: none;
 }
-#dashboard-page ul.experiments li table {
-  width: auto;
+#dashboard-page ul.experiments > li table {
+  width: 650px;
 }
-#dashboard-page ul.experiments li table tr th:nth-child(1) {     
-  width: 137px;
-  min-width: 178px;
+
+#dashboard-page ul.experiments > li .header {
+  width: 640px;
 }
-#dashboard-page ul.experiments li table tr td:nth-child(1) { 
-  width: 136px;
-  min-width: 178px;
-}
-#dashboard-page ul.experiments li table tr th:nth-child(2),
-#dashboard-page ul.experiments li table tr th:nth-child(3),
-#dashboard-page ul.experiments li table tr th:nth-child(4) {
-  min-width: 123px;
-}
-#dashboard-page ul.experiments li table tr td:nth-child(2),
-#dashboard-page ul.experiments li table tr td:nth-child(3),
-#dashboard-page ul.experiments li table tr td:nth-child(4) {
-  min-width: 124px;
-}
+
 #dashboard-page .chart {
   position: absolute;
   bottom: 60px;
@@ -435,63 +336,35 @@ ul.experiments h4 {
   margin-bottom: 50px;
   display: none;
 }
-#details-page ul.experiments li table {
+#details-page ul.experiments > li table {
   width: auto;
 }
-#details-page ul.experiments li table tr th:nth-child(1),
-#details-page ul.experiments li table tr td:nth-child(1) {
-  min-width: 400px;
-}
-#details-page ul.experiments li table tr th:nth-child(2),
-#details-page ul.experiments li table tr th:nth-child(3),
-#details-page ul.experiments li table tr th:nth-child(4),
-#details-page ul.experiments li table tr th:nth-child(5) {
-  min-width:148px;
-}
-#details-page ul.experiments li table tr td:nth-child(2),
-#details-page ul.experiments li table tr td:nth-child(3),
-#details-page ul.experiments li table tr td:nth-child(4),
-#details-page ul.experiments li table tr td:nth-child(5) {
-  min-width: 149px;
-}
+
 /* BEGIN: Details page */
 
 /* BEGIN: Responsive rules */
 @media (max-width: 1200px) {
   #dashboard-page .chart {
-    display: none !important;
+    position: static;
+    margin: 20px 0 50px;
   }
-  .container {
-    width: 724px;
+
+  ul.experiments > li table {
+    width: 100% !important;
   }
-  #details-page ul.experiments li table tr th:nth-child(1),
-  #details-page ul.experiments li table tr td:nth-child(1) {
-    min-width: 120px;
+
+  ul.experiments > li .header {
+    width: 100% !important;
   }
-  #details-page ul.experiments li table tr th:nth-child(2),
-  #details-page ul.experiments li table tr th:nth-child(3),
-  #details-page ul.experiments li table tr th:nth-child(4),
-  #details-page ul.experiments li table tr th:nth-child(5) {
-    min-width: 99px;
-  }
-  #details-page ul.experiments li table tr td:nth-child(2),
-  #details-page ul.experiments li table tr td:nth-child(3),
-  #details-page ul.experiments li table tr td:nth-child(4),
-  #details-page ul.experiments li table tr td:nth-child(5) {
-    min-width: 100px;
-  }
+
 }
 @media (max-width: 430px) {
-  #dashboard-page ul.experiments li table tr th:nth-child(1),
-  #dashboard-page ul.experiments li table tr td:nth-child(1) {
+  #dashboard-page ul.experiments > li table tr > :nth-child(1) {
     max-width: 100px;
   }
 }
 @media (max-width: 580px) {
-  #details-page ul.experiments li table tr th:nth-child(3),
-  #details-page ul.experiments li table tr td:nth-child(3),
-  #dashboard-page ul.experiments li table tr th:nth-child(3),
-  #dashboard-page ul.experiments li table tr td:nth-child(3) {
+  ul.experiments > li table tr > :nth-child(3) {
     display:none;
   }
   #details-page .header .controls .collapse {
@@ -499,10 +372,7 @@ ul.experiments h4 {
   }
 }
 @media (max-width: 735px) {
-  #details-page ul.experiments li table tr th:nth-child(2),
-  #details-page ul.experiments li table tr td:nth-child(2),
-  #dashboard-page ul.experiments li table tr th:nth-child(2),
-  #dashboard-page ul.experiments li table tr td:nth-child(2) {
+  ul.experiments > li table tr > :nth-child(2) {
     display:none;
   }
   .container {
@@ -580,36 +450,36 @@ div.tooltip {
 
 /* Chart color values.*/
 .color-1 {
-  background: #714A33;
-  stroke: #714A33;
+  background: #E23630;
+  stroke: #E23630;
 }
 .color-2 {
-  background: #32587E;
-  stroke: #32587E;
+  background: #308B3F;
+  stroke: #308B3F;
 }
 .color-3 {
-  background: #327E51;
-  stroke: #327E51;
+  background: #225AAC;
+  stroke: #225AAC;
 }
 .color-4 {
-  background: #3A85AC;
-  stroke: #3A85AC;
+  background: #e1e319;
+  stroke: #e1e319;
 }
 .color-5 {
-  background: #8EBDBC;
-  stroke: #8EBDBC;
+  background: #EA7F13;
+  stroke: #EA7F13;
 }
 .color-6 {
-  background: #56BDBB;
-  stroke: #56BDBB;
+  background: #613095;
+  stroke: #613095;
 }
 .color-7 {
-  background: #BDAB4D;
-  stroke: #BDAB4D;
+  background: #992322;
+  stroke: #992322;
 }
 .color-8 {
-  background: #33716F;
-  stroke: #33716F;
+  background: #AB3D97;
+  stroke: #AB3D97;
 }
 .color-9 {
   background: #7E466F;
@@ -636,3 +506,20 @@ div.tooltip {
   stroke: #E99E62;
 }
 /* End chart color values */
+
+
+/* BEGIN: Start Page */
+
+  pre {
+    border: 0;
+  }
+
+  .btn {
+    border: 0;
+  }
+
+  .modal-backdrop {
+    background: #555;
+  }
+
+/* END: Start Page */
