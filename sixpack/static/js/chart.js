@@ -92,12 +92,7 @@ $(function () {
         .attr("style", "stroke:" + color);
 
       my.svg.select("#" + line_id)
-        .data(data)
-        .on("mouseover", function (d) {
-        })
-        .on("mouseout", function (d) {
-
-        });
+        .data(data);
 
       my.svg.selectAll("dot")
         .data(data)
@@ -130,8 +125,20 @@ $(function () {
             this.parentNode.appendChild(this);
           });
 
+          // Show the tooltip
+          var pct = (Math.round(d.close * 1000) / 10) + '%',
+              date = new Date(d.date),
+              month = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'],
+              dateString = month[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear(),
+              pos = $(this).offset();
 
-          console.log(d);
+          $('#tooltip')
+            .html(dateString + ' &nbsp; ' + pct)
+            .show()
+            .css({
+              left: pos.left + 8 - (parseInt($('#tooltip').outerWidth()) / 2),
+              top:  pos.top - 30
+            });
         })
         .on("mouseout", function (d) {
           // Return circle to normal
@@ -145,6 +152,9 @@ $(function () {
 
           // Remove table highlight
           $('.' + line_id).removeClass('highlight');
+
+          // Hide the tooltip
+          $('#tooltip').hide();
         });
     };
 
