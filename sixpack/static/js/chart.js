@@ -94,27 +94,61 @@ $(function () {
       my.svg.select("#" + line_id)
         .data(data)
         .on("mouseover", function (d) {
-          // Sort the lines so the current line is "above" the non-hovered lines
-          d3.select(this.parentNode.appendChild(this));
-
-          // Highlight line
-          var currClass = d3.select(this).attr("class");
-          d3.select(this).attr("class", currClass + " line-hover");
-
-          // Highlight corresponding table alternative
-          var table = $('.' + d3.event.target.id).closest('div').find('table')
-          table.find('tr').removeClass('highlight');
-          table.find('.' + d3.event.target.id).addClass('highlight');
         })
         .on("mouseout", function (d) {
-          // Remove line highlight
-          d3.select(this).attr("class", "line");
-          var id = d3.event.target.id;
+
+        });
+
+      my.svg.selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("class", "circle circle-" + line_id)
+        .attr("r", 5)
+        .attr("cx", function(d) { return my.xScale(d.date); })
+        .attr("cy", function(d) { return my.yScale(d.close); })
+        .attr("style", "fill:" + color)
+        .on("mouseover", function (d) {
+
+          // Make the circle larger
+          d3.select(this)
+            .attr("r", 8)
+            .attr('class', 'circle circle-' + line_id + ' circle-hover');
+
+          // Make the line thicker
+          var line = d3.select('#' + line_id);
+          var currClass = line.attr('class');
+          line.attr('class', currClass + ' line-hover');
+
+          // Highlight corresponding table alternative
+          var table = $('.' + line_id).closest('div').find('table')
+          table.find('tr').removeClass('highlight');
+          table.find('.' + line_id).addClass('highlight');
+
+          // Move the line all circles of the line to the front
+          $('#' + line_id + ', .circle-' + line_id).each(function() {
+            this.parentNode.appendChild(this);
+          });
+
+
+          console.log(d);
+        })
+        .on("mouseout", function (d) {
+          // Return circle to normal
+          d3.select(this)
+            .attr("r", 5)
+            .attr('class', 'circle circle-' + line_id);
+
+          // Unhighlight the line
+          var line = d3.select('#' + line_id);
+          line.attr('class', 'line');
 
           // Remove table highlight
-          $('.' + id).removeClass('highlight');
+          $('.' + line_id).removeClass('highlight');
         });
     };
+
+
 
     my.drawCircle = function (data, color) {
       color = color || "#9d5012";

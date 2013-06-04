@@ -159,7 +159,7 @@
   stroke-width: 2.2px;
 }
 .chart .line-hover {
-  stroke-width: 6px;
+  stroke-width: 4px;
 }
 .chart g.tick text {
   font-weight: 400;
@@ -176,6 +176,13 @@
   fill: #fff;
   opacity: 0.02;
   stroke-width: 0;
+}
+.chart .circle {
+  stroke: transparent;
+  stroke-width: 12px;
+}
+.chart .circle.circle-hover {
+  stroke-width: 6px;
 }
 /* END: Placeholder rules for D3 chart */
 div.header {

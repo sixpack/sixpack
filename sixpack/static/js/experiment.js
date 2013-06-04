@@ -47,8 +47,8 @@ $(function () {
       });
       my.el.append(my.template(data));
 
-      $("li[data-name='" + my.name + "'] tr").hover(
-        function () {
+      $("li[data-name='" + my.name + "'] tr").on({
+        mouseover: function () {
           var alt_name = $(this).attr('class');
           if (!alt_name) return;
 
@@ -65,9 +65,11 @@ $(function () {
           }
 
           // Sort the lines so the current line is "above" the non-hovered lines
-          el.parentNode.appendChild(el);
+          $('#' + id + ', .circle-' + id).each(function() {
+            this.parentNode.appendChild(this);
+          });
         },
-        function () {
+        mouseout: function () {
           $(this).removeClass('highlight');
 
           var alt_name = $(this).attr('class');
@@ -81,7 +83,7 @@ $(function () {
             line.attr('class', 'line');
           }
         }
-      );
+      });
 
       var chart = new Chart(my.name, data);
       chart.draw();
