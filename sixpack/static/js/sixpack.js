@@ -59,10 +59,9 @@ $(function () {
       copyBtn.on('complete', function (client, args) {
         $('.copy-success').fadeIn().find('code').html(args.text);
 
-        // Since Flash retains input and hijacks keyboard commands (cmd+h, etc.),
-        // we need to force the focus elsewhere. Seriously, if there's a better
-        // way to do this, please change it.
-        $('<input>').appendTo('.copy-success').focus().remove();
+        // Take focus away from the flash doc
+        document.body.tabIndex = 0;
+        document.body.focus();
       });
 
       $('.copy-querystring').tooltip({ trigger: 'manual', placement: 'left' });
