@@ -133,10 +133,11 @@ $(function () {
               date = new Date(d.date),
               month = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'],
               dateString = month[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear(),
-              pos = $(this).offset();
+              pos = $(this).offset(),
+              tooltipCircle = '<span class="tooltip-circle" style="background: ' + $(this).css('fill') + ';"></span> ';
 
           $('#tooltip')
-            .html(dateString + ' &nbsp; ' + pct)
+            .html(tooltipCircle + dateString + ' &nbsp; ' + pct)
             .show()
             .css({
               left: pos.left + 8 - (parseInt($('#tooltip').outerWidth()) / 2),

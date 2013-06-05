@@ -472,6 +472,14 @@ hr {
   left: 50%;
   margin-left: -6px;
 }
+.tooltip-circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 14px;
+  display: inline-block;
+  margin: 0 5px -2px 0;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
+}
 
 /* Chart color values.*/
 .color-1 {
