@@ -43,6 +43,7 @@ $(function () {
       xValues = _.map(data, function (d) {
         return d[0];
       });
+
       yValues = _.map(data, function (d) {
         return parseFloat(d[1]);
       });
@@ -53,11 +54,11 @@ $(function () {
       my.xAxis = d3.svg.axis()
         .scale(my.xScale)
         .tickSize(0)
-        .tickFormat(d3.time.format("%m/%d"))
+        .tickFormat(d3.time.format("%-m/%-d"))
         .orient("bottom");
         
       if (xValues.length > 10) {
-        my.xAxis.ticks(d3.time.days, 4)
+        my.xAxis.ticks(d3.time.days, 4);
       } else if (xValues.length === 2) {
         my.xAxis.ticks(d3.time.days, 1)
       } else {
@@ -241,7 +242,7 @@ $(function () {
         .attr("class", "grid")
         .attr("transform", "translate(0," + (my.height) + ")")
         .call(my.xAxis
-              .ticks(d3.time.days, 1)
+              .ticks(d3.time.days)
               .tickSize(-my.height, 0, 0)
               .tickFormat(""));
     };
