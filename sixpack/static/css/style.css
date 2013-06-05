@@ -19,6 +19,11 @@
     height: 350px;
     z-index: -99;
   }
+  pre, .btn { border: 0; }
+
+  .modal-backdrop {
+    background: #555;
+  }
 /* END: Background */
 
 /* BEGIN: Navbar */
@@ -74,6 +79,7 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4) inset, 0 1px 1px rgba(255, 255, 255, .1);
   }
   ul.experiments > li table {
+    width: 100%;
     margin-left: -20px;
     border-collapse: separate;
     background: rgba(255, 255, 255, .03);
@@ -343,9 +349,6 @@ ul.experiments h4 {
   margin-bottom: 50px;
   display: none;
 }
-#details-page ul.experiments > li table {
-  width: auto;
-}
 
 /* BEGIN: Details page */
 
@@ -528,20 +531,3 @@ hr {
   stroke: #E99E62;
 }
 /* End chart color values */
-
-
-/* BEGIN: Start Page */
-
-  pre {
-    border: 0;
-  }
-
-  .btn {
-    border: 0;
-  }
-
-  .modal-backdrop {
-    background: #555;
-  }
-
-/* END: Start Page */
