@@ -27,6 +27,10 @@
       <div class="navbar-inner">
         <div class="container">
           <a class="brand" href="/"></a>
+          <ul class="nav nav-pills pull-right">
+            <li id="js-active-experiments"><a href="/">Active</a></li>
+            <li id="js-non-active-experiments"><a href="/?archived=true">Archived</a></li>
+          </ul>
         </div>
       </div>
     </div>
@@ -35,6 +39,8 @@
       <div class="top-gradient"></div>
       {% block body %}{% endblock %}
     </div> <!-- /container -->
+
+    <div id="tooltip"></div>
 
   {% assets "js_all" %}
       <script type="text/javascript" src="{{ ASSET_URL }}"></script>
