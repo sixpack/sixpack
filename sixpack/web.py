@@ -16,7 +16,7 @@ csrf = SeaSurf(app)
 js = Bundle('js/jquery.js', 'js/d3.js',
             'js/bootstrap.js', 'js/experiment.js', 'js/chart.js',
             'js/sixpack.js', 'js/underscore-min.js', 'js/spin.min.js',
-            'js/waypoints.min.js',
+            'js/waypoints.min.js', 'js/zeroclipboard.min.js',
             filters=['closure_js'],
             output="{0}/sixpack.js".format(cfg.get('asset_path', 'gen')))
 
