@@ -11,7 +11,7 @@
       <%- experiment.name %>
     </h3>
     <% if (experiment.description) { %>
-      <h4><%= experiment.pretty_description %></h4>
+      <div class="desc"><%= experiment.pretty_description %></div>
     <% } %>
 
 
@@ -58,7 +58,7 @@
         <th>Participants</th>
         <th>Conv Rate</th>
         <th>Confidence</th>
-        <th>Winner</th>
+        <th>Actions</th>
       </tr>
       <% _.each(experiment.alternatives, function (alt, index) { %>
         <tr class="<%- experiment.name %>-line-<%- index %>">
@@ -79,7 +79,7 @@
           <td>
             <div class="alt-controls">
               <% if (alt.is_winner) { %>
-                <span class="label label-success">Winner!</label>
+                <span class="label label-success">Winner!</span>
               <% } else { %>
                 <form action="{{ url_for('set_winner', experiment_name=experiment.name) }}" method="post">
                   <input type='hidden' name="alternative_name" value="<%- alt.name %>" />
@@ -87,12 +87,15 @@
                   <button type="submit" class="btn btn-small btn-inverse">Use This</button>
                 </form>
               <% } %>
+              <a href="#" class="btn btn-small btn-inverse copy-querystring" data-clipboard-text="?=sixpack-force-<%- experiment.name %>=<%- alt.name %>" id="copy-<%- experiment.name %>-line-<%- index %>" title="Copy forced variant querystring"><i class="icon-white icon-eye-open"></i></a>
             </div>
           </td>
         </tr>
       <% }); %>
     </tbody>
   </table>
+
+  <div class="alert copy-success">Querystring copied: <code>?=sixpack-force-button-color=orange</code>. Paste it at the end of your test page URL to see the variation.</div>
 
   <hr>
 

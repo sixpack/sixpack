@@ -31,7 +31,7 @@ $(function () {
         bottom: 30,
         left: 50
       };
-      console.log(my.el);
+      
       my.width = my.el.width();
       my.height = my.el.height();
       my.xScale = d3.time.scale().range([0, my.width]);
@@ -96,7 +96,7 @@ $(function () {
       my.svg.select("#" + line_id)
         .data(data);
 
-      var size = data.length > 20 && !$('#details-page').length ? 3 : 5;
+      var size = data.length > 10 && !$('#details-page').length ? 3 : 5;
 
       my.svg.selectAll("dot")
         .data(data)

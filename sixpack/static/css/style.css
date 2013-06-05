@@ -190,35 +190,38 @@
   stroke-width: 6px;
 }
 /* END: Placeholder rules for D3 chart */
-div.header {
+.header {
   min-height: 65px;
   position: relative;
 }
-div.header button {
+.header button {
   float: left;
   margin-left: 5px;
 }
-div.header .modal {
+.header .modal {
   float: left;
 }
-div.header form, div.alt-controls form {
+.header form,
+.alt-controls form {
   margin: 0;
   display: inline-block;
 }
-div.header .controls {
+.header .controls {
   top: 10px;
   right: 0;
   position: absolute;
 }
-div.header h3 {
+.header h3 {
   margin-right: 25px;
   margin-bottom: 0;
 }
-div.header h4 {
-  margin-bottom: 15px;
+.header .desc {
+  margin: 10px 0 15px;
+}
+.header .desc a {
+  color: #66BADA;
 }
 ul.experiments table tbody td span.label {
-  float: right;
   margin-top: 2px;
   text-transform: uppercase;
   font-size: 10px;
@@ -353,8 +356,18 @@ ul.experiments h4 {
   float: left;
   padding-bottom: 100px;
 }
-
-/* BEGIN: Details page */
+#details-page .copy-success {
+  display: none;
+  margin-top: 15px;
+  background: #444;
+  color: #FFF;
+  text-shadow: none;
+  border: 0;
+}
+#details-page .copy-success code {
+  border: 0;
+}
+/* END: Details page */
 
 /* BEGIN: Responsive rules */
 @media (max-width: 1200px) {

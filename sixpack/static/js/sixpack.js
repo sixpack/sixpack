@@ -33,6 +33,39 @@ $(function () {
       el.animate({
         opacity: 1
       });
+
+      // Copy to Clipboard buttons
+      // ZeroClipboard works by placing a transparent Flash
+      // embed over the element, which means that default hover
+      // and active states don't work, so we need to manually
+      // activate them. It uses its own .on() methods for events,
+      // so no clean jQuery syntax, unfortunately.
+      var copyBtn = new ZeroClipboard($('.copy-querystring'), { moviePath: '/static/flash/ZeroClipboard.swf' });
+
+      copyBtn.on('mousedown', function () {
+        $(this).addClass('active');
+      });
+      copyBtn.on('mouseup', function () {
+        $(this).removeClass('active');
+      });
+      copyBtn.on('mouseover', function () {
+        $(this).closest('tr').addClass('highlight');
+        $(this).tooltip('show');
+      });
+      copyBtn.on('mouseout', function () {
+        $(this).removeClass('active');
+        $(this).tooltip('hide');
+      });
+      copyBtn.on('complete', function (client, args) {
+        $('.copy-success').fadeIn().find('code').html(args.text);
+
+        // Since Flash retains input and hijacks keyboard commands (cmd+h, etc.),
+        // we need to force the focus elsewhere. Seriously, if there's a better
+        // way to do this, please change it.
+        $('<input>').appendTo('.copy-success').focus().remove();
+      });
+
+      $('.copy-querystring').tooltip({ trigger: 'manual', placement: 'left' });
     });
   }
 
