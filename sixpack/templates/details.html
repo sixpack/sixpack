@@ -19,11 +19,11 @@
 
       <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-small btn-inverse"><% if (experiment.is_archived) { %>Un-<% } %>Archive</button>
+        <button class="btn btn-small btn-inverse"><i class="icon-white icon-ok-circle"></i> <% if (experiment.is_archived) { %>Un-<% } %>Archive</button>
       </form>
 
       <form>
-        <button class="btn btn-small btn-inverse" data-toggle="modal" data-target="#desc-modal">Update Description</button>
+        <button class="btn btn-small btn-inverse" data-toggle="modal" data-target="#desc-modal"><i class="icon-white icon-pencil"></i> Edit Description</button>
       </form>
       <div class="collapse"></div>
       <% if (experiment.has_winner) { %>
@@ -34,16 +34,16 @@
       <% } %>
 
       <form>
-        <button class="btn btn-small btn-warning" data-toggle="modal" data-target="#confirm-reset-modal">Reset</button>
+        <button class="btn btn-small btn-warning" data-toggle="modal" data-target="#confirm-reset-modal"><i class="icon-white icon-refresh"></i> Reset</button>
       </form>
 
       <form>
-        <button class="btn btn-small btn-danger" data-toggle="modal" data-target="#confirm-delete-modal">Delete</button>
+        <button class="btn btn-small btn-danger" data-toggle="modal" data-target="#confirm-delete-modal"><i class="icon-white icon-trash"></i> Delete</button>
       </form>
 
       <form method="post" action="{{ url_for('export', experiment_name=experiment.name) }}">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-small btn-info">Export</button>
+        <button class="btn btn-small btn-info"><i class="icon-white icon-share-alt"></i> Export</button>
       </form>
 
     </div>
