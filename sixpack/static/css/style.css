@@ -343,11 +343,16 @@ ul.experiments h4 {
 #details-page .header .controls .collapse {
   display: inline-block;
 }
+
+/* Add a bit of padding because the chart overflows the space */
+#details-page #charts {
+  padding-right: 70px;
+}
 #details-page .chart {
-  width: 330px;
-  height: 200px;
-  margin-bottom: 50px;
-  display: none;
+  width: 100%;
+  height: 500px;
+  float: left;
+  padding-bottom: 100px;
 }
 
 /* BEGIN: Details page */
@@ -407,6 +412,9 @@ ul.experiments h4 {
   #details-page .header .controls button {
     margin-bottom:5px;
   }
+  #details-page .chart {
+    height: 400px;
+  }
 }
 /* END: Responsive rules */
 table {
@@ -427,13 +435,6 @@ span.note.control {
 hr {
   border: none;
   margin: 40px;
-}
-#details-page .chart {
-  float:left;
-  padding-bottom: 50px;
-  padding-right: 125px;
-  width: 500px;
-  height: 300px;
 }
 .chart p {
   color: #6D6D6D;

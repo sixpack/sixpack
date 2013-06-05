@@ -88,6 +88,19 @@ $(function () {
       var chart = new Chart(my.name, data);
       chart.draw();
       my.callback();
+
+      // Responsive charts
+      if ($('#details-page').length) {
+        var size = $('#charts').width();
+        $(window).on('resize', function() {
+          var newSize = $('#charts').width();
+          if (newSize !== size) {
+            size = newSize;
+            chart.remove();
+            chart.draw();
+          }
+        });
+      }
     });
 
     return that;
