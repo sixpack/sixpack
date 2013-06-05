@@ -94,12 +94,14 @@ $(function () {
       my.svg.select("#" + line_id)
         .data(data);
 
+      var size = data.length > 20 ? 3 : 5;
+
       my.svg.selectAll("dot")
         .data(data)
         .enter()
         .append("circle")
         .attr("class", "circle circle-" + line_id)
-        .attr("r", 5)
+        .attr("r", size)
         .attr("cx", function(d) { return my.xScale(d.date); })
         .attr("cy", function(d) { return my.yScale(d.close); })
         .attr("style", "fill:" + color)
@@ -107,7 +109,7 @@ $(function () {
 
           // Make the circle larger
           d3.select(this)
-            .attr("r", 8)
+            .attr("r", size + 3)
             .attr('class', 'circle circle-' + line_id + ' circle-hover');
 
           // Make the line thicker
@@ -143,7 +145,7 @@ $(function () {
         .on("mouseout", function (d) {
           // Return circle to normal
           d3.select(this)
-            .attr("r", 5)
+            .attr("r", size)
             .attr('class', 'circle circle-' + line_id);
 
           // Unhighlight the line
