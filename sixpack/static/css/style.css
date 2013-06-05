@@ -80,7 +80,6 @@
   }
   ul.experiments > li table {
     width: 100%;
-    margin-left: -20px;
     border-collapse: separate;
     background: rgba(255, 255, 255, .03);
     border-radius: 5px;
