@@ -5,14 +5,14 @@ $(function () {
     var that = {}, my = {};
 
     my.colors = [
-      '#714A33',
-      '#32587E',
-      '#327E51',
-      '#3A85AC',
-      '#8EBDBC',
-      '#56BDBB',
-      '#BDAB4D',
-      '#33716F',
+      '#E23630',
+      '#308B3F',
+      '#225AAC',
+      '#e1e319',
+      '#EA7F13',
+      '#613095',
+      '#992322',
+      '#AB3D97',
       '#7E466F',
       '#A4433A',
       '#B8C6D7',
@@ -31,6 +31,7 @@ $(function () {
         bottom: 30,
         left: 50
       };
+      console.log(my.el);
       my.width = my.el.width();
       my.height = my.el.height();
       my.xScale = d3.time.scale().range([0, my.width]);
@@ -43,6 +44,7 @@ $(function () {
       xValues = _.map(data, function (d) {
         return d[0];
       });
+
       yValues = _.map(data, function (d) {
         return parseFloat(d[1]);
       });
@@ -53,11 +55,11 @@ $(function () {
       my.xAxis = d3.svg.axis()
         .scale(my.xScale)
         .tickSize(0)
-        .tickFormat(d3.time.format("%m/%d"))
+        .tickFormat(d3.time.format("%-m/%-d"))
         .orient("bottom");
         
       if (xValues.length > 10) {
-        my.xAxis.ticks(d3.time.days, 4)
+        my.xAxis.ticks(d3.time.days, 4);
       } else if (xValues.length === 2) {
         my.xAxis.ticks(d3.time.days, 1)
       } else {
@@ -92,29 +94,76 @@ $(function () {
         .attr("style", "stroke:" + color);
 
       my.svg.select("#" + line_id)
-        .data(data)
-        .on("mouseover", function (d) {
-          // Sort the lines so the current line is "above" the non-hovered lines
-          d3.select(this.parentNode.appendChild(this));
+        .data(data);
 
-          // Highlight line
-          var currClass = d3.select(this).attr("class");
-          d3.select(this).attr("class", currClass + " line-hover");
+      var size = data.length > 20 && !$('#details-page').length ? 3 : 5;
+
+      my.svg.selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("class", "circle circle-" + line_id)
+        .attr("r", size)
+        .attr("cx", function(d) { return my.xScale(d.date); })
+        .attr("cy", function(d) { return my.yScale(d.close); })
+        .attr("style", "fill:" + color)
+        .on("mouseover", function (d) {
+
+          // Make the circle larger
+          d3.select(this)
+            .attr("r", size + 3)
+            .attr('class', 'circle circle-' + line_id + ' circle-hover');
+
+          // Make the line thicker
+          var line = d3.select('#' + line_id);
+          var currClass = line.attr('class');
+          line.attr('class', currClass + ' line-hover');
 
           // Highlight corresponding table alternative
-          var table = $('.' + d3.event.target.id).closest('div').find('table')
+          var table = $('.' + line_id).closest('div').find('table')
           table.find('tr').removeClass('highlight');
-          table.find('.' + d3.event.target.id).addClass('highlight');
+          table.find('.' + line_id).addClass('highlight');
+
+          // Move the line all circles of the line to the front
+          $('#' + line_id + ', .circle-' + line_id).each(function() {
+            this.parentNode.appendChild(this);
+          });
+
+          // Show the tooltip
+          var pct = (Math.round(d.close * 1000) / 10) + '%',
+              date = new Date(d.date),
+              month = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'],
+              dateString = month[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear(),
+              pos = $(this).offset(),
+              tooltipCircle = '<span class="tooltip-circle" style="background: ' + $(this).css('fill') + ';"></span> ';
+
+          $('#tooltip')
+            .html(tooltipCircle + dateString + ' &nbsp; ' + pct)
+            .show()
+            .css({
+              left: pos.left + 8 - (parseInt($('#tooltip').outerWidth()) / 2),
+              top:  pos.top - 30
+            });
         })
         .on("mouseout", function (d) {
-          // Remove line highlight
-          d3.select(this).attr("class", "line");
-          var id = d3.event.target.id;
+          // Return circle to normal
+          d3.select(this)
+            .attr("r", size)
+            .attr('class', 'circle circle-' + line_id);
+
+          // Unhighlight the line
+          var line = d3.select('#' + line_id);
+          line.attr('class', 'line');
 
           // Remove table highlight
-          $('.' + id).removeClass('highlight');
+          $('.' + line_id).removeClass('highlight');
+
+          // Hide the tooltip
+          $('#tooltip').hide();
         });
     };
+
+
 
     my.drawCircle = function (data, color) {
       color = color || "#9d5012";
@@ -195,7 +244,7 @@ $(function () {
         .attr("class", "grid")
         .attr("transform", "translate(0," + (my.height) + ")")
         .call(my.xAxis
-              .ticks(d3.time.days, 1)
+              .ticks(d3.time.days)
               .tickSize(-my.height, 0, 0)
               .tickFormat(""));
     };
@@ -308,6 +357,10 @@ $(function () {
       });
 
       my.el.fadeIn('fast');
+    };
+
+    that.remove = function () {
+      $(my.el).find('svg').remove();
     };
 
     my.formatData();
