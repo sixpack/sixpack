@@ -43,24 +43,28 @@
     height: 56px
   }
   .navbar-inverse .brand {
-    width: 109px;
-    height: 31px;
-    background-image: url('../img/logo.png');
+    width: 108px;
+    height: 30px;
+    background: url('../img/logo@2x.png') no-repeat;
+    background-size: 108px 30px;
     padding: 0;
-    margin-top: 14px;
-    margin-left: 10px;
+    margin: 15px 0 0 10px;
   }
   .navbar-inverse .nav-pills {
-    margin-top: 7px;
+    padding: 8px 8px 0 0;
   }
   .navbar-inverse .nav-pills li a {
     color: #FFF;
   }
-  .navbar-inverse .nav-pills li.active a {
-    color: #000;
-    background: #FFF;
-    text-shadow: none;
-    box-shadow: none;
+  .navbar-inverse .nav-pills li a:hover {
+    background: rgba(255, 255, 255, .2);
+  }
+  .navbar-inverse .nav-pills li a:active {
+    background: rgba(255, 255, 255, .3);
+  }
+  .navbar-inverse .nav-pills li.active a,
+  .navbar-inverse .nav-pills li.active a:hover {
+    background: rgba(0, 0, 0, .3);
   }
 /* END: Navbar */
 
@@ -261,12 +265,13 @@ ul.experiments h4 {
 .modal textarea {
   resize: none;
   margin: 0 auto;
-  width: 500px;
-  height: 125px;
+  width: 100%;
+  height: 250px;
   display: block;
   color: #FFF;
   background: #555;
   border: 0;
+  box-sizing: border-box;
 }
 .modal-footer {
   background-color: rgba(170, 170, 170, 0.08);
@@ -333,13 +338,17 @@ ul.experiments h4 {
   width: 640px;
 }
 
-#dashboard-page .chart {
+#dashboard-page .chart-container {
   position: absolute;
   bottom: 60px;
   right: 80px;
   width: 400px;
   height: 200px;
-  display: none;
+}
+
+#dashboard-page .chart {
+  width: 100%;
+  height: 200px;
 }
 #no-data, #archive-notice {
   display: none;
@@ -351,7 +360,7 @@ ul.experiments h4 {
 }
 
 /* Add a bit of padding because the chart overflows the space */
-#details-page #charts {
+#details-page .chart-container {
   padding-right: 70px;
 }
 #details-page .chart {
@@ -375,9 +384,13 @@ ul.experiments h4 {
 
 /* BEGIN: Responsive rules */
 @media (max-width: 1200px) {
-  #dashboard-page .chart {
+  #dashboard-page .chart-container {
+    padding: 20px 50px 50px 0;
     position: static;
-    margin: 20px 0 50px;
+    width: auto;
+  }
+  #dashboard-page .chart {
+
   }
 
   ul.experiments > li table {
@@ -429,7 +442,23 @@ ul.experiments h4 {
     margin-bottom:5px;
   }
   #details-page .chart {
-    height: 400px;
+    height: 300px;
+  }
+}
+@media (max-width: 400px) {
+  ul.experiments > li {
+    background: none;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  #content { padding: 0; }
+
+  ul.experiments h3.name,
+  ul.experiments h3.name a,
+  .modal-header h3,
+  h4 {
+    font-weight: 300;
   }
 }
 /* END: Responsive rules */
