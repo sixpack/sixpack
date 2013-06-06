@@ -43,12 +43,12 @@
     height: 56px
   }
   .navbar-inverse .brand {
-    width: 109px;
-    height: 31px;
-    background-image: url('../img/logo.png');
+    width: 108px;
+    height: 30px;
+    background: url('../img/logo@2x.png') no-repeat;
+    background-size: 108px 30px;
     padding: 0;
-    margin-top: 14px;
-    margin-left: 10px;
+    margin: 15px 0 0 10px;
   }
   .navbar-inverse .nav-pills {
     margin-top: 7px;
