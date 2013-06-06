@@ -40,11 +40,17 @@ $(function () {
         }
       }
 
-      // Format some of the data before printing
+      data = my.renderBoxplots(data);
+
+      // Format the rest of the data
       _.each(data.alternatives, function (alt, k) {
-        data.alternatives[k].participant_count = my.addCommas(data.alternatives[k].participant_count);
-        data.alternatives[k].conversion_rate = data.alternatives[k].conversion_rate.toFixed(2) + '%';
+        data.alternatives[k].participant_count   = my.addCommas(alt.participant_count);
+        data.alternatives[k].completed_count     = my.addCommas(alt.completed_count);
+        data.alternatives[k].conversion_rate     = alt.conversion_rate.toFixed(2) + '%';
+        data.alternatives[k].confidence_interval = alt.confidence_interval.toFixed(1) + '%';
+        data.alternatives[k].confidence_level    = alt.confidence_level.replace('N/A', '&mdash;');
       });
+
       my.el.append(my.template(data));
 
       $("li[data-name='" + my.name + "'] tr").on({
@@ -105,6 +111,68 @@ $(function () {
         }
       });
     });
+
+    my.renderBoxplots = function(data) {
+
+      var intervals = [],
+          max =-Infinity,
+          min = Infinity,
+          control = null;
+
+      _.each(data.alternatives, function (alt, k) {
+        max = Math.max(max, alt.conversion_rate + alt.confidence_interval);
+        min = Math.min(min, alt.conversion_rate - alt.confidence_interval);
+      });
+
+      // Normalize the boxplot data
+      max += 1;
+      min -= 1;
+
+      _.each(data.alternatives, function (alt, k) {
+        var start = (alt.conversion_rate - alt.confidence_interval - min) / (max - min) * 100,
+            end   = (alt.conversion_rate + alt.confidence_interval - min) / (max - min) * 100,
+            neutral = {
+              display: 'block',
+              start: start,
+              end: end
+            },
+            losing = { display: 'none', start: 0, end: 0 },
+            winning = losing;
+
+        // The winning/losing states are all relative to the control interval
+        if (!control) {
+          control = neutral;
+        } else {
+          // Show red when losing
+          if (start < control.start) {
+            losing = {
+              display: 'block',
+              start: start,
+              end: control.start
+            };
+            neutral.start = control.start;
+          }
+
+          // Show green when winning
+          if (end > control.end) {
+            winning = {
+              display: 'block',
+              start: control.end,
+              end: end
+            };
+            neutral.end = control.end;
+          }
+        }
+
+        data.alternatives[k].boxplot = {
+          neutral: neutral,
+          losing:  losing,
+          winning: winning
+        };
+      });
+
+      return data;
+    };
 
     return that;
   };

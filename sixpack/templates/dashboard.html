@@ -31,7 +31,7 @@
     <thead>
       <tr>
         <th>Case</th>
-        <th>Participants</th>
+        <th>Conversions</th>
         <th>Conv Rate</th>
         <th>Confidence</th>
       </tr>
@@ -52,9 +52,9 @@
               <% } %>
             </div>
           </td>
-          <td><%- alt.participant_count %></td>
-          <td><%- alt.conversion_rate %></td>
-          <td><span title="<%- alt.test_statistic %>"><%- alt.confidence_level %><span></td>
+          <td><%- alt.completed_count %> / <%- alt.participant_count %></td>
+          <td><%- alt.conversion_rate %> <span class="confidence-interval">&plusmn; <%- alt.confidence_interval %></span></td>
+          <td><span title="<%- alt.test_statistic %>"><%= alt.confidence_level %><span></td>
         </tr>
       <% }); %>
     </tbody>

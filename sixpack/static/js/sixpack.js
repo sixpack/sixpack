@@ -66,6 +66,12 @@ $(function () {
 
       $('.copy-querystring').tooltip({ trigger: 'manual', placement: 'left' });
     });
+
+
+    // Focus the edit description textarea when opening the modal
+    $('#desc-modal').on('shown', function() {
+      $('#edit-description-textarea').focus();
+    })
   }
 
   // Draw charts on Dashboard page.
