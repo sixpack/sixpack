@@ -261,12 +261,13 @@ ul.experiments h4 {
 .modal textarea {
   resize: none;
   margin: 0 auto;
-  width: 500px;
-  height: 125px;
+  width: 100%;
+  height: 250px;
   display: block;
   color: #FFF;
   background: #555;
   border: 0;
+  box-sizing: border-box;
 }
 .modal-footer {
   background-color: rgba(170, 170, 170, 0.08);
