@@ -479,6 +479,10 @@ span.note.control {
   background: rgba(0, 0, 0, .5);
   border-radius: 10px;
 }
+.confidence-interval {
+  color: #777;
+  font-size: 12px;
+}
 hr {
   border: none;
   margin: 40px;

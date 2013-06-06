@@ -16,6 +16,7 @@ $(function () {
     my.getData = function (callback) {
       var url = '/experiment/' + my.name + '.json?period=day';
       $.getJSON(url, function (data) {
+        console.log(data);
         callback(data);
       });
     };
@@ -42,8 +43,11 @@ $(function () {
 
       // Format some of the data before printing
       _.each(data.alternatives, function (alt, k) {
-        data.alternatives[k].participant_count = my.addCommas(data.alternatives[k].participant_count);
-        data.alternatives[k].conversion_rate = data.alternatives[k].conversion_rate.toFixed(2) + '%';
+        data.alternatives[k].participant_count   = my.addCommas(data.alternatives[k].participant_count);
+        data.alternatives[k].completed_count     = my.addCommas(data.alternatives[k].completed_count);
+        data.alternatives[k].conversion_rate     = data.alternatives[k].conversion_rate.toFixed(2) + '%';
+        data.alternatives[k].confidence_interval = (data.alternatives[k].confidence_interval * 100).toFixed(2) + '%';
+        data.alternatives[k].confidence_level    = data.alternatives[k].confidence_level.replace('N/A', '&mdash;');
       });
       my.el.append(my.template(data));
 

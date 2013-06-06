@@ -334,10 +334,9 @@ $(function () {
         var format = d3.time.format("%Y-%m-%d");
         var d = new Date(rate_data[0][0]);
         var rate_data = [
-          [format(new Date(d3.time.day.offset(d, -1))), min_rate * 0.80],
           [rate_data[0][0], rate_data[0][1]],
-          [format(new Date(d3.time.day.offset(d, 2))), max_rate ],
-          [format(new Date(d3.time.day.offset(d, 3))), max_rate * 1.1]
+          [format(new Date(d3.time.day.offset(d, 1))), min_rate ],
+          [format(new Date(d3.time.day.offset(d, 2))), max_rate ]
         ];
       }
 
@@ -355,11 +354,7 @@ $(function () {
 
       var i = 0;
       _.each(my.data, function (data) {
-        if (total_periods === 1) {
-          my.drawCircle(data.d3_data, my.colors[i]);
-        } else {
-          my.drawLine(data.d3_data, my.colors[i]);
-        }
+        my.drawLine(data.d3_data, my.colors[i]);
         i++;
       });
 
