@@ -51,16 +51,20 @@
     margin: 15px 0 0 10px;
   }
   .navbar-inverse .nav-pills {
-    margin-top: 7px;
+    padding: 8px 8px 0 0;
   }
   .navbar-inverse .nav-pills li a {
     color: #FFF;
   }
-  .navbar-inverse .nav-pills li.active a {
-    color: #000;
-    background: #FFF;
-    text-shadow: none;
-    box-shadow: none;
+  .navbar-inverse .nav-pills li a:hover {
+    background: rgba(255, 255, 255, .2);
+  }
+  .navbar-inverse .nav-pills li a:active {
+    background: rgba(255, 255, 255, .3);
+  }
+  .navbar-inverse .nav-pills li.active a,
+  .navbar-inverse .nav-pills li.active a:hover {
+    background: rgba(0, 0, 0, .3);
   }
 /* END: Navbar */
 
@@ -449,6 +453,13 @@ ul.experiments h4 {
     border-radius: 0;
   }
   #content { padding: 0; }
+
+  ul.experiments h3.name,
+  ul.experiments h3.name a,
+  .modal-header h3,
+  h4 {
+    font-weight: 300;
+  }
 }
 /* END: Responsive rules */
 table {
