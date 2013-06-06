@@ -437,8 +437,17 @@ ul.experiments h4 {
     margin-bottom:5px;
   }
   #details-page .chart {
-    height: 400px;
+    height: 300px;
   }
+}
+@media (max-width: 400px) {
+  ul.experiments > li {
+    background: none;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  #content { padding: 0; }
 }
 /* END: Responsive rules */
 table {

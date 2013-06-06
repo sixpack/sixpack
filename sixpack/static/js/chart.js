@@ -96,7 +96,14 @@ $(function () {
       my.svg.select("#" + line_id)
         .data(data);
 
-      var size = data.length > 10 && !$('#details-page').length ? 3 : 5;
+      var size = 5;
+
+      if ($('#details-page').length) {
+        if (my.width < 700) size = 3;
+      }
+      else if (data.length > 10) {
+        size = 3;
+      }
 
       my.svg.selectAll("dot")
         .data(data)
