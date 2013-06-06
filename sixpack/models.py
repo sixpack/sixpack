@@ -651,7 +651,7 @@ class Alternative(object):
         try:
             # 80% confidence
             p = self.conversion_rate()
-            return pow(p * (1 - p) / self.participant_count(), 0.5) * 1.28
+            return pow(p * (1 - p) / self.participant_count(), 0.5) * 1.28 * 100
         except ZeroDivisionError:
             return 0
 

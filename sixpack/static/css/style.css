@@ -353,6 +353,53 @@ ul.experiments h4 {
 #no-data, #archive-notice {
   display: none;
 }
+.note.control {
+  font-size: 11px;
+  color: #555;
+  text-transform: uppercase;
+  padding: 0 8px;
+  background: rgba(0, 0, 0, .5);
+  border-radius: 10px;
+}
+.confidence-interval {
+  color: #777;
+  font-size: 12px;
+}
+.boxplot {
+  width: 150px;
+  height: 2px;
+  background: rgba(255, 255, 255, .3);
+  margin-left: 10px;
+  position: relative;
+  top: -3px;
+  display: inline-block;
+}
+.boxplot:before,
+.boxplot:after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 2px;
+  height: 10px;
+  background: rgba(255, 255, 255, .3);
+}
+.boxplot:before { left:  -2px; }
+.boxplot:after  { right: -2px; }
+.boxplot .boxplot-box {
+  position: absolute;
+  top: -4px;
+  height: 10px;
+  opacity: .9;
+}
+.boxplot .boxplot-losing {
+  background: #d93c3c;
+}
+.boxplot .boxplot-neutral {
+  background: #979797;
+}
+.boxplot .boxplot-winning {
+  background: #9dd210;
+}
 
 /* BEGIN: Details page */
 #details-page .header .controls .collapse {
@@ -470,18 +517,6 @@ h4 {
   font-size: 18px;
   font-family: 'Lato', sans-serif;
   font-weight: 100;
-}
-span.note.control {
-  font-size: 11px;
-  color: #555;
-  text-transform: uppercase;
-  padding: 0 8px;
-  background: rgba(0, 0, 0, .5);
-  border-radius: 10px;
-}
-.confidence-interval {
-  color: #777;
-  font-size: 12px;
 }
 hr {
   border: none;

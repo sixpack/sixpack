@@ -76,7 +76,16 @@
             </div>
           </td>
           <td><%- alt.completed_count %> / <%- alt.participant_count %></td>
-          <td><%- alt.conversion_rate %> <span class="confidence-interval">&plusmn; <%- alt.confidence_interval %></span></td>
+          <td>
+            <%- alt.conversion_rate %> 
+            <span class="confidence-interval">&plusmn; <%- alt.confidence_interval %></span>
+
+            <div class="boxplot">
+              <div class="boxplot-box boxplot-losing"  style="display: <%- alt.boxplot.losing.display  %>; left: <%- alt.boxplot.losing.start  %>%; right: <%- 100 - alt.boxplot.losing.end  %>%;"></div>
+              <div class="boxplot-box boxplot-neutral" style="display: <%- alt.boxplot.neutral.display %>; left: <%- alt.boxplot.neutral.start %>%; right: <%- 100 - alt.boxplot.neutral.end %>%;"></div>
+              <div class="boxplot-box boxplot-winning" style="display: <%- alt.boxplot.winning.display %>; left: <%- alt.boxplot.winning.start %>%; right: <%- 100 - alt.boxplot.winning.end %>%;"></div>
+            </div>
+          </td>
           <td><span title="<%- alt.test_statistic %>"><%= alt.confidence_level %><span></td>
           <td>
             <div class="alt-controls">
