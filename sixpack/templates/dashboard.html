@@ -45,10 +45,12 @@
                 <i class="icon-ok"></i>
               <% } %>
             </span>
-            <%- alt.name %>
-            <% if (alt.is_control) { %>
-              <span class="note control">control</span>
-            <% } %>
+            <div class="alt-name">
+              <%- alt.name %>
+              <% if (alt.is_control) { %>
+                <span class="note control">control</span>
+              <% } %>
+            </div>
           </td>
           <td><%- alt.participant_count %></td>
           <td><%- alt.conversion_rate %></td>
