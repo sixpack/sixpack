@@ -1,11 +1,11 @@
 from datetime import datetime
+from math import log
 import operator
 import random
 import re
 
 from config import CONFIG as cfg
 from db import _key, msetbit, sequential_id, first_key_with_bit_set
-from math import log
 
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
