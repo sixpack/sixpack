@@ -95,17 +95,15 @@ $(function () {
       my.callback();
 
       // Responsive charts
-      if ($('#details-page').length) {
-        var size = $('#charts').width();
-        $(window).on('resize', function() {
-          var newSize = $('#charts').width();
-          if (newSize !== size) {
-            size = newSize;
-            chart.remove();
-            chart.draw();
-          }
-        });
-      }
+      var size = $('.chart-container').width();
+      $(window).on('resize', function() {
+        var newSize = $('.chart-container').width();
+        if (newSize !== size) {
+          size = newSize;
+          chart.remove();
+          chart.draw();
+        }
+      });
     });
 
     return that;
