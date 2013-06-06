@@ -270,3 +270,44 @@ class TestExperimentModel(unittest.TestCase):
 
         not_valid = Experiment.is_valid('&123name')
         self.assertFalse(not_valid)
+
+    def test_invalid_options(self):
+        opts = {'derp': 'ington'}
+        with self.assertRaises(ValueError):
+            Experiment.find_or_create('jay-fi', ['jay', 'fi'], self.redis, opts)
+
+    def test_valid_options(self):
+        opts = {'distribution': 1}
+        Experiment.find_or_create('red-white', ['red', 'white'], self.redis, opts)
+
+        opts = {'distribution': '1'}
+        Experiment.find_or_create('red-white', ['red', 'white'], self.redis, opts)
+
+    def test_invalid_dist(self):
+        opts = {'distribution': 0}
+        with self.assertRaises(ValueError):
+            Experiment.find_or_create('dist-100', ['dist', '100'], self.redis, opts)
+
+        opts = {'distribution': 101}
+        with self.assertRaises(ValueError):
+            Experiment.find_or_create('dist-100', ['dist', '100'], self.redis, opts)
+
+        opts = {'distribution': 'x'}
+        with self.assertRaises(ValueError):
+            Experiment.find_or_create('dist-100', ['dist', '100'], self.redis, opts)
+
+        # test the hidden prop gets set
+        opts = {'distribution': 2}
+        exp = Experiment.find_or_create('dist-20', ['dist', '100'], self.redis, opts)
+        self.assertEqual(exp._traffic_dist, .02)
+
+        opts = {'distribution': 100}
+        exp = Experiment.find_or_create('dist-100', ['dist', '100'], self.redis, opts)
+        self.assertEqual(exp._traffic_dist, 1.00)
+
+    # test is set in redis
+    def test_traffic_dist(self):
+        opts = {'distribution': 10}
+        exp = Experiment.find_or_create('d-test-10', ['d', 'c'], self.redis, opts)
+        exp.save()
+        self.assertEqual(exp.traffic_dist, 0.1)

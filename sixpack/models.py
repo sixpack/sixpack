@@ -9,6 +9,7 @@ from db import _key, msetbit, sequential_id, first_key_with_bit_set
 
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
+VALID_EXPERIMENT_OPTS = ('distribution',)
 RANDOM_SAMPLE = .2
 
 
@@ -31,6 +32,7 @@ class Experiment(object):
         self.alternatives = self.initialize_alternatives(alternatives)
         # False here is a sentinal value for "not looked up yet"
         self._winner = False
+        self._traffic_dist = False
         self._sequential_ids = dict()
 
     def __repr__(self):
@@ -94,6 +96,9 @@ class Experiment(object):
             pipe.sadd(_key('e'), self.name)
 
         pipe.hset(self.key(), 'created_at', datetime.now())
+        if self.traffic_dist is not None:
+            pipe.hset(self.key(), 'traffic_dist', self.traffic_dist)
+
         # reverse here and use lpush to keep consistent with using lrange
         for alternative in reversed(self.alternatives):
             pipe.lpush("{0}:alternatives".format(self.key()), alternative.name)
@@ -237,6 +242,24 @@ class Experiment(object):
     def _winner_key(self):
         return "{0}:winner".format(self.key())
 
+    @property
+    def traffic_dist(self):
+        if not self._traffic_dist:
+            try:
+                self._traffic_dist = float(self.redis.hget(self.key(), 'traffic_dist'))
+            except TypeError:
+                self._traffic_dist = None
+        return self._traffic_dist
+
+    def set_traffic_dist(self, dist):
+        dist = int(dist)
+        if not 0 < dist <= 100:
+            raise ValueError('invalid distribution range')
+
+        pct = dist / 100.0
+
+        self._traffic_dist = pct
+
     def sequential_id(self, client):
         """Return the sequential id for this test for the passed in client"""
         if client.client_id not in self._sequential_ids:
@@ -250,12 +273,24 @@ class Experiment(object):
 
         chosen_alternative = self.existing_alternative(client)
         if not chosen_alternative:
-            chosen_alternative = self.choose_alternative(client=client)
-            chosen_alternative.record_participation(client, dt=dt)
+            chosen_alternative, participate = self.choose_alternative(client=client)
+            if participate:
+                chosen_alternative.record_participation(client, dt=dt)
 
         return chosen_alternative
 
+    def exclude_client(self, client):
+        key = _key("e:{0}:excluded".format(self.name))
+        self.redis.setbit(key, self.sequential_id(client), 1)
+
+    def is_client_excluded(self, client):
+        key = _key("e:{0}:excluded".format(self.name))
+        return self.redis.getbit(key, self.sequential_id(client))
+
     def existing_alternative(self, client):
+        if self.is_client_excluded(client):
+            return self.control
+
         alts = self.get_alternative_names()
         keys = [_key("p:{0}:{1}:all".format(self.name, alt)) for alt in alts]
         altkey = first_key_with_bit_set(keys=keys, args=[self.sequential_id(client)])
@@ -265,11 +300,16 @@ class Experiment(object):
 
         return None
 
-    def choose_alternative(self, client=None):
-        if cfg.get('enable_whiplash') and random.random() >= self.random_sample:
-            return Alternative(self._whiplash(), self, self.redis)
+    def choose_alternative(self, client):
+        rnd = round(random.uniform(1, 0.01), 2)
+        if self.traffic_dist is not None and rnd >= self.traffic_dist:
+            self.exclude_client(client)
+            return self.control, False
 
-        return self._random_choice()
+        if cfg.get('enable_whiplash') and random.random() >= self.random_sample:
+            return Alternative(self._whiplash(), self, self.redis), True
+
+        return self._random_choice(), True
 
     def _random_choice(self):
         return random.choice(self.alternatives)
@@ -314,15 +354,20 @@ class Experiment(object):
                    redis_conn)
 
     @classmethod
-    def find_or_create(cls, experiment_name, alternatives, redis_conn):
+    def find_or_create(cls, experiment_name, alternatives, redis_conn, opts={}):
         if len(alternatives) < 2:
             raise ValueError('experiments require at least two alternatives')
+
+        Experiment.validate_options(opts)
 
         # We don't use the class method key here
         try:
             experiment = Experiment.find(experiment_name, redis_conn)
         except ValueError:
             experiment = cls(experiment_name, alternatives, redis_conn)
+            # TODO: I want to revist this later
+            if 'distribution' in opts:
+                experiment.set_traffic_dist(opts['distribution'])
             experiment.save()
 
         # Make sure the alternative options are correct. If they are not,
@@ -362,6 +407,12 @@ class Experiment(object):
     def is_valid(experiment_name):
         return (isinstance(experiment_name, basestring) and
                 VALID_EXPERIMENT_ALTERNATIVE_RE.match(experiment_name) is not None)
+
+    @staticmethod
+    def validate_options(opts):
+        for opt, val in opts.iteritems():
+            if opt not in VALID_EXPERIMENT_OPTS:
+                raise ValueError('invalid option')
 
 
 class Alternative(object):

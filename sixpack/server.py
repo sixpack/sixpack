@@ -3,14 +3,14 @@ import re
 from socket import inet_aton
 from urllib import unquote
 
+import dateutil.parser
+import decorator
 import redis
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
-import dateutil.parser
 
 from . import __version__
-import decorator
 from config import CONFIG as cfg
 import db
 from models import Experiment, Client
@@ -123,15 +123,20 @@ class Sixpack(object):
 
     @service_unavailable_on_connection_error
     def on_participate(self, request):
+        opts = {}
         alts = request.args.getlist('alternatives')
         experiment_name = request.args.get('experiment')
         force = request.args.get('force')
         client_id = request.args.get('client_id')
+        distribution = request.args.get('traffic_dist')
 
         if client_id is None or experiment_name is None or alts is None:
             return json_error({'message': 'missing arguments'}, request, 400)
 
-        experiment = Experiment.find_or_create(experiment_name, alts, self.redis)
+        if distribution:
+            opts['distribution'] = distribution
+
+        experiment = Experiment.find_or_create(experiment_name, alts, self.redis, opts)
 
         alternative = None
         if force and force in alts:
