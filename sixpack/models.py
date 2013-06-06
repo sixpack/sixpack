@@ -415,7 +415,8 @@ class Alternative(object):
             'test_statistic': self.g_stat(),
             'participant_count': self.participant_count(),
             'completed_count': self.completed_count(),
-            'confidence_level': self.confidence_level()
+            'confidence_level': self.confidence_level(),
+            'confidence_interval': self.confidence_interval()
         }
 
         return objectified
@@ -645,6 +646,14 @@ class Alternative(object):
             return self.z_confidence_level()
         else:
             return self.g_confidence_level()
+
+    def confidence_interval(self):
+        try:
+            # 80% confidence
+            p = self.conversion_rate()
+            return pow(p * (1 - p) / self.participant_count(), 0.5) * 1.28 * 100
+        except ZeroDivisionError:
+            return 0
 
     def key(self):
         return _key("{0}:{1}".format(self.experiment.name, self.name))

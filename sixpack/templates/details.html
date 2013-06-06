@@ -23,7 +23,7 @@
       </form>
 
       <form>
-        <button class="btn btn-small btn-inverse" data-toggle="modal" data-target="#desc-modal"><i class="icon-white icon-pencil"></i> Edit Description</button>
+        <button class="btn btn-small btn-inverse btn-edit-description" data-toggle="modal" data-target="#desc-modal"><i class="icon-white icon-pencil"></i> Edit Description</button>
       </form>
       <div class="collapse"></div>
       <% if (experiment.has_winner) { %>
@@ -55,7 +55,7 @@
     <tbody>
       <tr>
         <th>Case</th>
-        <th>Participants</th>
+        <th>Conversions</th>
         <th>Conv Rate</th>
         <th>Confidence</th>
         <th>Actions</th>
@@ -75,9 +75,18 @@
               <% } %>
             </div>
           </td>
-          <td><%- alt.participant_count %></td>
-          <td><%- alt.conversion_rate %></td>
-          <td><span title="<%- alt.test_statistic %>"><%- alt.confidence_level %><span></td>
+          <td><%- alt.completed_count %> / <%- alt.participant_count %></td>
+          <td>
+            <%- alt.conversion_rate %> 
+            <span class="confidence-interval">&plusmn; <%- alt.confidence_interval %></span>
+
+            <div class="boxplot">
+              <div class="boxplot-box boxplot-losing"  style="display: <%- alt.boxplot.losing.display  %>; left: <%- alt.boxplot.losing.start  %>%; right: <%- 100 - alt.boxplot.losing.end  %>%;"></div>
+              <div class="boxplot-box boxplot-neutral" style="display: <%- alt.boxplot.neutral.display %>; left: <%- alt.boxplot.neutral.start %>%; right: <%- 100 - alt.boxplot.neutral.end %>%;"></div>
+              <div class="boxplot-box boxplot-winning" style="display: <%- alt.boxplot.winning.display %>; left: <%- alt.boxplot.winning.start %>%; right: <%- 100 - alt.boxplot.winning.end %>%;"></div>
+            </div>
+          </td>
+          <td><span title="<%- alt.test_statistic %>"><%= alt.confidence_level %><span></td>
           <td>
             <div class="alt-controls">
               <% if (alt.is_winner) { %>
@@ -120,10 +129,10 @@
       <h3>Update Description</h3>
     </div>
     <div class="modal-body">
-      <textarea type="text" name="description">{% if experiment.get_description() %}{{ experiment.get_description() }}{% endif %}</textarea>
+      <textarea type="text" name="description" id="edit-description-textarea">{% if experiment.get_description() %}{{ experiment.get_description() }}{% endif %}</textarea>
     </div>
     <div class="modal-footer">
-      <button href="#" class="btn btn-primary">Save description</a>
+      <button href="#" class="btn btn-primary">Save Description</a>
     </div>
     <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
   </form>
