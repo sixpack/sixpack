@@ -146,7 +146,7 @@ $(function () {
             losing = {
               display: 'block',
               start: start,
-              end: control.start
+              end: Math.min(end, control.start)
             };
             neutral.start = control.start;
           }
@@ -155,7 +155,7 @@ $(function () {
           if (end > control.end) {
             winning = {
               display: 'block',
-              start: control.end,
+              start: Math.max(start, control.end),
               end: end
             };
             neutral.end = control.end;
