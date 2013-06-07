@@ -353,6 +353,19 @@ ul.experiments h4 {
 #no-data, #archive-notice {
   display: none;
 }
+#no-data {
+}
+#no-data h1 {
+  font-size: 60px;
+  padding: 30px 0 10px;
+}
+#no-data p {
+  margin-top: 40px;
+}
+#no-data pre {
+  background: #333;
+  color: #FFF;
+}
 .note.control {
   font-size: 11px;
   color: #555;
@@ -424,7 +437,7 @@ ul.experiments h4 {
   text-shadow: none;
   border: 0;
 }
-#details-page .copy-success code {
+code {
   border: 0;
 }
 /* END: Details page */

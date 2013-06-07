@@ -22,7 +22,7 @@ $(function () {
   };
 
   // Display correct URL on "no-experiments" page.
-  $('#base-domain').html(document.location.origin);
+  $('.base-domain').html(document.location.origin);
 
   // Draw charts on Details page.
   if ($('#details-page').length) {
