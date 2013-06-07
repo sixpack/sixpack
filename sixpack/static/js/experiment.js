@@ -125,8 +125,6 @@ $(function () {
       });
 
       // Normalize the boxplot data
-      max += 1;
-      min -= 1;
 
       _.each(data.alternatives, function (alt, k) {
         var start = (alt.conversion_rate - alt.confidence_interval - min) / (max - min) * 100,

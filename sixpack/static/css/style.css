@@ -297,35 +297,6 @@ ul.experiments h4 {
 ul.experiments h4 {
   font-weight: lighter;
 }
-
-#archive-notice {
-  position: relative;
-  margin-bottom: 25px;
-  border-radius: 5px;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.04)), to(rgba(255, 255, 255, 0.05)));
-  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
-  background-image:    -moz-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
-  background-image:     -ms-linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
-  background-image:         linear-gradient(top, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.05));
-  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ffffff', EndColorStr='#ffffff');
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28) inset;
-}
-#archive-notice p {
-  padding: 10px 38px;
-  line-height: 16px;
-}
-#archive-notice p span {
-  color: #6D6D6D;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-#archive-notice a.btn {
-  position: absolute;
-  padding: 2px 10px;
-  top: 7px;
-  right: 38px;
-  font-size: 12px;
-}
 .archive-is-not-active, 
 .archive-is-active {
   display: none;
@@ -350,8 +321,43 @@ ul.experiments h4 {
   width: 100%;
   height: 200px;
 }
-#no-data, #archive-notice {
+#no-data {
   display: none;
+}
+#no-data h1 {
+  font-size: 60px;
+  padding: 30px 0 0;
+  line-height: 60px;
+}
+#no-data p {
+  margin-top: 40px;
+}
+#no-data pre {
+  background: #333;
+  color: #FFF;
+}
+#no-data .highlight {
+  background: #777;
+  padding: 0 3px;
+  border-radius: 3px;
+}
+#no-data .well {
+  padding: 8px 0;
+  background: rgba(0, 0, 0, .1);
+  border: 0;
+  margin-top: 40px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .5), 0 1px 1px rgba(255, 255, 255, .2);
+}
+#no-data .well .nav-list li {
+  text-shadow: none;
+}
+#no-data .well .nav-list li a {
+  text-shadow: none;
+  color: #66BADA;
+}
+#no-data .well .nav-list li a:hover {
+  color: #FFF;
+  background: rgba(255, 255, 255, .2);
 }
 .note.control {
   font-size: 11px;
@@ -373,6 +379,10 @@ ul.experiments h4 {
   position: relative;
   top: -3px;
   display: inline-block;
+}
+.boxplot-inner {
+  position: relative;
+  margin: 0 10px;
 }
 .boxplot:before,
 .boxplot:after {
@@ -424,7 +434,7 @@ ul.experiments h4 {
   text-shadow: none;
   border: 0;
 }
-#details-page .copy-success code {
+code {
   border: 0;
 }
 /* END: Details page */
