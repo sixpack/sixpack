@@ -23,7 +23,7 @@ To get going, create (or don't, but you really should) a new virtualenv for your
     $ pip install sixpack
 
 
-**Note:** If you get an error like `src/hiredis.h:4:20: fatal error: Python.h: No such file or directory` you need to install the python development tools. `apt-get install python-dev` on Ubuntu.
+**Note:** If you get an error like ``src/hiredis.h:4:20: fatal error: Python.h: No such file or directory`` you need to install the python development tools. ``apt-get install python-dev`` on Ubuntu.
 
 Next, create a Sixpack configuration. A configuration must be created for sixpack to run. Here's the default::
 
