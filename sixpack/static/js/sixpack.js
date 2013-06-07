@@ -22,7 +22,7 @@ $(function () {
   };
 
   // Display correct URL on "no-experiments" page.
-  $('#base-domain').html(document.location.origin);
+  $('.base-domain').html(document.location.origin);
 
   // Draw charts on Details page.
   if ($('#details-page').length) {
@@ -86,7 +86,6 @@ $(function () {
 
     if (experiments.length) {
       var el = null;
-      $('#archive-notice').fadeIn('fast');
       _.each(experiments, function (experiment_name) {
         el = $('<li class="experiment" data-name="' + experiment_name + '" style="visibility: hidden;"></li>');
         $('ul.experiments').append(el);
@@ -94,6 +93,7 @@ $(function () {
       });
     } else {
       $('#no-data').fadeIn('fast');
+      $('#navigation').hide();
     }
 
     $('ul.experiments li').each(function () {
