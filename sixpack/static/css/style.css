@@ -387,6 +387,10 @@ ul.experiments h4 {
   top: -3px;
   display: inline-block;
 }
+.boxplot-inner {
+  position: relative;
+  margin: 0 10px;
+}
 .boxplot:before,
 .boxplot:after {
   content: "";

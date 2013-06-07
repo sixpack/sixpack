@@ -125,8 +125,7 @@ $(function () {
       });
 
       // Normalize the boxplot data
-      max = max * 1.02; // Padding
-      min = min * 0.98;
+
       _.each(data.alternatives, function (alt, k) {
         var start = (alt.conversion_rate - alt.confidence_interval - min) / (max - min) * 100,
             end   = (alt.conversion_rate + alt.confidence_interval - min) / (max - min) * 100,
