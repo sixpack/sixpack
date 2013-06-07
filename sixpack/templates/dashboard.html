@@ -10,21 +10,32 @@
   <div id="no-data">
     <h1>Welcome to Sixpack!</h1>
 
-    <a class="btn btn-inverse" href="http://github.com/seatgeek/sixpack">Sixpack on GitHub</a>
+    <div class="row-fluid">
+      <div class="span3">
+        <div class="well">
+          <ul class="nav nav-list">
+            <li><a href="http://github.com/seatgeek/sixpack">Sixpack on GitHub</a></li>
 
-    <div class="btn-group">
-      <a class="btn btn-inverse" href="http://github.com/seatgeek/sixpack-rb">Ruby</a>
-      <a class="btn btn-inverse" href="http://github.com/seatgeek/sixpack-py">Python</a>
-      <a class="btn btn-inverse" href="http://github.com/seatgeek/sixpack-js">JavaScript</a>
-      <a class="btn btn-inverse" href="http://github.com/seatgeek/sixpack-php">PHP</a>
-    </div>
+            <li class="nav-header">Client Libraries</li>
 
-    <p>To create your first experiment, simply make a <code>GET</code> request to your Sixpack server's 'participate' endpoint.</p>
-    <pre><code>$ curl <span class="base-domain">http://127.0.0.1:5000</span>/participate?experiment=new-header&amp;alternatives=red&amp;alternatives=blue&amp;client_id=&lt;A UNIQUE CLIENT ID&gt;</code></pre>
+            <li><a href="http://github.com/seatgeek/sixpack-rb">Ruby</a></li>
+            <li><a href="http://github.com/seatgeek/sixpack-py">Python</a></li>
+            <li><a href="http://github.com/seatgeek/sixpack-js">JavaScript</a></li>
+            <li><a href="http://github.com/seatgeek/sixpack-php">PHP</a></li>
+          </ul>
+        </div>
+      </div>
 
-    <p>To create a conversion, make another request to your server's 'convert' endpoint.</p>
+      <div class="span9">
 
-    <pre><code>$ curl <span class="base-domain">http://127.0.0.1:5000</span>/convert?experiment=new-header&amp;client_id=&lt;A UNIQUE CLIENT ID&gt;</code></pre>
+        <p>To create your first experiment, simply make a <code>GET</code> request to your Sixpack server's 'participate' endpoint.</p>
+        <pre><code>$ curl <span class="base-domain">http://127.0.0.1:5000</span>/participate?experiment=<span class="highlight">new-header</span>&amp;alternatives=<span class="highlight">red</span>&amp;alternatives=<span class="highlight">blue</span>&amp;client_id=<span class="highlight">&lt;A UNIQUE CLIENT ID&gt;</span></code></pre>
+
+        <p>To create a conversion, make another request to your server's 'convert' endpoint.</p>
+
+        <pre><code>$ curl <span class="base-domain">http://127.0.0.1:5000</span>/convert?experiment=<span class="highlight">new-header</span>&amp;client_id=<span class="highlight">&lt;A UNIQUE CLIENT ID&gt;</span></code></pre>
+      </div>
+    </div><!-- /.row-fluid -->
   </div>
 </div>
 
