@@ -33,7 +33,7 @@ assets.register('css_all', css)
 # List of experiments
 @app.route("/")
 def hello():
-    experiments = Experiment.all(REDIS)
+    experiments = Experiment.all(REDIS, False)
     if request.args.get('archived', False) == 'true':
         experiments = [exp.name for exp in experiments if exp.is_archived()]
     else:
