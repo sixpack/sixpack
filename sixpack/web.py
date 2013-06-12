@@ -33,7 +33,8 @@ assets.register('css_all', css)
 # List of experiments
 @app.route("/")
 def hello():
-    experiments = Experiment.all_names(REDIS)
+    experiments = Experiment.all(REDIS)
+    experiments = [exp.name for exp in experiments if not exp.is_archived()]
     return render_template('dashboard.html', experiments=experiments)
 
 
