@@ -48,14 +48,17 @@
       </form>
 
       <% if (experiment.kpis.length) { %>
-        <select id="choose-kpi" class="btn-small">
-        <option value="-1">-- Select a KPI --</option>
-        <option value="default">default</option>
-        <% for (var i = 0; i < experiment.kpis.length; i++) { %>
-          <% var ekpi = experiment.kpis[i] %>
-          <option value="<%- ekpi %>"<% if (ekpi == kpi) { %> selected="selected"<% } %>><%- ekpi %></option>
-        <% } %>
-        </select>
+        <div class="choose-kpi-container">
+          <select id="choose-kpi" class="btn btn-small btn-default">
+          <option value="-1">Select a KPI</option>
+          <option value="default">default</option>
+          <% for (var i = 0; i < experiment.kpis.length; i++) { %>
+            <% var ekpi = experiment.kpis[i] %>
+            <option value="<%- ekpi %>"<% if (ekpi == kpi) { %> selected="selected"<% } %>><%- ekpi %></option>
+          <% } %>
+          </select>
+          <div class="choose-kpi-arrow"></div>
+        </div>
       <% } %>
 
     </div>
