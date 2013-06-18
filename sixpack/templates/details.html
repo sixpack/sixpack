@@ -46,6 +46,15 @@
         <button class="btn btn-small btn-info"><i class="icon-white icon-share-alt"></i> Export</button>
       </form>
 
+      <% if (experiment.kpis.length) { %>
+        <select id="choose-kpi" class="btn-small">
+        <option value="-1">-- Select a KPI --</option>
+        <% for (var i = 0; i < experiment.kpis.length; i++) { %>
+          <option value="<%- experiment.kpis[i] %>"><%- experiment.kpis[i] %></option>
+        <% } %>
+        </select>
+      <% } %>
+
     </div>
   </div>
   <div class="clearfix"></div>
@@ -77,7 +86,7 @@
           </td>
           <td><%- alt.completed_count %> / <%- alt.participant_count %></td>
           <td>
-            <%- alt.conversion_rate %> 
+            <%- alt.conversion_rate %>
             <span class="confidence-interval">&plusmn; <%- alt.confidence_interval %></span>
 
             <div class="boxplot"><div class="boxplot-inner">

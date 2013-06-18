@@ -163,7 +163,10 @@ def internal_server_error(e):
 
 def find_or_404(experiment_name):
     try:
-        return Experiment.find(experiment_name, db.REDIS)
+        exp = Experiment.find(experiment_name, db.REDIS)
+        if request.args.get('kpi'):
+            exp.set_kpi(request.args.get('kpi'))
+        return exp
     except:
         abort(404)
 
