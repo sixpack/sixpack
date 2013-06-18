@@ -52,7 +52,8 @@ class Experiment(object):
             'description': self.get_description(),
             'has_winner': self.winner is not None,
             'is_archived': self.is_archived(),
-            'kpis': list(self.get_kpis())
+            'kpis': list(self.get_kpis()),
+            'kpi': self.kpi
         }
 
         for alternative in self.alternatives:
