@@ -1,14 +1,13 @@
 var Experiment;
 $(function () {
 
-  Experiment = function (el, name, archived_only, callback) {
+  Experiment = function (el, name, callback) {
     var that = {}, my = {};
 
     _.templateSettings.variable = 'experiment';
 
     my.el = el;
     my.name = name;
-    my.archived_only = archived_only;
     my.callback = callback;
 
     my.template = _.template($('#experiment-template').html());
@@ -29,16 +28,6 @@ $(function () {
     };
 
     my.getData(function (data) {
-
-      if ($('#dashboard-page').length) {
-        if (my.archived_only && !data.is_archived) {
-          my.el.remove();
-          return;
-        } else if (!my.archived_only && data.is_archived) {
-          my.el.remove();
-          return;
-        }
-      }
 
       data = my.renderBoxplots(data);
 

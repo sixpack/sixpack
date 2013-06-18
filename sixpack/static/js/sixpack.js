@@ -1,8 +1,6 @@
 $(function () {
   var viewport_height = window.innerHeight;
 
-  var archived_only = getParameterByName('archived') == 'true' ? true : false;
-
   var spinner_config = {
     lines: 13, // The number of lines to draw
     length: 8, // The length of each line
@@ -28,7 +26,7 @@ $(function () {
   if ($('#details-page').length) {
     var el = $('ul.experiments li');
     new Spinner(spinner_config).spin(el.get(0));
-    var experiment = new Experiment($('ul.experiments li'), experiment_name, true, function () {
+    var experiment = new Experiment($('ul.experiments li'), experiment_name, function () {
       el.find('.spinner').fadeOut('fast').remove();
       el.animate({
         opacity: 1
@@ -77,13 +75,6 @@ $(function () {
   // Draw charts on Dashboard page.
   if ($('#dashboard-page').length) {
 
-    // Toggle archive toolbar
-    if (archived_only) {
-      $('#js-non-active-experiments').addClass('active');
-    } else {
-      $('#js-active-experiments').addClass('active');
-    }
-
     if (experiments.length) {
       var el = null;
       _.each(experiments, function (experiment_name) {
@@ -104,7 +95,7 @@ $(function () {
       if (el.data('loaded')) return;
       el.data('loaded', true);
 
-      var experiment = new Experiment(el, experiment_name, archived_only, function () {
+      var experiment = new Experiment(el, experiment_name, function () {
         el.find('.spinner').fadeOut('fast').remove();
         el.animate({
           opacity: 1

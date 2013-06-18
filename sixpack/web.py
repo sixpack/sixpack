@@ -41,11 +41,14 @@ def status():
 # List of experiments
 @app.route("/")
 def hello():
+    experiments = Experiment.all(db.REDIS)
+    return render_template('dashboard.html', experiments=experiments)
+
+
+@app.route('/archived')
+def archived():
     experiments = Experiment.all(db.REDIS, False)
-    if request.args.get('archived', False) == 'true':
-        experiments = [exp.name for exp in experiments if exp.is_archived()]
-    else:
-        experiments = [exp.name for exp in experiments if not exp.is_archived()]
+    experiments = [exp.name for exp in experiments if exp.is_archived()]
     return render_template('dashboard.html', experiments=experiments)
 
 
