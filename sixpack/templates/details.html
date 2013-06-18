@@ -3,6 +3,7 @@
 
 <script type="text/javascript">
   var experiment_name = '{{ experiment.name }}';
+  var kpi = {% if experiment.kpi %}'{{ experiment.kpi }}'{% else %}false{% endif %};
 </script>
 
 <script type="text/template" id="experiment-template">

@@ -244,7 +244,7 @@ class Experiment(object):
         self.kpi = kpi
 
     def get_kpis(self):
-        return self.redis.smembers("{0}:kpis".format(self.key()))
+        return self.redis.smembers("{0}:kpis".format(self.key(include_kpi=False)))
 
     @property
     def winner(self):
@@ -371,8 +371,11 @@ class Experiment(object):
         else:
             return self.name
 
-    def key(self):
-        return _key("e:{0}".format(self.kpi_key()))
+    def key(self, include_kpi=True):
+        if include_kpi:
+            return _key("e:{0}".format(self.kpi_key()))
+        else:
+            return _key("e:{0}".format(self.name))
 
     @classmethod
     def find(cls, experiment_name, redis_conn):
