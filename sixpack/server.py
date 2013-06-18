@@ -1,11 +1,8 @@
-import json
 import re
 from socket import inet_aton
 from urllib import unquote
 
 import dateutil.parser
-import decorator
-import redis
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
@@ -14,14 +11,7 @@ from . import __version__
 from config import CONFIG as cfg
 import db
 from models import Experiment, Client
-
-
-@decorator.decorator
-def service_unavailable_on_connection_error(f, *args, **kwargs):
-    try:
-        return f(*args, **kwargs)
-    except redis.ConnectionError:
-        return json_error({"message": "service unavilable"}, None, 503)
+from utils import service_unavailable_on_connection_error, json_error, json_success
 
 
 class Sixpack(object):
@@ -190,31 +180,6 @@ def is_ignored_ip(ip_address):
         return False  # TODO Same as above not sure of default
 
     return unquote(ip_address) in cfg.get('ignored_ip_addresses')
-
-
-def json_error(resp, request, status=None):
-    default = {'status': 'failed'}
-    resp = dict(default.items() + resp.items())
-
-    return _json_resp(resp, request, status)
-
-
-def json_success(resp, request):
-    default = {'status': 'ok'}
-    resp = dict(default.items() + resp.items())
-
-    return _json_resp(resp, request, 200)  # Always a 200 when success is called
-
-
-def _json_resp(in_dict, request, status=None):
-    headers = {'Content-Type': 'application/json'}
-    data = json.dumps(in_dict)
-    callback = request and request.args.get('callback')
-    if callback and re.match("^\w[\w'\-\.]*$", callback):
-        headers["Content-Type"] = "application/javascript"
-        data = "%s(%s)" % (callback, data)
-
-    return Response(data, status=status, headers=headers)
 
 
 # Method to run with built-in server
