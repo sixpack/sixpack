@@ -42,6 +42,7 @@ def status():
 @app.route("/")
 def hello():
     experiments = Experiment.all(db.REDIS)
+    experiments = [exp.name for exp in experiments]
     return render_template('dashboard.html', experiments=experiments)
 
 
