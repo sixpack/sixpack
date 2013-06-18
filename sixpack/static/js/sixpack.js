@@ -63,13 +63,27 @@ $(function () {
       });
 
       $('.copy-querystring').tooltip({ trigger: 'manual', placement: 'left' });
+
+      $('#choose-kpi').on('change', function(e) {
+        var this_kpi = $(this).val();
+        if (this_kpi <= 0) {
+          e.preventDefault();
+          return;
+        }
+        url = '/experiment/' + experiment_name;
+        if (this_kpi != 'default') {
+          url += '?kpi=' + this_kpi;
+        }
+        window.location.href = url;
+      });
+
     });
 
 
     // Focus the edit description textarea when opening the modal
     $('#desc-modal').on('shown', function() {
       $('#edit-description-textarea').focus();
-    })
+    });
   }
 
   // Draw charts on Dashboard page.
