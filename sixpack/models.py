@@ -9,6 +9,7 @@ from db import _key, msetbit, sequential_id, first_key_with_bit_set
 
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
+VALID_KPI_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 VALID_EXPERIMENT_OPTS = ('distribution',)
 RANDOM_SAMPLE = .2
 
@@ -30,6 +31,8 @@ class Experiment(object):
         self.redis = redis_conn
         self.random_sample = RANDOM_SAMPLE
         self.alternatives = self.initialize_alternatives(alternatives)
+        self.kpi = None
+
         # False here is a sentinal value for "not looked up yet"
         self._winner = False
         self._traffic_dist = False
@@ -49,6 +52,7 @@ class Experiment(object):
             'description': self.get_description(),
             'has_winner': self.winner is not None,
             'is_archived': self.is_archived(),
+            'kpis': list(self.get_kpis())
         }
 
         for alternative in self.alternatives:
@@ -132,7 +136,7 @@ class Experiment(object):
         return self._get_stats('participations', 'years')
 
     def total_conversions(self):
-        key = _key("c:{0}:_all:users:all".format(self.name))
+        key = _key("c:{0}:_all:users:all".format(self.kpi_key()))
         return self.redis.bitcount(key)
 
     def conversions_by_day(self):
@@ -147,8 +151,10 @@ class Experiment(object):
     def _get_stats(self, stat_type, stat_range):
         if stat_type == 'participations':
             stat_type = 'p'
+            exp_key = self.name
         elif stat_type == 'conversions':
             stat_type = 'c'
+            exp_key = self.kpi_key()
         else:
             raise ValueError("Unrecognized stat type: {0}".format(stat_type))
 
@@ -158,7 +164,7 @@ class Experiment(object):
         pipe = self.redis.pipe()
 
         stats = {}
-        search_key = _key("{0}:{1}:{2}".format(stat_type, self.name, stat_range))
+        search_key = _key("{0}:{1}:{2}".format(stat_type, exp_key, stat_range))
         keys = self.redis.smembers(search_key)
         for k in keys:
             mod = '' if stat_type == 'p' else "users:"
@@ -212,15 +218,33 @@ class Experiment(object):
     def is_archived(self):
         return self.redis.hexists(self.key(), 'archived')
 
-    def convert(self, client, dt=None):
+    def convert(self, client, dt=None, kpi=None):
         alternative = self.existing_alternative(client)
         if not alternative:
             raise ValueError('this client was not participaing')
 
         if not self.existing_conversion(client):
-            alternative.record_conversion(client, dt=dt)
+            if kpi is not None:
+                self.add_kpi(kpi)
+            alternative.record_conversion(client, dt=dt, kpi=kpi)
 
         return alternative.name
+
+    def set_kpi(self, kpi):
+        self.kpi = None
+
+        key = "{0}:kpis".format(self.key())
+        if kpi not in self.redis.smembers(key):
+            raise ValueError('invalid kpi')
+
+        self.kpi = kpi
+
+    def add_kpi(self, kpi):
+        self.redis.sadd("{0}:kpis".format(self.key()), kpi)
+        self.kpi = kpi
+
+    def get_kpis(self):
+        return self.redis.smembers("{0}:kpis".format(self.key()))
 
     @property
     def winner(self):
@@ -341,8 +365,14 @@ class Experiment(object):
 
         return None
 
+    def kpi_key(self):
+        if self.kpi is not None:
+            return "{0}/{1}".format(self.name, self.kpi)
+        else:
+            return self.name
+
     def key(self):
-        return _key("e:{0}".format(self.name))
+        return _key("e:{0}".format(self.kpi_key()))
 
     @classmethod
     def find(cls, experiment_name, redis_conn):
@@ -413,6 +443,11 @@ class Experiment(object):
         for opt, val in opts.iteritems():
             if opt not in VALID_EXPERIMENT_OPTS:
                 raise ValueError('invalid option')
+
+    @staticmethod
+    def validate_kpi(kpi):
+        return (isinstance(kpi, basestring) and
+                VALID_KPI_RE.match(kpi) is not None)
 
 
 class Alternative(object):
@@ -492,7 +527,7 @@ class Alternative(object):
         return self._get_stats('participations', 'years')
 
     def completed_count(self):
-        key = _key("c:{0}:{1}:users:all".format(self.experiment.name, self.name))
+        key = _key("c:{0}:{1}:users:all".format(self.experiment.kpi_key(), self.name))
         return self.redis.bitcount(key)
 
     def conversions_by_day(self):
@@ -507,8 +542,10 @@ class Alternative(object):
     def _get_stats(self, stat_type, stat_range):
         if stat_type == 'participations':
             stat_type = 'p'
+            exp_key = self.experiment.name
         elif stat_type == 'conversions':
             stat_type = 'c'
+            exp_key = self.experiment.kpi_key()
         else:
             raise ValueError("Unrecognized stat type: {0}".format(stat_type))
 
@@ -519,10 +556,9 @@ class Alternative(object):
 
         pipe = self.redis.pipeline()
 
-        exp_key = self.experiment.name
         search_key = _key("{0}:{1}:{2}".format(stat_type, exp_key, stat_range))
-
         keys = self.redis.smembers(search_key)
+
         for k in keys:
             name = self.name if stat_type == 'p' else "{0}:users".format(self.name)
             range_key = _key("{0}:{1}:{2}:{3}".format(stat_type, exp_key, name, k))
@@ -563,14 +599,14 @@ class Alternative(object):
         ]
         msetbit(keys=keys, args=([self.experiment.sequential_id(client), 1] * len(keys)))
 
-    def record_conversion(self, client, dt=None):
+    def record_conversion(self, client, dt=None, kpi=None):
         """Record a user's conversion in a test along with a given variation"""
         if dt is None:
             date = datetime.now()
         else:
             date = dt
 
-        experiment_key = self.experiment.name
+        experiment_key = self.experiment.kpi_key()
 
         pipe = self.redis.pipeline()
 
