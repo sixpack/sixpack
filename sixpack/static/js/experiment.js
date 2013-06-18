@@ -14,7 +14,7 @@ $(function () {
 
     my.getData = function (callback) {
       var url = '/experiment/' + my.name + '.json?period=day';
-      if (kpi !== false) {
+      if (typeof kpi != 'undefined' && kpi !== false) {
         url += '&kpi=' + kpi;
       }
       $.getJSON(url, function (data) {
