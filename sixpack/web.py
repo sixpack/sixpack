@@ -5,8 +5,9 @@ from flask.ext.assets import Environment, Bundle
 from flask_debugtoolbar import DebugToolbarExtension
 from markdown import markdown
 
+from . import __version__
 from config import CONFIG as cfg
-from db import REDIS
+import db
 from models import Experiment
 import utils
 
@@ -30,10 +31,17 @@ assets.register('js_all', js)
 assets.register('css_all', css)
 
 
+@app.route('/_status')
+@utils.service_unavailable_on_connection_error
+def status():
+    db.REDIS.ping()
+    return utils.json_success({'version': __version__}, request)
+
+
 # List of experiments
 @app.route("/")
 def hello():
-    experiments = Experiment.all(REDIS, False)
+    experiments = Experiment.all(db.REDIS, False)
     if request.args.get('archived', False) == 'true':
         experiments = [exp.name for exp in experiments if exp.is_archived()]
     else:
@@ -43,7 +51,7 @@ def hello():
 
 @app.route('/experiments.json')
 def experiment_list():
-    experiments = Experiment.all(REDIS)
+    experiments = Experiment.all(db.REDIS)
     period = determine_period()
     experiments = [simple_markdown(exp.objectify_by_period(period)) for exp in experiments]
     return jsonify({'experiments': experiments})
@@ -151,7 +159,7 @@ def internal_server_error(e):
 
 def find_or_404(experiment_name):
     try:
-        return Experiment.find(experiment_name, REDIS)
+        return Experiment.find(experiment_name, db.REDIS)
     except:
         abort(404)
 
