@@ -415,6 +415,29 @@ ul.experiments h4 {
 #details-page .header .controls .collapse {
   display: inline-block;
 }
+.choose-kpi-container {
+  position: relative;
+  display: inline-block;
+}
+#choose-kpi {
+  height: auto;
+  margin: 0 0 16px 5px;
+  padding-right: 25px;
+  width: auto;
+  outline: none;
+  -webkit-appearance: none;
+}
+.choose-kpi-arrow {
+  position: absolute;
+  top: 9px;
+  right: 11px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 6px solid #000;
+  pointer-events: none;
+}
 
 /* Add a bit of padding because the chart overflows the space */
 #details-page .chart-container {

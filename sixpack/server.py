@@ -78,6 +78,7 @@ class Sixpack(object):
 
         experiment_name = request.args.get('experiment')
         client_id = request.args.get('client_id')
+        kpi = request.args.get('kpi', None)
 
         if client_id is None or experiment_name is None:
             return json_error({'message': 'missing arguments'}, request, 400)
@@ -90,7 +91,7 @@ class Sixpack(object):
                 dt = None
                 if request.args.get("datetime"):
                     dt = dateutil.parser.parse(request.args.get("datetime"))
-                alternative = experiment.convert(client, dt=dt)
+                alternative = experiment.convert(client, dt=dt, kpi=kpi)
             else:
                 alternative = experiment.control.name
         except ValueError as e:
@@ -104,7 +105,8 @@ class Sixpack(object):
                 'name': experiment.name,
             },
             'conversion': {
-                'value': None
+                'value': None,
+                'kpi': None
             },
             'client_id': client_id
         }

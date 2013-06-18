@@ -9,6 +9,7 @@ e                                                   # SET containing all experim
   e:test-name:alternatives                          # LIST containing alternative names
   e:test-name:winner                                # KEY containing the winning alternative name
   e:test-name:excluded                              # BITMAP containing all excluded client ids
+  e:test-name:kpis                                  # SET containing all currently available KPIs for the experiment
 
 p
   p:test-name:_all:all                              # BITMAP containing all participations
@@ -29,6 +30,18 @@ c
   c:test-name:alternative-name:users:2013
   c:test-name:alternative-name:users:2013-01
   c:test-name:alternative-name:users:2013-01-28
+
+  # Multiple Key Performance Indicators
+  c:test-name/KPI-name:_all:users:_all              # BITMAP containing all conversions for a single KPI
+  c:test-name/KPI-name:_all:users:2013
+  c:test-name/KPI-name:_all:users:2013-01
+  c:test-name/KPI-name:_all:users:2013-01-28
+  c:test-name/KPI-name:alternative-name:users:all   # BITMAP containing all conversions for a single alternative for a single KPI
+  c:test-name/KPI-name:alternative-name:users:2013
+  c:test-name/KPI-name:alternative-name:users:2013-01
+  c:test-name/KPI-name:alternative-name:users:2013-01-28
+
+  # Magnitudes (Not Yet Implemented)
   c:test-name:_all:sum:all                          # KEY containing the total conversion magnitude for all alternatives for all time
   c:test-name:_all:sum:2013
   c:test-name:_all:sum:2013-01
