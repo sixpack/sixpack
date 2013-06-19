@@ -226,6 +226,8 @@ class Experiment(object):
 
         if not self.existing_conversion(client):
             if kpi is not None:
+                if not Experiment.validate_kpi(kpi):
+                    raise ValueError('invalid kpi name')
                 self.add_kpi(kpi)
             alternative.record_conversion(client, dt=dt, kpi=kpi)
 

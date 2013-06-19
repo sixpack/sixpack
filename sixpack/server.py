@@ -106,7 +106,7 @@ class Sixpack(object):
             },
             'conversion': {
                 'value': None,
-                'kpi': None
+                'kpi': kpi
             },
             'client_id': client_id
         }
