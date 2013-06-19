@@ -311,3 +311,23 @@ class TestExperimentModel(unittest.TestCase):
         exp = Experiment.find_or_create('d-test-10', ['d', 'c'], self.redis, opts)
         exp.save()
         self.assertEqual(exp.traffic_dist, 0.1)
+
+    def test_valid_kpi(self):
+        ret = Experiment.validate_kpi('hello-jose')
+        self.assertTrue(ret)
+        ret = Experiment.validate_kpi('123')
+        self.assertTrue(ret)
+        ret = Experiment.validate_kpi('foreigner')
+        self.assertTrue(ret)
+        ret = Experiment.validate_kpi('boston')
+        self.assertTrue(ret)
+        ret = Experiment.validate_kpi('1_not-two-times-two-times')
+        self.assertTrue(ret)
+
+    def test_invalid_kpi(self):
+        ret = Experiment.validate_kpi('!hello-jose')
+        self.assertFalse(ret)
+        ret = Experiment.validate_kpi('thunder storm')
+        self.assertFalse(ret)
+        ret = Experiment.validate_kpi('&!&&!&')
+        self.assertFalse(ret)
