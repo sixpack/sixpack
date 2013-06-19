@@ -1,3 +1,4 @@
+exclude sixpack/static/.webassets-cache *
 recursive-include sixpack/static *
 recursive-include sixpack/templates *
 include *.rst
