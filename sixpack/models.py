@@ -229,7 +229,7 @@ class Experiment(object):
                 if not Experiment.validate_kpi(kpi):
                     raise ValueError('invalid kpi name')
                 self.add_kpi(kpi)
-            alternative.record_conversion(client, dt=dt, kpi=kpi)
+            alternative.record_conversion(client, dt=dt)
 
         return alternative.name
 
@@ -243,7 +243,7 @@ class Experiment(object):
         self.kpi = kpi
 
     def add_kpi(self, kpi):
-        self.redis.sadd("{0}:kpis".format(self.key()), kpi)
+        self.redis.sadd("{0}:kpis".format(self.key(include_kpi=False)), kpi)
         self.kpi = kpi
 
     def get_kpis(self):
@@ -605,7 +605,7 @@ class Alternative(object):
         ]
         msetbit(keys=keys, args=([self.experiment.sequential_id(client), 1] * len(keys)))
 
-    def record_conversion(self, client, dt=None, kpi=None):
+    def record_conversion(self, client, dt=None):
         """Record a user's conversion in a test along with a given variation"""
         if dt is None:
             date = datetime.now()

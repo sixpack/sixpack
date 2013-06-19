@@ -331,3 +331,42 @@ class TestExperimentModel(unittest.TestCase):
         self.assertFalse(ret)
         ret = Experiment.validate_kpi('&!&&!&')
         self.assertFalse(ret)
+
+    def test_set_kpi(self):
+        exp = Experiment.find_or_create('multi-kpi', ['kpi', '123'], self.redis)
+        # We shouldn't beable to manually set a KPI. Only via web request
+        with self.assertRaises(ValueError):
+            exp.set_kpi('bananza')
+
+        # simulate conversion via webrequest
+        client = Client(100, self.redis)
+        # hack for disabling whiplash
+        exp.random_sample = 1
+
+        exp.get_alternative(client)
+        exp.convert(client, None, 'bananza')
+
+        exp2 = Experiment.find_or_create('multi-kpi', ['kpi', '123'], self.redis)
+        self.assertEqual(exp2.kpi, None)
+        exp2.set_kpi('bananza')
+        self.assertEqual(exp2.kpi, 'bananza')
+
+    def test_add_kpi(self):
+        exp = Experiment.find_or_create('multi-kpi-add', ['asdf', '999'], self.redis)
+        kpi = 'omg-pop'
+
+        exp.add_kpi(kpi)
+        key = "{0}:kpis".format(exp.key(include_kpi=False))
+        self.assertIn(kpi, self.redis.smembers(key))
+        exp.delete()
+
+    def test_get_kpis(self):
+        exp = Experiment.find_or_create('multi-kpi-add', ['asdf', '999'], self.redis)
+        kpis = ['omg-pop', 'zynga']
+
+        exp.add_kpi(kpis[0])
+        exp.add_kpi(kpis[1])
+        ekpi = exp.get_kpis()
+        self.assertIn(kpis[0], ekpi)
+        self.assertIn(kpis[1], ekpi)
+        exp.delete()
