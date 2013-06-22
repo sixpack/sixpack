@@ -4,7 +4,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ## 1. Purpose
 
-Building a sixpack client is straightforward, but there are some basic standards we've followed so far in our clients to make implementing sixpack tests consistent across languages.
+Building a sixpack client is straightforward, but there are basic standards we've followed so far in our clients to make implementing sixpack tests consistent across languages.
 
 ## 2. Experiment interface
 
