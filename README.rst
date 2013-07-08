@@ -32,7 +32,7 @@ Next, create a Sixpack configuration. A configuration must be created for sixpac
     redis_prefix: sixpack                   # all Redis keys will be prefixed with this
     redis_db: 15                            # DB number in redis
 
-    enable_whiplash: False                  # Disable the whiplash/multi-armed bandit choice Algorithm
+    enable_whiplash: False                  # Enable the whiplash/multi-armed bandit alternative algorithm
 
     # The regex to match for robots
     robot_regex: $^|trivial|facebook|MetaURI|butterfly|google|amazon|goldfire|sleuth|xenu|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|pingdom|bot|yahoo|slurp|java|fetch|spider|url|crawl|oneriot|abby|commentreader|twiceler
@@ -45,7 +45,7 @@ You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As 
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack
 
-Sixpack-server and Sixpack-web will be listening on ports 5000 and 5001, respectively. For use in a production environment, please see the "Production Notes" section below.
+Sixpack-server will be listening on port 5000 by default. For use in a production environment, please see the "Production Notes" section below.
 
 Using the API
 =============
@@ -78,7 +78,10 @@ Arguments
 
     $ curl http://localhost:5000/participate?experiment=button_color&alternatives=red&alternatives=blue&force=red&client_id=12345678-1234-5678-1234-567812345678
 
-In this example, red will always be returned. This is used for testing only.
+In this example, red will always be returned. This is used for testing only, and no participation will be recorded.
+
+``traffic_dist`` (optional) sixpack allows for limiting experiments to a subset of traffic. You can pass the percentage of traffic you'd like to expose the test to as a whole number here. (``?traffic_dist=10`` for 10%)
+
 
 Response
 --------
@@ -110,14 +113,16 @@ Arguments
 
 ``experiment`` (required) the name of the experiment you would like to convert on
 
-``client_id`` (request) the client you would like to convert.
+``client_id`` (required) the client you would like to convert.
+
+``kpi`` (optional) sixpack supports recording multiple KPIs. If you would like to track conversion against a specfic KPI, you can do that here. If the KPI does not exist, it will be created automatically.
 
 Notes
 -----
 
 You'll notice that the ``convert`` endpoint does not take a ``alternative`` query parameter. This is because Sixpack handles that internally with the ``client_id``.
 
-We've included a 'health-check' endpoint, available at ``/_status``. This is helpful for monitoring and alerting if the Sixpack service becomes unavailable.
+We've included a 'health-check' endpoint, available at ``/_status``. This is helpful for monitoring and alerting if the Sixpack service becomes unavailable. The health check will respond with either 200 (success) or 500 (failure) headers.
 
 Clients
 =======
@@ -142,6 +147,17 @@ Sixpack comes with a built in dashboard. You can start the dashboard with::
     $ SIXPACK_CONFIG=<path to config.yml> sixpack-web
 
 The sixpack dashboard allows you to visualize how each experiment's alternatives are doing compared to the rest, select alternatives as winners, and update experiment descriptions to something more human-readable
+
+API
+---
+
+Sixpack web dashboard has a bit of a read-only API built in. To get a list of all experiment information you can make a request like::
+
+    $ curl http://localhost:5001/experiments.json
+
+To get the information for a single experiment, you can make a request like::
+
+    $ curl http://localhost:5001/experiments/blue-or-red-header.json
 
 Production Notes
 ================
@@ -188,8 +204,6 @@ This command will make a few dozen requests to the ``participate`` and ``convert
 
 Please avoid changing versions numbers; we'll take care of that for you
 
-Sixpack has a `Google Group`_ for support and discussion.
-
 License
 ============
 
@@ -199,4 +213,3 @@ Sixpack is released under the `BSD 2-Clause License`_.
 .. _gunicorn: https://github.com/benoitc/gunicorn
 .. _CLIENTSPEC: https://github.com/seatgeek/sixpack/blob/master/CLIENTSPEC.md
 .. _`BSD 2-Clause License`: http://opensource.org/licenses/BSD-2-Clause
-.. _`Google Group`: https://groups.google.com/forum/?fromgroups#!forum/sixpack-ab
