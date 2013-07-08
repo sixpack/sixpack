@@ -70,7 +70,7 @@ $(function () {
           e.preventDefault();
           return;
         }
-        url = '/experiment/' + experiment_name;
+        url = '/experiments/' + experiment_name;
         if (this_kpi != 'default') {
           url += '?kpi=' + this_kpi;
         }

@@ -13,7 +13,7 @@ $(function () {
     my.template = _.template($('#experiment-template').html());
 
     my.getData = function (callback) {
-      var url = '/experiment/' + my.name + '.json?period=day';
+      var url = '/experiments/' + my.name + '.json?period=day';
       if (typeof kpi != 'undefined' && kpi !== false) {
         url += '&kpi=' + kpi;
       }
