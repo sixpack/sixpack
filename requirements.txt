@@ -1,9 +1,9 @@
 hiredis==0.1.1
 redis==2.7.0
 mock==1.0b1
-Werkzeug==0.8.3
+Werkzeug==0.9.1
 PyYAML==3.10
-Flask==0.9
+Flask==0.10
 Flask-SeaSurf==0.1.13
 Flask-Assets==0.8
 fakeredis==0.3.0
