@@ -22,7 +22,7 @@ js = Bundle('js/jquery.js', 'js/d3.js',
             output="{0}/sixpack.js".format(cfg.get('asset_path', 'gen')))
 
 css = Bundle('css/bootstrap.css',
-             'css/bootstrap-responsive.css', 'css/style.css',
+             'css/bootstrap-responsive.css', 'css/sixpack.css',
              filters=['yui_css'],
              output="{0}/sixpack.css".format(cfg.get('asset_path', 'gen')))
 
