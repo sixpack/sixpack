@@ -38,7 +38,6 @@ def status():
     return utils.json_success({'version': __version__}, request)
 
 
-# List of experiments
 @app.route("/")
 def hello():
     experiments = Experiment.all(db.REDIS)
