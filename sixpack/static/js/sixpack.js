@@ -98,7 +98,6 @@ $(function () {
       });
     } else {
       $('#no-data').fadeIn('fast');
-      $('#navigation').hide();
     }
 
     $('ul.experiments li').each(function () {

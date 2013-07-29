@@ -11,6 +11,7 @@
     <h1>Welcome to Sixpack!</h1>
 
     <div class="row-fluid">
+      {% if page == 'home' %}
       <div class="span3">
         <div class="well">
           <ul class="nav nav-list">
@@ -35,6 +36,13 @@
 
         <pre><code>$ curl <span class="base-domain">http://127.0.0.1:5000</span>/convert?experiment=<span class="highlight">new-header</span>&amp;client_id=<span class="highlight">&lt;A UNIQUE CLIENT ID&gt;</span></code></pre>
       </div>
+      {% else %}
+        <div class="span12">
+          <div class="notice">
+            <p>You have no archived experiments</p>
+          </div>
+        </div>
+      {% endif %}
     </div><!-- /.row-fluid -->
   </div>
 </div>
