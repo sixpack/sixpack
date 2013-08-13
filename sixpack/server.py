@@ -1,15 +1,23 @@
 import re
 from socket import inet_aton
+import sys
 from urllib import unquote
 
 import dateutil.parser
+from redis import ConnectionError
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
 from . import __version__
 from config import CONFIG as cfg
-import db
+
+try:
+    import db
+except ConnectionError:
+    print "Redis is currently unavailable or misconfigured"
+    sys.exit()
+
 from models import Experiment, Client
 from utils import service_unavailable_on_connection_error, json_error, json_success
 
