@@ -45,7 +45,7 @@ You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As 
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack
 
-Sixpack-server will be listening on port 5000 by default. For use in a production environment, please see the "Production Notes" section below.
+Sixpack-server will be listening on port 5000 by default but can be changed with the ``SIXPACK_PORT`` environment variable. For use in a production environment, please see the "Production Notes" section below.
 
 Using the API
 =============
@@ -148,6 +148,8 @@ Sixpack comes with a built in dashboard. You can start the dashboard with::
 
 The sixpack dashboard allows you to visualize how each experiment's alternatives are doing compared to the rest, select alternatives as winners, and update experiment descriptions to something more human-readable
 
+Sixpack-web defaults to run on port ``5001`` but can be changed with the ``SIXPACK_WEB_PORT`` environment variable.
+
 API
 ---
 
@@ -198,11 +200,14 @@ We've also included a small script that will seed Sixpack with lots of random da
 
 This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get additional data.
 
+**Note:** By default the server runs in production mode. If you'd like to turn on Flask and Werkzeug debug modes set the ``SIXPACK_DEBUG`` environment variable to ``true``.
+
 3. Create your feature branch (``git checkout -b my-new-feature``)
 4. Write tests
-5. Commit your changes (``git commit -am 'Added some feature'``)
-6. Push to the branch (``git push origin my-new-feature``)
-7. Create new pull request
+5. Run tests with ``nosetests``
+6. Commit your changes (``git commit -am 'Added some feature'``)
+7. Push to the branch (``git push origin my-new-feature``)
+8. Create new pull request
 
 Please avoid changing versions numbers; we'll take care of that for you
 
