@@ -136,7 +136,10 @@ class Sixpack(object):
         if distribution:
             opts['distribution'] = distribution
 
-        experiment = Experiment.find_or_create(experiment_name, alts, self.redis, opts)
+        try:
+            experiment = Experiment.find_or_create(experiment_name, alts, self.redis, opts)
+        except ValueError as e:
+            return json_error({'message': str(e)}, request, 400)
 
         alternative = None
         if force and force in alts:
