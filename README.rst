@@ -57,7 +57,7 @@ Participating in an Experiment
 
 You can participate in an experiment with a ``GET`` request to the ``participate`` endpoint::
 
-    $ curl http://localhost:5000/participate?experiment=button_color&alternatives=red&alternatives=blue&alternatives=orange&client_id=12345678-1234-5678-1234-567812345678
+    $ curl http://localhost:5000/participate?experiment=button_color&alternatives=red&alternatives=blue&client_id=12345678-1234-5678-1234-567812345678
 
 If the test does not exist, it will be created automatically.  You do not need to create the test in Sixpack-web.
 
