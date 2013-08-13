@@ -172,6 +172,8 @@ To run the sixpack web dashboard using gunicorn/gevent (a separate installation)
 
     gunicorn --access-logfile - -w 2 --worker-class=gevent sixpack.web:start
 
+**Note:** After selecting an experiment winner, it is best to remove the Sixpack experiment code from your codebase to avoid unnecessary http requests.
+
 Contributing
 ============
 
