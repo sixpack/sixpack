@@ -16,6 +16,9 @@ h1, h2, h3 {
 	position: relative;
 	text-align: center;
 }
+#upper-content {
+	position: relative;
+}
 #upper h2 {
 	color: #131313;
 	font-size: 28px;
