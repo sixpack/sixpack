@@ -1,0 +1,239 @@
+body {
+	font-family: "proxima-nova",sans-serif;
+	background: url(../img/pattern.png) repeat;
+}
+a {
+	cursor: pointer;
+}
+h1, h2, h3 {
+	margin: 0;
+}
+#upper {
+	height: 460px;
+	padding-top: 150px;
+	background: url(../img/top-header.jpg) top center no-repeat #fff;
+	width: 100%;
+	position: relative;
+	text-align: center;
+}
+#upper h2 {
+	color: #131313;
+	font-size: 28px;
+	font-weight: 500;
+	margin-top: 30px;
+}
+#upper h3 {
+	color: #727272;
+	font-size: 18px;
+	line-height: 25px;
+	width: 760px;
+	margin: 9px auto;
+	font-weight: 200;
+}
+#upper p {
+	color: #717171;
+	text-transform: uppercase;
+	font-size: 15px;
+	font-weight: 200;
+}
+#upper .side-note {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.75);
+    border-radius: 6px 0 0 6px;
+    padding: 9px 5px 1px 20px;
+    position: absolute;
+    right: 0;
+    width: 264px;
+}
+#upper .side-note p {
+    color: #FFFFFF;
+    float: left;
+    font-size: 15px;
+    line-height: 18px;
+    font-weight: 200;
+    margin-right: 14px;
+    text-transform: none;
+    text-align: right;
+    padding: 0;
+}
+#upper .side-note p a {
+	color: #fff;
+	font-weight: 700;
+}
+#upper #byline {
+    top: 30px;
+}
+#upper #blog-post {
+	top: 100px;
+}
+#upper #byline #sg-logo {
+	width: 110px;
+	height: 33px;
+	background: url(../img/sg.png) no-repeat;
+	float: right;
+	margin-right: 11px;
+	margin-top: 5px;
+	display: block;
+}
+#logo {
+	width: 320px;
+	height: 98px;
+	background: url(../img/logo.png);
+	margin: 0 auto;
+}
+a.large-button {
+	width: 248px;
+	height: 60px;
+	display: block;
+	background: url(../img/button-sprite.png) no-repeat;
+	text-transform: uppercase;
+	margin: 39px auto 33px;
+	color: #2b1906;
+	text-shadow: 0 1px 0 rgba(255,255,255,.26);
+	font-size: 18px;
+	font-family: "HelveticaNeue",​"Helvet...eva",​"Arial",​sans-serif;
+	line-height: 59px;
+	font-weight: 600;
+}
+a.large-button:hover {
+	text-decoration: none;
+	background-position: -248px 0;
+}
+a.large-button:active {
+	background-position: -496px 0;
+}
+h2 {
+	font-family: 'Lato', sans-serif;
+	font-weight: 100;
+	color: #fff;
+	font-size: 36px;
+}
+.section {
+	width: 910px;
+	margin: 0 auto;
+	padding: 60px 0;
+	position: relative;
+    border-top: 1px solid #000000;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+.section.first {
+	border-top: none;
+	box-shadow: none;
+}
+.section.last {
+	margin-bottom: 130px;
+}
+.section p {
+	color: #c6c6c6;
+	font-size: 18px;
+	line-height: 29px;
+	width: 480px;
+	font-weight: 100;
+	margin-top: 26px;
+}
+.section:nth-child(odd) {
+	text-align: right;
+}
+.section:nth-child(odd) p {
+	padding-left: 490px;
+	width: 420px;
+}
+.section.languages img {
+	position: absolute;
+	right: 0;
+	top: 120px;
+}
+.section.sample {
+	padding-bottom: 135px;
+}
+.section.screenshot img {
+	position: absolute;
+	right: 0;
+	top: 70px;
+}
+.gist {
+	width: 420px;
+	text-align: left;
+	float: left;
+}
+#clients ul {
+    font-size: 15px;
+    font-weight: 400;
+    list-style: none outside none;
+    text-transform: uppercase;
+    margin-left: 0;
+}
+#clients ul li {
+	margin-bottom: 2px;
+}
+footer {
+	color: #696969;
+    font-weight: 100;
+    margin: 0 auto 30px;
+    width: 910px;
+}
+footer a {
+	color: #696969;
+}
+footer a {
+	text-decoration: none;
+	color: #808080;
+}
+footer a:hover {
+	color: #b7b7b7;
+	text-decoration: none;
+}
+footer .left {
+	float: left;
+	width: 50%;
+	padding-bottom: 40px;
+}
+footer .right {
+	float: right;
+	width: 50%;
+	text-align: right;
+	padding-bottom: 40px;
+}
+
+/* Media queries */
+@media (-webkit-min-device-pixel-ratio: 2) {
+ 	#logo {
+		background-image: url(../img/logo@2x.png);
+		width: 312px;
+		height: 89px;
+		background-size: 312px 89px;
+	}
+	#upper #byline #sg-logo {
+		background: url(../img/sg@2x.png) no-repeat;
+		background-size: 110px 33px;
+	}
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+	#upper {
+		padding-top: 180px;
+		background-image: none;
+		height: 620px;
+	}
+	#upper h3 {
+		width: 90%;
+	}
+	.section, .section p, footer {
+		width: 95%;
+	}
+	.section img, .section .gist {
+		display: none;
+	}
+	.section:nth-child(odd) {
+		text-align: left;
+	}
+	.section:nth-child(odd) p {
+		width: 95%;
+		padding-left: 0;
+		text-align: left;
+	}
+	.section.last {
+		margin-bottom: 0;
+	}
+	.section.sample {
+		padding-bottom: 60px;
+	}
+}
