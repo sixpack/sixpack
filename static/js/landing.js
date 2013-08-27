@@ -7,6 +7,7 @@ $(function() {
 			$('#blog-post').animate({ opacity: 1 });
 		});
 	});
+	var s = skrollr.init();
 });
 
 function show_clients() {

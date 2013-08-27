@@ -16,6 +16,9 @@ h1, h2, h3 {
 	position: relative;
 	text-align: center;
 }
+#upper-content {
+	position: relative;
+}
 #upper h2 {
 	color: #131313;
 	font-size: 28px;
@@ -26,7 +29,7 @@ h1, h2, h3 {
 	color: #727272;
 	font-size: 18px;
 	line-height: 25px;
-	width: 760px;
+	width: 840px;
 	margin: 9px auto;
 	font-weight: 200;
 }
@@ -148,7 +151,7 @@ h2 {
 .section.screenshot img {
 	position: absolute;
 	right: 0;
-	top: 70px;
+	top: 64px;
 }
 .gist {
 	width: 420px;
@@ -172,11 +175,9 @@ footer {
     width: 910px;
 }
 footer a {
-	color: #696969;
-}
-footer a {
 	text-decoration: none;
 	color: #808080;
+	transition: color 0.4s;
 }
 footer a:hover {
 	color: #b7b7b7;
