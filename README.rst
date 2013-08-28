@@ -12,7 +12,7 @@ Sixpack has two main parts. The first, **Sixpack-server**, is responsible for re
 Requirements
 ============
 
-* Redis
+* Redis >= 2.6
 * Python >= 2.7 (3.0 untested, pull requests welcome)
 
 Getting Started
