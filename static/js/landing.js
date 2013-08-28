@@ -33,7 +33,7 @@ function show_web_ui(e) {
   $('#feature-depth').animate({
     minHeight: '+=1143px'
   }, function() {
-    $('#sixpack-web-large, #feature-depth h4').animate({ opacity: 1 }, 600, function() {
+    $('#sixpack-web-large, #feature-depth h4').animate({ opacity: 1 }, 860, function() {
         $('#see-more-web').fadeOut();
       }
     );
