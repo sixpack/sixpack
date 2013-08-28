@@ -52,7 +52,7 @@ h1, h2, h3 {
     width: 264px;
 }
 #upper .side-note p {
-    color: #FFFFFF;
+    color: #ececec;
     float: left;
     font-size: 15px;
     line-height: 18px;
@@ -63,8 +63,13 @@ h1, h2, h3 {
     padding: 0;
 }
 #upper .side-note p a {
-	color: #fff;
+	color: #ececec;
 	font-weight: 700;
+	transition: 0.48s all;
+}
+#upper .side-note p a:hover {
+	color: #fff;
+	text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 #upper #byline {
     top: 30px;
