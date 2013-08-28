@@ -4,6 +4,10 @@ body {
 }
 a {
 	cursor: pointer;
+	transition: 0.35s color;
+}
+a:hover {
+	text-decoration: none;
 }
 h1, h2, h3 {
 	margin: 0;
@@ -104,11 +108,15 @@ a.large-button:hover {
 a.large-button:active {
 	background-position: -496px 0;
 }
-h2 {
+h2, h4 {
 	font-family: 'Lato', sans-serif;
 	font-weight: 100;
 	color: #fff;
 	font-size: 36px;
+}
+h4 {
+	font-size: 24px;
+	color: #e8e8e8;
 }
 .section {
 	width: 910px;
@@ -187,12 +195,107 @@ footer .left {
 	float: left;
 	width: 50%;
 	padding-bottom: 40px;
+	position: relative;
+	left: -4px;
 }
 footer .right {
 	float: right;
 	width: 50%;
 	text-align: right;
 	padding-bottom: 40px;
+}
+div.see-more-wrapper {
+	margin-top: 21px;
+	height: 21px;
+}
+a.more {
+	font-size: 18px;
+	font-weight: 300;
+	transition: 0.36s color;
+}
+a.more:hover {
+	text-decoration: none;
+	color: #2cb7fc;
+}
+a.more i {
+	font-size: 16px;
+	padding-left: 2px;
+	color: #007dbb;
+}
+a.more:hover i {
+	color: #22aef3;
+}
+div.feature-depth {
+	text-align: center;
+	margin-top: -30px;
+	margin-bottom: 30px;
+}
+#sixpack-web-large {
+	position: relative;
+	width: 1001px;
+	height: 1113px;
+	background: url('../img/sixpack-web-large.png') no-repeat;
+	margin: 0 auto;
+}
+.tooltip-marker {
+	width: 29px;
+	height: 23px;
+	padding-top: 6px;
+	opacity: .95;
+	border-radius: 18px;
+	background-clip: padding-box;
+	background-color: #5bb3ff;
+	box-shadow: 0 1px 10px rgba(0,1,1,.6);
+	/*background-color: #5ab1fa;*/
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(90, 177, 250, 0.94)), to(rgba(42, 145, 231, 0.94)));
+	background-image: -webkit-linear-gradient(top, rgba(90, 177, 250, 0.94), rgba(42, 145, 231, 0.94));
+	background-image: -moz-linear-gradient(top, rgba(90, 177, 250, 0.94), rgba(42, 145, 231, 0.94));
+	background-image: -o-linear-gradient(top, rgba(90, 177, 250, 0.94), rgba(42, 145, 231, 0.94));
+	background-image: -ms-linear-gradient(top, rgba(90, 177, 250, 0.94), rgba(42, 145, 231, 0.94));
+	background-image: linear-gradient(top, rgba(90, 177, 250, 0.94), rgba(42, 145, 231, 0.94));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#5ab1fa', EndColorStr='#2a91e7');
+	color: #232222;
+	font-size: 15px;
+	font-weight: bold;
+	text-shadow: 0 1px 1px rgba(255,255,255,.4);
+	font-family: helvetica, arial;
+	position: absolute;
+	text-align: center;
+	cursor: pointer;
+	letter-spacing: -1px;
+}
+.tooltip-marker:hover {
+	/*background-color: #76c0ff;*/
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(118, 192, 255, 0.93)), to(rgba(78, 173, 255, 0.93)));
+	background-image: -webkit-linear-gradient(top, rgba(118, 192, 255, 0.93), rgba(78, 173, 255, 0.93));
+	background-image: -moz-linear-gradient(top, rgba(118, 192, 255, 0.93), rgba(78, 173, 255, 0.93));
+	background-image: -o-linear-gradient(top, rgba(118, 192, 255, 0.93), rgba(78, 173, 255, 0.93));
+	background-image: -ms-linear-gradient(top, rgba(118, 192, 255, 0.93), rgba(78, 173, 255, 0.93));
+	background-image: linear-gradient(top, rgba(118, 192, 255, 0.93), rgba(78, 173, 255, 0.93));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#76c0ff', EndColorStr='#4eadff');
+}
+.tooltip-1 {
+    right: 87px;
+    top: 184px;
+}
+.tooltip-2 {
+    left: 340px;
+    top: 184px;
+}
+.tooltip-3 {
+    right: 249px;
+    top: 153px;
+}
+.tooltip-4 {
+    left: 84px;
+    top: 228px;
+}
+.tooltip-5 {
+    right: 106px;
+    top: 313px;
+}
+.tooltip {
+	font-size: 13px;
 }
 
 /* Media queries */

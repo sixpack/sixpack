@@ -9,6 +9,7 @@
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
     <link href='http://fonts.googleapis.com/css?family=Lato:100,300' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" href="static/img/favicon.ico" />
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
   </head>
   <body>
     <div id="upper" data-0="height: 460px;" data-300="height: 390px;">
@@ -50,7 +51,20 @@
     <div class="section screenshot last">
         <h2>Your A/B testing command center</h2>
         <p>Sixpack has a simple, elegant web UI that presents all experiments together.  See results, choose winners, analyze graphs, archive experiments, and more.</p>
+        <div class="see-more-wrapper">
+            <a class="more" href="#" id="see-more-web">More about the web UI <i class="icon-arrow-down"></i></a>
+        </div>
         <img src="static/img/sixpack-web-small.png" />
+    </div>
+    <div class="feature-depth" id="feature-depth" style="display: none;">
+        <h4 style="opacity: 0;">The Sixpack Web UI</h4>
+        <div id="sixpack-web-large" style="opacity: 0;">
+            <div class="tooltip-marker tooltip-1" data-placement="bottom" data-original-title="View data for each KPI associated with your test"><i class="icon-plus"></i></div>
+            <div class="tooltip-marker tooltip-2" data-placement="bottom" data-original-title="Archiving completed tests allows you to keep all your data without it distracing you"><i class="icon-plus"></i></div>
+            <div class="tooltip-marker tooltip-3" data-placement="top" data-original-title="Export test data to a CSV"><i class="icon-plus"></i></div>
+            <div class="tooltip-marker tooltip-4" data-placement="bottom" data-original-title="Include a description to add contextual information for other folks on your team"><i class="icon-plus"></i></div>
+            <div class="tooltip-marker tooltip-5" data-placement="bottom" data-original-title="Actions allow you to view a particular variation on a live page or to choose a variation as the winner"><i class="icon-plus"></i></div>
+        </div>
     </div>
     <footer>
         <div class="left">
@@ -64,6 +78,7 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
     <script src="static/js/skrollr.min.js"></script>
+    <script src="static/js/tooltip.js"></script>
     <script src="static/js/landing.js"></script>
   </body>
 </html>
