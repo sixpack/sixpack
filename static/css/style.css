@@ -323,7 +323,7 @@ div.feature-depth {
 	.section, .section p, footer {
 		width: 95%;
 	}
-	.section img, .section .gist {
+	.section img, .section .gist, .see-more-wrapper {
 		display: none;
 	}
 	.section:nth-child(odd) {

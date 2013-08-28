@@ -8,8 +8,14 @@ $(function() {
 			$('#blog-post').animate({ opacity: 1 });
 		});
 	});
-	var s = skrollr.init();
   $('.tooltip-marker').tooltip();
+
+  // Only initialize skrollr (parallax) on non-phone browsers.
+  // I'm using a media query to hide a gist for phones only, so
+  // this takes advantage of thiat.
+  if($('.section .gist').css('display') !== 'none') {
+    var s = skrollr.init();
+  }
 });
 
 function show_clients() {
