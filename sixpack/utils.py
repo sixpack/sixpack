@@ -11,7 +11,7 @@ def service_unavailable_on_connection_error(f, *args, **kwargs):
     try:
         return f(*args, **kwargs)
     except ConnectionError:
-        return json_error({"message": "service unavilable"}, None, 503)
+        return json_error({"message": "redis is not available"}, None, 503)
 
 
 def json_error(resp, request, status=None):
