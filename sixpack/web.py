@@ -166,7 +166,7 @@ def find_or_404(experiment_name):
         if request.args.get('kpi'):
             exp.set_kpi(request.args.get('kpi'))
         return exp
-    except:
+    except ValueError:
         abort(404)
 
 
