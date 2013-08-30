@@ -72,7 +72,7 @@ class Sixpack(object):
              |     ||     ||     |-'
              |     ||     ||     |
              |     ||     ||     |
-             `-_-'  `-_-'  `-_-'
+              `-_-'  `-_-'  `-_-'
         https://github.com/seatgeek/sixpack"""
         return Response(dales)
 
