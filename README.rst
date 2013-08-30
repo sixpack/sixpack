@@ -133,6 +133,7 @@ We've already provided clients in four languages. We'd love to add clients in ad
 - Python_
 - JavaScript_
 - PHP_
+- Go_
 
 .. _Ruby: http://github.com/seatgeek/sixpack-rb
 .. _Python: http://github.com/seatgeek/sixpack-py
