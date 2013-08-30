@@ -138,6 +138,7 @@ We've already provided clients in four languages. We'd love to add clients in ad
 .. _Python: http://github.com/seatgeek/sixpack-py
 .. _JavaScript: http://github.com/seatgeek/sixpack-js
 .. _PHP: http://github.com/seatgeek/sixpack-php
+.. _Go: http://github.com/subosito/sixpack-go
 
 Dashboard
 =========
