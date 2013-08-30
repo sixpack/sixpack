@@ -181,7 +181,6 @@ def determine_period():
 def simple_markdown(experiment):
     description = experiment['description']
     if description and description != '':
-        markdown(description)
         experiment['pretty_description'] = markdown(description)
     return experiment
 
