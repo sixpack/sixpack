@@ -104,7 +104,7 @@ The most interesting part of this is ``alternative``. This is a representation o
 Converting a user
 -----------------
 
-You can convert a use with a ``GET`` request to the ``convert`` endpoint::
+You can convert a user with a ``GET`` request to the ``convert`` endpoint::
 
     $ curl http://localhost:5000/convert?experiment=button_color&client_id=12345678-1234-5678-1234-567812345678
 
