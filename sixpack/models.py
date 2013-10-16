@@ -224,11 +224,12 @@ class Experiment(object):
         if not alternative:
             raise ValueError('this client was not participaing')
 
+        if kpi is not None:
+            if not Experiment.validate_kpi(kpi):
+                raise ValueError('invalid kpi name')
+            self.add_kpi(kpi)
+
         if not self.existing_conversion(client):
-            if kpi is not None:
-                if not Experiment.validate_kpi(kpi):
-                    raise ValueError('invalid kpi name')
-                self.add_kpi(kpi)
             alternative.record_conversion(client, dt=dt)
 
         return alternative.name
@@ -360,7 +361,7 @@ class Experiment(object):
 
     def existing_conversion(self, client):
         alts = self.get_alternative_names()
-        keys = [_key("c:{0}:{1}:users:all".format(self.name, alt)) for alt in alts]
+        keys = [_key("c:{0}:{1}:users:all".format(self.kpi_key(), alt)) for alt in alts]
         altkey = first_key_with_bit_set(keys=keys, args=[self.sequential_id(client)])
         if altkey:
             idx = keys.index(altkey)
