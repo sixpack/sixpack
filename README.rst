@@ -134,12 +134,14 @@ We've already provided clients in four languages. We'd love to add clients in ad
 - JavaScript_
 - PHP_
 - Go_
+- Perl_
 
 .. _Ruby: http://github.com/seatgeek/sixpack-rb
 .. _Python: http://github.com/seatgeek/sixpack-py
 .. _JavaScript: http://github.com/seatgeek/sixpack-js
 .. _PHP: http://github.com/seatgeek/sixpack-php
 .. _Go: http://github.com/subosito/sixpack-go
+.. _Perl: http://github.com/b10m/p5-WWW-Sixpack
 
 Dashboard
 =========
