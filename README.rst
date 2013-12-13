@@ -133,7 +133,7 @@ We've already provided clients in four languages. We'd love to add clients in ad
 - Python_
 - JavaScript_
 - PHP_
-- iOS
+- iOS_
 - Go_
 - Perl_
 
