@@ -94,7 +94,7 @@ Arguments
 
 In this example, red will always be returned. This is used for testing only, and no participation will be recorded.
 
-``traffic_dist`` (optional) sixpack allows for limiting experiments to a subset of traffic. You can pass the percentage of traffic you'd like to expose the test to as a whole number here. (``?traffic_dist=10`` for 10%)
+``traffic_fraction`` (optional) sixpack allows for limiting experiments to a subset of traffic. You can pass the percentage of traffic you'd like to expose the test to as a decimal number here. (``?traffic_fraction=0.10`` for 10%)
 
 
 Response

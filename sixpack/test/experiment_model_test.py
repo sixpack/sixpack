@@ -277,40 +277,45 @@ class TestExperimentModel(unittest.TestCase):
             Experiment.find_or_create('jay-fi', ['jay', 'fi'], self.redis, opts)
 
     def test_valid_options(self):
-        opts = {'distribution': 1}
+        opts = {'traffic_fraction': 1}
         Experiment.find_or_create('red-white', ['red', 'white'], self.redis, opts)
 
-        opts = {'distribution': '1'}
+        opts = {'traffic_fraction': 0}
         Experiment.find_or_create('red-white', ['red', 'white'], self.redis, opts)
 
-    def test_invalid_dist(self):
-        opts = {'distribution': 0}
+        opts = {'traffic_fraction': 0.4}
+        Experiment.find_or_create('red-white', ['red', 'white'], self.redis, opts)
+
+
+    def test_invalid_traffic_fraction(self):
+        opts = {'traffic_fraction': 2}
+        with self.assertRaises(ValueError):
+            Experiment.find_or_create('dist-2', ['dist', '2'], self.redis, opts)
+
+        opts = {'traffic_fraction': 101}
         with self.assertRaises(ValueError):
             Experiment.find_or_create('dist-100', ['dist', '100'], self.redis, opts)
 
-        opts = {'distribution': 101}
+        opts = {'traffic_fraction': 'x'}
         with self.assertRaises(ValueError):
             Experiment.find_or_create('dist-100', ['dist', '100'], self.redis, opts)
 
-        opts = {'distribution': 'x'}
-        with self.assertRaises(ValueError):
-            Experiment.find_or_create('dist-100', ['dist', '100'], self.redis, opts)
-
+    def test_valid_traffic_fractions_save(self):
         # test the hidden prop gets set
-        opts = {'distribution': 2}
-        exp = Experiment.find_or_create('dist-20', ['dist', '100'], self.redis, opts)
-        self.assertEqual(exp._traffic_dist, .02)
+        opts = {'traffic_fraction': 0.02}
+        exp = Experiment.find_or_create('dist-02', ['dist', '100'], self.redis, opts)
+        self.assertEqual(exp._traffic_fraction, 0.02)
 
-        opts = {'distribution': 100}
+        opts = {'traffic_fraction': 0.4}
         exp = Experiment.find_or_create('dist-100', ['dist', '100'], self.redis, opts)
-        self.assertEqual(exp._traffic_dist, 1.00)
+        self.assertEqual(exp._traffic_fraction, 0.40)
 
     # test is set in redis
-    def test_traffic_dist(self):
-        opts = {'distribution': 10}
+    def test_traffic_fraction(self):
+        opts = {'traffic_fraction': 0.10}
         exp = Experiment.find_or_create('d-test-10', ['d', 'c'], self.redis, opts)
         exp.save()
-        self.assertEqual(exp.traffic_dist, 0.1)
+        self.assertEqual(exp.traffic_fraction, 0.1)
 
     def test_valid_kpi(self):
         ret = Experiment.validate_kpi('hello-jose')

@@ -4,7 +4,7 @@
 #   - we should probably use shorter type names (experiments -> exps) just to be judicious about memory
 
 e                                                   # SET containing all experiment names
-  e:test-name                                       # HASH containing metadata about the experiment (created_at, traffic_dist, etc.)
+  e:test-name                                       # HASH containing metadata about the experiment (created_at, traffic_fraction, etc.)
   e:test-name:users                                 # SORTED SET mapping external user ids to internal ones
   e:test-name:alternatives                          # LIST containing alternative names
   e:test-name:winner                                # KEY containing the winning alternative name
