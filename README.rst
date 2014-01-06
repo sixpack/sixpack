@@ -159,6 +159,17 @@ We've already provided clients in four languages. We'd love to add clients in ad
 .. _Go: http://github.com/subosito/sixpack-go
 .. _Perl: http://github.com/b10m/p5-WWW-Sixpack
 
+Algorithms
+==========
+
+Sixpack ships with two algorithms for choosing an alternative.
+
+The standard algorithm is purely random. It uses python's `random.choice()` against the list of available alternatives. Sixpack also includes a port of Andrew Nesbit's implementation_ of the multi-armed bandit algorithm_. This algorithm weighs the alternative based on relative performance. To enable the multi-armed bandit algorithm, please see the above configuration section.
+
+.. _implementation: https://github.com/andrew/split/blob/master/lib/split/algorithms/whiplash.rb
+.. _algorithm: http://stevehanov.ca/blog/index.php?id=132
+
+
 Dashboard
 =========
 
