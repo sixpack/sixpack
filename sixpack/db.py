@@ -8,6 +8,7 @@ from config import CONFIG as cfg
 # sixpack from crashing if redis restarts (or scripts are flushed).
 pool = ConnectionPool(host=cfg.get('redis_host'),
                       port=cfg.get('redis_port'),
+                      password=cfg.get('redis_password', None),
                       db=cfg.get('redis_db'),
                       parser_class=PythonParser)
 REDIS = redis.StrictRedis(connection_pool=pool)
