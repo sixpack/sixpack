@@ -128,13 +128,12 @@ class Sixpack(object):
         experiment_name = request.args.get('experiment')
         force = request.args.get('force')
         client_id = request.args.get('client_id')
-        distribution = request.args.get('traffic_dist')
+        traffic_fraction = request.args.get('traffic_fraction', 1)
 
         if client_id is None or experiment_name is None or alts is None:
             return json_error({'message': 'missing arguments'}, request, 400)
 
-        if distribution:
-            opts['distribution'] = distribution
+        opts['traffic_fraction'] = traffic_fraction
 
         try:
             experiment = Experiment.find_or_create(experiment_name, alts, self.redis, opts)
