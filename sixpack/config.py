@@ -1,6 +1,8 @@
 import yaml
 import os
 
+from utils import to_bool
+
 config_path = os.environ.get('SIXPACK_CONFIG', None)
 if config_path:
     try:
@@ -10,8 +12,6 @@ if config_path:
     except yaml.YAMLError, exc:
         raise RuntimeError('Error in configuration file: {0}'.format(str(exc)))
 else:
-    def to_bool(val):
-        return val.lower() in ['y', 'true', 'yes']
     CONFIG = {
         'enabled': to_bool(os.environ.get('SIXPACK_CONFIG_ENABLED', 'True')),
         'redis_port': int(os.environ.get('SIXPACK_CONFIG_REDIS_PORT', '6379')),
@@ -25,7 +25,7 @@ else:
                                                                     "Slurp|WordPress|ZIBB|ZyBorg|pingdom|bot|yahoo|"
                                                                     "slurp|java|fetch|spider|url|crawl|oneriot|abby|"
                                                                     "commentreader|twiceler"),
-        'ignored_ip_addresses':os.environ.get('SIXPACK_CONFIG_IGNORE_IPS', "").split(";"),
+        'ignored_ip_addresses':os.environ.get('SIXPACK_CONFIG_IGNORE_IPS', "").split(","),
         'asset_path':os.environ.get('SIXPACK_CONFIG_ASSET_PATH', "gen"),
         'secret_key':os.environ.get('SIXPACK_CONFIG_SECRET', 'temp'),
     }

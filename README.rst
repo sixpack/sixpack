@@ -47,6 +47,20 @@ You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As 
 
 Sixpack-server will be listening on port 5000 by default but can be changed with the ``SIXPACK_PORT`` environment variable. For use in a production environment, please see the "Production Notes" section below.
 
+Alternatively, as of version 1.1, all Sixpack configuration can be set by environment variables. The following environment variables are available:
+
+* ``SIXPACK_CONFIG_ENABLED``
+* ``SIXPACK_CONFIG_REDIS_PORT``
+* ``SIXPACK_CONFIG_REDIS_HOST``
+* ``SIXPACK_CONFIG_REDIS_PASSWORD``
+* ``SIXPACK_CONFIG_REDIS_PREFIX``
+* ``SIXPACK_CONFIG_REDIS_DB``
+* ``SIXPACK_CONFIG_WHIPLASH``
+* ``SIXPACK_CONFIG_ROBOT_REGEX``
+* ``SIXPACK_CONFIG_IGNORE_IPS`` - comma separated
+* ``SIXPACK_CONFIG_ASSET_PATH``
+* ``SIXPACK_CONFIG_SECRET``
+
 Using the API
 =============
 
