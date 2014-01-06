@@ -667,10 +667,14 @@ class Alternative(object):
         expected_control_failures = control.participant_count() - expected_control_conversions
         expected_alt_failures = self.participant_count() - expected_alt_conversions
 
-        g_stat = 2 * (      alt_conversions * log(alt_conversions / expected_alt_conversions) \
+        try:
+            g_stat = 2 * (      alt_conversions * log(alt_conversions / expected_alt_conversions) \
                         +   alt_failures * log(alt_failures / expected_alt_failures) \
                         +   control_conversions * log(control_conversions / expected_control_conversions) \
                         +   control_failures * log(control_failures / expected_control_failures))
+
+        except ZeroDivisionError:
+            return 0
 
         return round(g_stat, 2)
 
