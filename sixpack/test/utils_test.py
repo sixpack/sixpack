@@ -22,3 +22,15 @@ class TestServerLogic(unittest.TestCase):
 
         number = utils.number_format(1234567890)
         self.assertEqual(number, '1,234,567,890')
+
+    def test_str_to_bool(self):
+        self.assertTrue(utils.to_bool('y'))
+        self.assertTrue(utils.to_bool('YES'))
+        self.assertTrue(utils.to_bool('true'))
+        self.assertTrue(utils.to_bool('TRUE'))
+        self.assertTrue(utils.to_bool('Y'))
+        self.assertFalse(utils.to_bool('rodger'))
+        self.assertFalse(utils.to_bool('False'))
+        self.assertFalse(utils.to_bool('FaLse'))
+        self.assertFalse(utils.to_bool('no'))
+        self.assertFalse(utils.to_bool('n'))

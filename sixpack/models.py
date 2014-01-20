@@ -10,7 +10,7 @@ from db import _key, msetbit, sequential_id, first_key_with_bit_set
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_]*$", re.I)
 VALID_KPI_RE = re.compile(r"^[a-z0-9][a-z0-9\-_]*$", re.I)
-VALID_EXPERIMENT_OPTS = ('distribution',)
+VALID_EXPERIMENT_OPTS = ('traffic_fraction',)
 RANDOM_SAMPLE = .2
 
 
@@ -35,7 +35,7 @@ class Experiment(object):
 
         # False here is a sentinal value for "not looked up yet"
         self._winner = False
-        self._traffic_dist = False
+        self._traffic_fraction = False
         self._sequential_ids = dict()
 
     def __repr__(self):
@@ -101,8 +101,7 @@ class Experiment(object):
             pipe.sadd(_key('e'), self.name)
 
         pipe.hset(self.key(), 'created_at', datetime.now())
-        if self.traffic_dist is not None:
-            pipe.hset(self.key(), 'traffic_dist', self.traffic_dist)
+        pipe.hset(self.key(), 'traffic_fraction', self._traffic_fraction)
 
         # reverse here and use lpush to keep consistent with using lrange
         for alternative in reversed(self.alternatives):
@@ -271,22 +270,20 @@ class Experiment(object):
         return "{0}:winner".format(self.key())
 
     @property
-    def traffic_dist(self):
-        if not self._traffic_dist:
+    def traffic_fraction(self):
+        if not self._traffic_fraction:
             try:
-                self._traffic_dist = float(self.redis.hget(self.key(), 'traffic_dist'))
+                self._traffic_fraction = float(self.redis.hget(self.key(), 'traffic_fraction'))
             except TypeError:
-                self._traffic_dist = None
-        return self._traffic_dist
+                self._traffic_fraction = 1
+        return self._traffic_fraction
 
-    def set_traffic_dist(self, dist):
-        dist = int(dist)
-        if not 0 < dist <= 100:
-            raise ValueError('invalid distribution range')
+    def set_traffic_fraction(self, fraction):
+        fraction = float(fraction)
+        if not 0 < fraction <= 1:
+            raise ValueError('invalid traffic fraction range')
 
-        pct = dist / 100.0
-
-        self._traffic_dist = pct
+        self._traffic_fraction = fraction
 
     def sequential_id(self, client):
         """Return the sequential id for this test for the passed in client"""
@@ -330,7 +327,7 @@ class Experiment(object):
 
     def choose_alternative(self, client):
         rnd = round(random.uniform(1, 0.01), 2)
-        if self.traffic_dist is not None and rnd >= self.traffic_dist:
+        if rnd >= self.traffic_fraction:
             self.exclude_client(client)
             return self.control, False
 
@@ -397,14 +394,16 @@ class Experiment(object):
 
         Experiment.validate_options(opts)
 
-        # We don't use the class method key here
         try:
             experiment = Experiment.find(experiment_name, redis_conn)
         except ValueError:
             experiment = cls(experiment_name, alternatives, redis_conn)
             # TODO: I want to revist this later
-            if 'distribution' in opts:
-                experiment.set_traffic_dist(opts['distribution'])
+            if 'traffic_fraction' in opts:
+                experiment.set_traffic_fraction(opts['traffic_fraction'])
+            else:
+                experiment.set_traffic_fraction(1)
+
             experiment.save()
 
         # Make sure the alternative options are correct. If they are not,
@@ -667,10 +666,14 @@ class Alternative(object):
         expected_control_failures = control.participant_count() - expected_control_conversions
         expected_alt_failures = self.participant_count() - expected_alt_conversions
 
-        g_stat = 2 * (      alt_conversions * log(alt_conversions / expected_alt_conversions) \
+        try:
+            g_stat = 2 * (      alt_conversions * log(alt_conversions / expected_alt_conversions) \
                         +   alt_failures * log(alt_failures / expected_alt_failures) \
                         +   control_conversions * log(control_conversions / expected_control_conversions) \
                         +   control_failures * log(control_failures / expected_control_failures))
+
+        except ZeroDivisionError:
+            return 0
 
         return round(g_stat, 2)
 

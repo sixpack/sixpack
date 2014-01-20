@@ -45,3 +45,6 @@ def number_to_percent(number, precision=2):
 
 def number_format(number):
     return "{:,}".format(number)
+
+def to_bool(val):
+    return val.lower() in ['y', 'true', 'yes']
