@@ -1,3 +1,7 @@
+1.1.1
+=====
+* [ENHANCEMENT] Redis Sentinal Support
+
 1.1.0
 =====
 * [ENHANCEMENT] Add this file
