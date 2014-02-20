@@ -20,7 +20,7 @@ $(function() {
 
 function show_clients() {
 	$('#upper').animate({
-		paddingBottom: '+=65px'
+		paddingBottom: '+=112px'
 	}, function() {
 		$('#clients').fadeIn();
 	});
