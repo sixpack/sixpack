@@ -184,7 +184,11 @@ class Experiment(object):
             self.redis.hset(self.key(), 'description', description)
 
     def get_description(self):
-        return self.redis.hget(self.key(), 'description').decode("utf-8", "replace")
+        description = self.redis.hget(self.key(), 'description')
+        if description:
+            return description.decode("utf-8", "replace")
+        else:
+            return None
 
     def reset(self):
         self.delete()
