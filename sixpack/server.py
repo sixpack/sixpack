@@ -34,6 +34,7 @@ class Sixpack(object):
             Rule('/_status', endpoint='status'),
             Rule('/participate', endpoint='participate'),
             Rule('/convert', endpoint='convert'),
+            Rule('/client_alternative', endpoint='client_alternative'),
             Rule('/favicon.ico', endpoint='favicon')
         ])
 
@@ -169,6 +170,38 @@ class Sixpack(object):
 
         return json_success(resp, request)
 
+    @service_unavailable_on_connection_error
+    def on_client_alternative(self, request):
+        experiment_name = request.args.get('experiment')
+        client_id = request.args.get('client_id')
+
+        if client_id is None or experiment_name is None:
+            return json_error({'message': 'missing arguments'}, request, 400)
+
+        try:
+            experiment = Experiment.find(experiment_name, self.redis)
+        except ValueError as e:
+            return json_error({'message': str(e)}, request, 400)
+
+        alternative = None
+        client = Client(client_id, self.redis)
+        try:
+            alternative = experiment.existing_alternative(client).name
+        except:
+            return json_error({'message': 'unknown client id for experiment'}, request, 400)
+            
+        resp = {
+            'alternative': {
+                'name': alternative
+            },
+            'experiment': {
+                'name': experiment.name,
+            },
+            'client_id': client_id,
+            'status': 'ok'
+        }
+
+        return json_success(resp, request)
 
 def should_exclude_visitor(request):
     user_agent = request.args.get('user_agent')
