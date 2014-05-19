@@ -235,7 +235,7 @@ This command will make a few dozen requests to the ``participate`` and ``convert
 
 3. Create your feature branch (``git checkout -b my-new-feature``)
 4. Write tests
-5. Run tests with ``nosetests``
+5. Run tests with ``nosetests`` **Note:** tests currently require that ``SIXPACK_CONFIG_REDIS_PREFIX = sxp``
 6. Commit your changes (``git commit -am 'Added some feature'``)
 7. Push to the branch (``git push origin my-new-feature``)
 8. Create new pull request
