@@ -129,6 +129,7 @@ class Sixpack(object):
         force = request.args.get('force')
         client_id = request.args.get('client_id')
         traffic_fraction = request.args.get('traffic_fraction', 1)
+        client_chosen_alt = request.args.get('alternative', None)
 
         if client_id is None or experiment_name is None or alts is None:
             return json_error({'message': 'missing arguments'}, request, 400)
@@ -154,7 +155,7 @@ class Sixpack(object):
             if request.args.get("datetime"):
                 dt = dateutil.parser.parse(request.args.get("datetime"))
             client = Client(client_id, self.redis)
-            alternative = experiment.get_alternative(client, dt=dt).name
+            alternative = experiment.get_alternative(client, alternative=client_chosen_alt, dt=dt).name
 
         resp = {
             'alternative': {

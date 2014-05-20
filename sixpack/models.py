@@ -296,13 +296,22 @@ class Experiment(object):
             self._sequential_ids[client.client_id] = id_
         return self._sequential_ids[client.client_id]
 
-    def get_alternative(self, client, dt=None):
+    def get_alternative(self, client, alternative=None, dt=None):
+        """Returns and records an alternative according to the following
+        precedence:
+          1. An existing alternative
+          2. A client-chosen alternative
+          3. A server-chosen alternative
+        """
         if self.is_archived():
             return self.control
 
         chosen_alternative = self.existing_alternative(client)
         if not chosen_alternative:
-            chosen_alternative, participate = self.choose_alternative(client=client)
+            if alternative:
+                chosen_alternative, participate = Alternative(alternative, self, self.redis), True
+            else:
+                chosen_alternative, participate = self.choose_alternative(client=client)
             if participate:
                 chosen_alternative.record_participation(client, dt=dt)
 
