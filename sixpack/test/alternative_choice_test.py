@@ -39,3 +39,15 @@ class TestAlternativeChoice(unittest.TestCase):
         e.set_winner("three")
         # after a winner
         test_force()
+
+    def test_client_chosen_alternative(self):
+        alts = ["one", "two", "three"]
+        e = Experiment.find_or_create("client-chosen-alternative", alts, self.app.redis)
+
+        data = json.loads(self.client.get("/participate?experiment=client-chosen-alternative&alternatives=one&alternatives=two&alternatives=three&client_id=1&alternative=one").data)
+        self.assertEqual(data['alternative']['name'], 'one')
+        self.assertEqual(e.total_participants(), 1)
+
+        data = json.loads(self.client.get("/participate?experiment=client-chosen-alternative&alternatives=one&alternatives=two&alternatives=three&client_id=2&alternative=two").data)
+        self.assertEqual(data['alternative']['name'], 'two')
+        self.assertEqual(e.total_participants(), 2)
