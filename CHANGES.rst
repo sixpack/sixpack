@@ -1,3 +1,7 @@
+1.1.2
+=====
+* [ENHANCEMENT] Client can now choose alternative when async is not ideal
+
 1.1.1
 =====
 * [ENHANCEMENT] Redis Sentinal Support
