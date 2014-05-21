@@ -9,7 +9,7 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
-from . import __version__
+from . import __version__, participate, convert
 from config import CONFIG as cfg
 
 try:
@@ -91,26 +91,21 @@ class Sixpack(object):
         if client_id is None or experiment_name is None:
             return json_error({'message': 'missing arguments'}, request, 400)
 
-        client = Client(client_id, self.redis)
+        dt = None
+        if request.args.get("datetime"):
+            dt = dateutil.parser.parse(request.args.get("datetime"))
 
         try:
-            experiment = Experiment.find(experiment_name, self.redis)
-            if cfg.get('enabled', True):
-                dt = None
-                if request.args.get("datetime"):
-                    dt = dateutil.parser.parse(request.args.get("datetime"))
-                alternative = experiment.convert(client, dt=dt, kpi=kpi)
-            else:
-                alternative = experiment.control.name
+            alt = convert(experiment_name, client_id, kpi=kpi, datetime=dt, redis=self.redis)
         except ValueError as e:
             return json_error({'message': str(e)}, request, 400)
 
         resp = {
             'alternative': {
-                'name': alternative
+                'name': alt.name
             },
             'experiment': {
-                'name': experiment.name,
+                'name': alt.experiment.name,
             },
             'conversion': {
                 'value': None,
@@ -123,46 +118,40 @@ class Sixpack(object):
 
     @service_unavailable_on_connection_error
     def on_participate(self, request):
-        opts = {}
         alts = request.args.getlist('alternatives')
         experiment_name = request.args.get('experiment')
         force = request.args.get('force')
         client_id = request.args.get('client_id')
-        traffic_fraction = request.args.get('traffic_fraction', 1)
+        traffic_fraction = float(request.args.get('traffic_fraction', 1))
         client_chosen_alt = request.args.get('alternative', None)
 
         if client_id is None or experiment_name is None or alts is None:
             return json_error({'message': 'missing arguments'}, request, 400)
 
-        opts['traffic_fraction'] = traffic_fraction
+        dt = None
+        if request.args.get("datetime"):
+            dt = dateutil.parser.parse(request.args.get("datetime"))
 
-        try:
-            experiment = Experiment.find_or_create(experiment_name, alts, self.redis, opts)
-        except ValueError as e:
-            return json_error({'message': str(e)}, request, 400)
-
-        alternative = None
-        if force and force in alts:
-            alternative = force
-        elif not cfg.get('enabled', True):
-            alternative = alts[0]
-        elif experiment.winner is not None:
-            alternative = experiment.winner
-        elif should_exclude_visitor(request):
-            alternative = alts[0]
+        if should_exclude_visitor(request):
+            exp = Experiment.find(experiment_name, redis=self.redis)
+            if exp.winner is not None:
+                alt = exp.winner
+            else:
+                alt = exp.control
         else:
-            dt = None
-            if request.args.get("datetime"):
-                dt = dateutil.parser.parse(request.args.get("datetime"))
-            client = Client(client_id, self.redis)
-            alternative = experiment.get_alternative(client, alternative=client_chosen_alt, dt=dt).name
+            try:
+                alt = participate(experiment_name, alts, client_id,
+                                  force=force, traffic_fraction=traffic_fraction,
+                                  alternative=client_chosen_alt, datetime=dt, redis=self.redis)
+            except ValueError as e:
+                return json_error({'message': str(e)}, request, 400)
 
         resp = {
             'alternative': {
-                'name': alternative
+                'name': alt.name
             },
             'experiment': {
-                'name': experiment.name,
+                'name': alt.experiment.name,
             },
             'client_id': client_id,
             'status': 'ok'
