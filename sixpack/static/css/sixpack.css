@@ -488,17 +488,11 @@ code {
   }
 }
 @media (max-width: 580px) {
-  ul.experiments > li table tr > :nth-child(3) {
-    display:none;
-  }
   #details-page .header .controls .collapse {
     display:block;
   }
 }
 @media (max-width: 735px) {
-  ul.experiments > li table tr > :nth-child(2) {
-    display:none;
-  }
   .container {
     width: auto;
   }
