@@ -36,10 +36,10 @@ class TestExperimentModel(unittest.TestCase):
 
     def test_created_at(self):
         exp = Experiment('bench-press', ['joe', 'think'], redis=self.redis)
-        date = exp.created_at()
+        date = exp.created_at
         self.assertIsNone(date)
         exp.save()
-        date = exp.created_at()
+        date = exp.created_at
         self.assertTrue(isinstance(date, datetime))
 
     def test_get_alternative_names(self):
@@ -63,10 +63,10 @@ class TestExperimentModel(unittest.TestCase):
 
     def test_description(self):
         exp = Experiment.find_or_create('never-gonna', ['give', 'you', 'up'], redis=self.redis)
-        self.assertEqual(exp.get_description(), None)
+        self.assertEqual(exp.description, None)
 
         exp.update_description('hallo')
-        self.assertEqual(exp.get_description(), 'hallo')
+        self.assertEqual(exp.description, 'hallo')
 
     def test_change_alternatives(self):
         exp = Experiment.find_or_create('never-gonna-x', ['let', 'you', 'down'], redis=self.redis)
@@ -348,13 +348,13 @@ class TestExperimentModel(unittest.TestCase):
         self.assertIn(kpi, self.redis.smembers(key))
         exp.delete()
 
-    def test_get_kpis(self):
+    def test_kpis(self):
         exp = Experiment.find_or_create('multi-kpi-add', ['asdf', '999'], redis=self.redis)
         kpis = ['omg-pop', 'zynga']
 
         exp.add_kpi(kpis[0])
         exp.add_kpi(kpis[1])
-        ekpi = exp.get_kpis()
+        ekpi = exp.kpis
         self.assertIn(kpis[0], ekpi)
         self.assertIn(kpis[1], ekpi)
         exp.delete()

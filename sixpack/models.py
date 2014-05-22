@@ -49,13 +49,13 @@ class Experiment(object):
             'name': self.name,
             'period': period,
             'alternatives': [],
-            'created_at': self.created_at(),
+            'created_at': self.created_at,
             'total_participants': self.total_participants(),
             'total_conversions': self.total_conversions(),
-            'description': self.get_description(),
+            'description': self.description,
             'has_winner': self.winner is not None,
             'is_archived': self.is_archived(),
-            'kpis': list(self.get_kpis()),
+            'kpis': list(self.kpis),
             'kpi': self.kpi
         }
 
@@ -116,6 +116,7 @@ class Experiment(object):
     def control(self):
         return self.alternatives[0]
 
+    @property
     def created_at(self):
         return self.redis.hget(self.key(), 'created_at')
 
@@ -186,7 +187,8 @@ class Experiment(object):
         else:
             self.redis.hset(self.key(), 'description', description)
 
-    def get_description(self):
+    @property
+    def description(self):
         description = self.redis.hget(self.key(), 'description')
         if description:
             return description.decode("utf-8", "replace")
@@ -240,6 +242,10 @@ class Experiment(object):
 
         return alternative
 
+    @property
+    def kpis(self):
+        return self.redis.smembers("{0}:kpis".format(self.key(include_kpi=False)))
+
     def set_kpi(self, kpi):
         self.kpi = None
 
@@ -252,9 +258,6 @@ class Experiment(object):
     def add_kpi(self, kpi):
         self.redis.sadd("{0}:kpis".format(self.key(include_kpi=False)), kpi)
         self.kpi = kpi
-
-    def get_kpis(self):
-        return self.redis.smembers("{0}:kpis".format(self.key(include_kpi=False)))
 
     @property
     def winner(self):
