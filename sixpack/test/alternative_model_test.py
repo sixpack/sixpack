@@ -13,9 +13,9 @@ class TestAlternativeModel(unittest.TestCase):
         self.client_id = 381
 
     def test_key(self):
-        exp = Experiment('show-something', ['yes', 'no'], self.redis)
+        exp = Experiment('show-something', ['yes', 'no'], redis=self.redis)
 
-        alt = Alternative('yes', exp, self.redis)
+        alt = Alternative('yes', exp, redis=self.redis)
         key = alt.key()
         self.assertEqual(key, 'sxp:show-something:yes')
 
@@ -40,18 +40,18 @@ class TestAlternativeModel(unittest.TestCase):
         self.assertFalse(not_valid)
 
     def test_is_control(self):
-        exp = Experiment('trololo', ['yes', 'no'], self.redis)
+        exp = Experiment('trololo', ['yes', 'no'], redis=self.redis)
         exp.save()
 
-        alt = Alternative('yes', exp, self.redis)
+        alt = Alternative('yes', exp, redis=self.redis)
         self.assertTrue(alt.is_control())
         exp.delete()
 
     def test_experiment(self):
-        exp = Experiment('trololo', ['yes', 'no'], self.redis)
+        exp = Experiment('trololo', ['yes', 'no'], redis=self.redis)
         exp.save()
 
-        alt = Alternative('yes', exp, self.redis)
+        alt = Alternative('yes', exp, redis=self.redis)
         self.assertTrue(alt.is_control())
 
     def test_participant_count(self):

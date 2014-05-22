@@ -15,7 +15,7 @@ class TestAlternativeChoice(unittest.TestCase):
         self.client = Client(self.app, BaseResponse)
 
     def test_bots_get_winner_otherwise_control(self):
-        e = Experiment.find_or_create("bots-get-winner", ["one", "two"], self.app.redis)
+        e = Experiment.find_or_create("bots-get-winner", ["one", "two"], redis=self.app.redis)
         # control at first
         for i in range(3):
             data = json.loads(self.client.get("/participate?experiment=bots-get-winner&alternatives=one&alternatives=two&user_agent=GoogleBot&client_id=rand").data)
@@ -28,7 +28,7 @@ class TestAlternativeChoice(unittest.TestCase):
 
     def test_force_param_always_wins(self):
         alts = ["one", "two", "three"]
-        e = Experiment.find_or_create("force-param-always-wins", alts, self.app.redis)
+        e = Experiment.find_or_create("force-param-always-wins", alts, redis=self.app.redis)
 
         def test_force():
             for f in alts:
@@ -42,7 +42,7 @@ class TestAlternativeChoice(unittest.TestCase):
 
     def test_client_chosen_alternative(self):
         alts = ["one", "two", "three"]
-        e = Experiment.find_or_create("client-chosen-alternative", alts, self.app.redis)
+        e = Experiment.find_or_create("client-chosen-alternative", alts, redis=self.app.redis)
 
         data = json.loads(self.client.get("/participate?experiment=client-chosen-alternative&alternatives=one&alternatives=two&alternatives=three&client_id=1&alternative=one").data)
         self.assertEqual(data['alternative']['name'], 'one')

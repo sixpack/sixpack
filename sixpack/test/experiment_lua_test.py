@@ -13,15 +13,15 @@ class TestExperimentLua(unittest.TestCase):
         self.app = create_app()
 
     def test_convert(self):
-        exp = Experiment('test-convert', ['1', '2'], self.app.redis)
-        client = Client("eric", self.app.redis)
+        exp = Experiment('test-convert', ['1', '2'], redis=self.app.redis)
+        client = Client("eric", redis=self.app.redis)
         exp.get_alternative(client)
         exp.convert(client)
         self.assertEqual(exp.total_conversions(), 1)
 
     def test_cant_convert_twice(self):
-        exp = Experiment('test-cant-convert-twice', ['1', '2'], self.app.redis)
-        client = Client("eric", self.app.redis)
+        exp = Experiment('test-cant-convert-twice', ['1', '2'], redis=self.app.redis)
+        client = Client("eric", redis=self.app.redis)
         alt = exp.get_alternative(client)
         exp.convert(client)
         self.assertEqual(exp.total_conversions(), 1)
@@ -37,13 +37,13 @@ class TestExperimentLua(unittest.TestCase):
         self.assertEqual(total_conversions, 1)
 
     def test_find_existing_conversion(self):
-        exp = Experiment('test-find-existing-conversion', ['1', '2'], self.app.redis)
-        client = Client("eric", self.app.redis)
+        exp = Experiment('test-find-existing-conversion', ['1', '2'], redis=self.app.redis)
+        client = Client("eric", redis=self.app.redis)
         alt = exp.get_alternative(client)
         exp.convert(client)
         alt2 = exp.existing_conversion(client)
         self.assertIsNotNone(alt2)
         self.assertTrue(alt.name == alt2.name)
-        client2 = Client("zack", self.app.redis)
+        client2 = Client("zack", redis=self.app.redis)
         alt3 = exp.existing_conversion(client2)
         self.assertIsNone(alt3)

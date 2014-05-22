@@ -1,6 +1,6 @@
 hiredis==0.1.1
 redis==2.9.0
-mock==1.0b1
+mock==1.0.1
 Werkzeug==0.9.1
 PyYAML==3.10
 Flask==0.10
