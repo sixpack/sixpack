@@ -40,8 +40,22 @@ class TestServer(unittest.TestCase):
         self.assert_(res.data.startswith("{"))
         self.assert_(res.data.endswith("}"))
 
+    def test_sans_callback_reststyle(self):
+        res = self.client.get("/participate/dummy/foo?alternatives=one&alternatives=two")
+        self.assertEqual(200, res.status_code)
+        self.assertEqual("application/json", dict(res.headers)["Content-Type"])
+        self.assert_(res.data.startswith("{"))
+        self.assert_(res.data.endswith("}"))
+
     def test_with_callback(self):
         res = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=seatgeek.cb")
+        self.assertEqual(200, res.status_code)
+        self.assertEqual("application/javascript", dict(res.headers)["Content-Type"])
+        self.assert_(res.data.startswith("seatgeek.cb({"))
+        self.assert_(res.data.endswith("})"))
+
+    def test_with_callback_reststyle(self):
+        res = self.client.get("/participate/dummy/foo?alternatives=one&alternatives=two&callback=seatgeek.cb")
         self.assertEqual(200, res.status_code)
         self.assertEqual("application/javascript", dict(res.headers)["Content-Type"])
         self.assert_(res.data.startswith("seatgeek.cb({"))
@@ -50,6 +64,14 @@ class TestServer(unittest.TestCase):
     def test_with_bad_callback(self):
         # TODO error out here instead?
         res = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=alert();foo")
+        self.assertEqual(200, res.status_code)
+        self.assertEqual("application/json", dict(res.headers)["Content-Type"])
+        self.assert_(res.data.startswith("{"))
+        self.assert_(res.data.endswith("}"))
+
+    def test_with_bad_callback_reststyle(self):
+        # TODO error out here instead?
+        res = self.client.get("/participate/dummy/foo?alternatives=one&alternatives=two&callback=alert();foo")
         self.assertEqual(200, res.status_code)
         self.assertEqual("application/json", dict(res.headers)["Content-Type"])
         self.assert_(res.data.startswith("{"))
@@ -66,6 +88,20 @@ class TestServer(unittest.TestCase):
         self.assertTrue('client_id' in data)
         self.assertTrue('status' in data)
         self.assertEqual(data['status'], 'ok')
+
+    def test_ok_participate_reststyle(self):
+        resp = self.client.get("/participate/dummy/foo?alternatives=one&alternatives=two")
+        data = json.loads(resp.data)
+        self.assertEqual(200, resp.status_code)
+        self.assertTrue('alternative' in data)
+        self.assertTrue('name' in data['alternative'])
+        self.assertTrue('experiment' in data)
+        self.assertTrue('name' in data['experiment'])
+        self.assertTrue('client_id' in data)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'ok')
+        self.assertEqual(data['experiment']['name'], 'dummy')
+        self.assertEqual(data['client_id'], 'foo')
 
     def test_participate_useragent_filter(self):
         resp = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&user_agent=fetch")
@@ -101,9 +137,45 @@ class TestServer(unittest.TestCase):
         self.assertTrue('kpi' in data['conversion'])
         self.assertEqual(data['conversion']['kpi'], None)
 
+    def test_convert_reststyle(self):
+        self.client.get("/participate/dummy/foo?alternatives=one&alternatives=two&callback=seatgeek.cb")
+        resp = self.client.get("/convert/dummy/foo")
+        data = json.loads(resp.data)
+        self.assertEqual(200, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'ok')
+        self.assertTrue('alternative' in data)
+        self.assertTrue('name' in data['alternative'])
+        self.assertTrue('experiment' in data)
+        self.assertTrue('name' in data['experiment'])
+        self.assertTrue('client_id' in data)
+        self.assertTrue('conversion' in data)
+        self.assertTrue('value' in data['conversion'])
+        self.assertTrue('kpi' in data['conversion'])
+        self.assertEqual(data['conversion']['kpi'], None)
+        self.assertEqual(data['experiment']['name'], 'dummy')
+        self.assertEqual(data['client_id'], 'foo')        
+
     def test_convert_with_kpi(self):
         self.client.get("/participate?experiment=dummy-kpi&client_id=foo&alternatives=one&alternatives=two")
         resp = self.client.get("/convert?experiment=dummy-kpi&client_id=foo&kpi=alligator")
+        data = json.loads(resp.data)
+        self.assertEqual(200, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'ok')
+        self.assertTrue('alternative' in data)
+        self.assertTrue('name' in data['alternative'])
+        self.assertTrue('experiment' in data)
+        self.assertTrue('name' in data['experiment'])
+        self.assertTrue('client_id' in data)
+        self.assertTrue('conversion' in data)
+        self.assertTrue('value' in data['conversion'])
+        self.assertTrue('kpi' in data['conversion'])
+        self.assertEqual(data['conversion']['kpi'], 'alligator')
+
+    def test_convert_with_kpi_reststyle(self):
+        self.client.get("/participate/dummy-kpi/foo?alternatives=one&alternatives=two")
+        resp = self.client.get("/convert/dummy-kpi/foo?kpi=alligator")
         data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
         self.assertTrue('status' in data)
@@ -127,8 +199,25 @@ class TestServer(unittest.TestCase):
         self.assertEqual(data['message'], 'invalid kpi name')
         self.assertEqual(data['status'], 'failed')
 
+    def test_convert_bad_kpi_failure_reststyle(self):
+        self.client.get("/participate/dummy-kpi/foo?alternatives=one&alternatives=two")
+        resp = self.client.get("/convert/dummy-kpi/foo?kpi=&&^^!*(")
+        data = json.loads(resp.data)
+        self.assertEqual(400, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['message'], 'invalid kpi name')
+        self.assertEqual(data['status'], 'failed')
+
     def test_convert_fail(self):
         resp = self.client.get("/convert?experiment=baz&client_id=bar")
+        data = json.loads(resp.data)
+        self.assertEqual(400, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'failed')
+        self.assertEqual(data['message'], 'experiment does not exist')
+
+    def test_convert_fail_reststyle(self):
+        resp = self.client.get("/convert/baz/bar")
         data = json.loads(resp.data)
         self.assertEqual(400, resp.status_code)
         self.assertTrue('status' in data)
@@ -142,3 +231,47 @@ class TestServer(unittest.TestCase):
         self.assertTrue('status' in data)
         self.assertEqual(data['status'], 'failed')
         self.assertEqual(data['message'], 'missing arguments')
+
+    def test_client_id_reststyle(self):
+        resp = self.client.get("/participate/dummy?alternatives=one&alternatives=two")
+        data = json.loads(resp.data)
+        self.assertEqual(404, resp.status_code)
+
+    def test_experiment_reststyle(self):
+        self.client.get("/participate/dummy-exp/foo?alternatives=one&alternatives=two")
+        resp = self.client.get("/experiment/dummy-exp/client/foo")
+        data = json.loads(resp.data)
+        self.assertEqual(200, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'ok')
+        self.assertTrue('alternative' in data)
+        self.assertTrue('name' in data['alternative'])
+        self.assertTrue('experiment' in data)
+        self.assertTrue('name' in data['experiment'])
+        self.assertEqual(data['experiment']['name'], 'dummy-exp')
+        self.assertTrue('client_id' in data)
+        self.assertEqual(data['client_id'], 'foo')
+        self.assertTrue('one' in data['alternative']['name'] or 'two' in data['alternative']['name'])
+        
+    def test_experiment_missingarg_reststyle(self):
+        resp = self.client.get("/experiment/dummy-exp/client/foo")
+        data = json.loads(resp.data)
+        self.assertEqual(400, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'failed')
+
+    def test_experiment_unknownexp_reststyle(self):
+        self.client.get("/participate/dummy-exp/foo?alternatives=one&alternatives=two")
+        resp = self.client.get("/experiment/bad-exp/client/foo")
+        data = json.loads(resp.data)
+        self.assertEqual(400, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'failed')
+
+    def test_experiment_unknownclient_reststyle(self):
+        self.client.get("/participate/dummy-exp/foo?alternatives=one&alternatives=two")
+        resp = self.client.get("/experiment/dummy-exp/client/bad-foo")
+        data = json.loads(resp.data)
+        self.assertEqual(400, resp.status_code)
+        self.assertTrue('status' in data)
+        self.assertEqual(data['status'], 'failed')

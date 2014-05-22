@@ -33,8 +33,10 @@ class Sixpack(object):
             Rule('/', endpoint='home'),
             Rule('/_status', endpoint='status'),
             Rule('/participate', endpoint='participate'),
+            Rule('/participate/<experiment_name>/<client_id>', endpoint='participate'),
             Rule('/convert', endpoint='convert'),
-            Rule('/client_alternative', endpoint='client_alternative'),
+            Rule('/convert/<experiment_name>/<client_id>', endpoint='convert'),
+            Rule('/experiment/<experiment_name>/client/<client_id>', endpoint='experiment_client'),
             Rule('/favicon.ico', endpoint='favicon')
         ])
 
@@ -81,12 +83,14 @@ class Sixpack(object):
         return Response()
 
     @service_unavailable_on_connection_error
-    def on_convert(self, request):
+    def on_convert(self, request, experiment_name = None, client_id = None):
         if should_exclude_visitor(request):
             return json_success({'excluded': 'true'}, request)
 
-        experiment_name = request.args.get('experiment')
-        client_id = request.args.get('client_id')
+        if experiment_name is None:
+            experiment_name = request.args.get('experiment')
+        if client_id is None:
+            client_id = request.args.get('client_id')
         kpi = request.args.get('kpi', None)
 
         if client_id is None or experiment_name is None:
@@ -123,12 +127,14 @@ class Sixpack(object):
         return json_success(resp, request)
 
     @service_unavailable_on_connection_error
-    def on_participate(self, request):
+    def on_participate(self, request, experiment_name = None, client_id = None):
         opts = {}
         alts = request.args.getlist('alternatives')
-        experiment_name = request.args.get('experiment')
+        if experiment_name is None:
+            experiment_name = request.args.get('experiment')
+        if client_id is None:
+            client_id = request.args.get('client_id')
         force = request.args.get('force')
-        client_id = request.args.get('client_id')
         traffic_fraction = request.args.get('traffic_fraction', 1)
 
         if client_id is None or experiment_name is None or alts is None:
@@ -171,10 +177,7 @@ class Sixpack(object):
         return json_success(resp, request)
 
     @service_unavailable_on_connection_error
-    def on_client_alternative(self, request):
-        experiment_name = request.args.get('experiment')
-        client_id = request.args.get('client_id')
-
+    def on_experiment_client(self, request, experiment_name, client_id):
         if client_id is None or experiment_name is None:
             return json_error({'message': 'missing arguments'}, request, 400)
 
