@@ -9,6 +9,7 @@ from . import __version__
 from config import CONFIG as cfg
 import db
 from models import Experiment
+from analysis import ExportExperiment
 import utils
 
 app = Flask(__name__)
@@ -79,7 +80,8 @@ def json_details(experiment_name):
 def export(experiment_name):
     experiment = find_or_404(experiment_name)
 
-    response = make_response(experiment.csvify())
+    export = ExportExperiment(experiment=experiment)
+    response = make_response(export())
     response.headers["Content-Type"] = "text/csv"
     # force a download with the content-disposition headers
     filename = "sixpack_export_{0}".format(experiment_name)
