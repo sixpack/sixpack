@@ -41,14 +41,14 @@ def status():
 
 @app.route("/")
 def hello():
-    experiments = Experiment.all(db.REDIS)
+    experiments = Experiment.all(exclude_archived=True, redis=db.REDIS)
     experiments = [exp.name for exp in experiments]
     return render_template('dashboard.html', experiments=experiments, page='home')
 
 
 @app.route('/archived')
 def archived():
-    experiments = Experiment.all(db.REDIS, False)
+    experiments = Experiment.all(exclude_archived=False, redis=db.REDIS)
     experiments = [exp.name for exp in experiments if exp.is_archived()]
     return render_template('dashboard.html', experiments=experiments, page='archived')
 
