@@ -36,7 +36,7 @@ for d in range(1, 8):
             _id = random.choice(client_ids)
 
             client = Client(_id, REDIS)
-            experiment = Experiment.find_or_create(experiment, alternatives, REDIS)
+            experiment = Experiment.find_or_create(experiment, alternatives, redis=REDIS)
 
             chosen_alt = random.choice(experiment.alternatives)
             chosen_alt.record_participation(client, _date)
