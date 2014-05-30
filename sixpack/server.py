@@ -9,7 +9,9 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
-from . import __version__, participate, convert
+from . import __version__
+from api import participate, convert
+
 from config import CONFIG as cfg
 
 try:
