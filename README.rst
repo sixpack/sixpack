@@ -242,6 +242,10 @@ This command will make a few dozen requests to the ``participate`` and ``convert
 
 Please avoid changing versions numbers; we'll take care of that for you
 
+Using Sixpack in production?
+============
+If you're a company using Sixpack in production, kindly let us know! We're goign to add a 'using Sixpack' section to the project landing page, and we'd like to include you. Drop Jack a line at jack [at] seatgeek dot.com with your company name.
+
 License
 ============
 

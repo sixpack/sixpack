@@ -507,7 +507,8 @@ class Alternative(object):
         return self.experiment.control.name == self.name
 
     def is_winner(self):
-        return self.experiment.winner == self.name
+        winner = self.experiment.winner
+        return winner and winner.name == self.name
 
     def participant_count(self):
         key = _key("p:{0}:{1}:all".format(self.experiment.name, self.name))
