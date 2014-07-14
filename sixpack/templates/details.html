@@ -12,9 +12,11 @@
       <%- experiment.name %>
     </h3>
     <% if (experiment.description) { %>
-      <div class="desc"><%= experiment.pretty_description %></div>
+      <div class="desc">
+          <%= experiment.pretty_description %>
+          </div>
     <% } %>
-
+    <div class="created-at">created: <%= experiment.created_at %></div>
 
     <div class="controls">
 

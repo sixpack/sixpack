@@ -163,7 +163,7 @@
   display: none
 }
 .chart .x-axis path {
-  fill: none; 
+  fill: none;
   stroke: #2e3335;
   stroke-width: 1px;
 }
@@ -229,6 +229,9 @@
 .header .desc a {
   color: #66BADA;
 }
+.header .created-at {
+  color: #66BADA;
+}
 ul.experiments table tbody td span.label {
   margin-top: 2px;
   text-transform: uppercase;
@@ -292,12 +295,12 @@ ul.experiments h4 {
   text-shadow: 0 1px 0 #eee;
 }
 #content {
-  padding-top: 90px; 
+  padding-top: 90px;
 }
 ul.experiments h4 {
   font-weight: lighter;
 }
-.archive-is-not-active, 
+.archive-is-not-active,
 .archive-is-active {
   display: none;
 }

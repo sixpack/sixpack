@@ -40,7 +40,7 @@ class TestExperimentModel(unittest.TestCase):
         self.assertIsNone(date)
         exp.save()
         date = exp.created_at
-        self.assertTrue(isinstance(date, datetime))
+        self.assertTrue(isinstance(date, str))
 
     def test_get_alternative_names(self):
         exp = Experiment('show-something', self.alternatives, redis=self.redis)

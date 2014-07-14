@@ -77,7 +77,7 @@ class Experiment(object):
         if self.is_new_record():
             pipe.sadd(_key('e'), self.name)
 
-        pipe.hset(self.key(), 'created_at', datetime.now())
+        pipe.hset(self.key(), 'created_at', datetime.now().strftime("%Y-%m-%d %H:%M"))
         pipe.hset(self.key(), 'traffic_fraction', self._traffic_fraction)
 
         # reverse here and use lpush to keep consistent with using lrange
