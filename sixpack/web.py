@@ -19,12 +19,10 @@ js = Bundle('js/vendor/jquery.js', 'js/vendor/d3.js',
             'js/vendor/bootstrap.js', 'js/experiment.js', 'js/chart.js',
             'js/sixpack.js', 'js/vendor/underscore-min.js', 'js/vendor/spin.min.js',
             'js/vendor/waypoints.min.js', 'js/vendor/zeroclipboard.min.js',
-            filters=['closure_js'],
             output="{0}/sixpack.js".format(cfg.get('asset_path', 'gen')))
 
 css = Bundle('css/vendor/bootstrap.css',
              'css/vendor/bootstrap-responsive.css', 'css/sixpack.css',
-             filters=['yui_css'],
              output="{0}/sixpack.css".format(cfg.get('asset_path', 'gen')))
 
 assets = Environment(app)
