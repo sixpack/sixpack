@@ -190,6 +190,11 @@ class Experiment(object):
         for key in keys:
             pipe.delete(key)
 
+        # Delete the KPIs as well
+        kpi_keys = self.redis.keys('*:{0}/*'.format(self.name))
+        for kpi_key in kpi_keys:
+            pipe.delete(kpi_key)
+
         pipe.execute()
 
     def archive(self):
