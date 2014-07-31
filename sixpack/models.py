@@ -274,7 +274,7 @@ class Experiment(object):
         if not self._traffic_fraction:
             try:
                 self._traffic_fraction = float(self.redis.hget(self.key(), 'traffic_fraction'))
-            except TypeError:
+            except (TypeError, ValueError):
                 self._traffic_fraction = 1
         return self._traffic_fraction
 
