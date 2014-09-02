@@ -53,6 +53,11 @@ class TestExperimentModel(unittest.TestCase):
         exp.save()
         self.assertFalse(exp.is_new_record())
 
+    def test_uniform_choise(self):
+        exp = Experiment('test-salt', self.alternatives, redis=self.redis)
+        alt = exp.get_alternative(Client(10, redis=self.redis)).name
+        self.assertEqual('no', alt)
+
     # fakeredis does not currently support bitcount
     # todo, fix fakeredis and
     def _test_total_participants(self):
