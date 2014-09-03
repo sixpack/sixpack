@@ -340,10 +340,7 @@ class Experiment(object):
         if cfg.get('enable_whiplash') and random.random() >= self.random_sample:
             return Alternative(self._whiplash(), self, redis=self.redis), True
 
-        # if cfg.get('enable_uniform_choice'):
         return self._uniform_choice(client), True
-
-        # return self._random_choice(), True
 
     def _uniform_choice(self, client):
         idx = self._get_hash(client) % len(self.alternatives)
@@ -353,9 +350,6 @@ class Experiment(object):
         salty = "{0}.{1}".format(self.name, client.client_id)
         hashed = sha1(salty).hexdigest()[:7]
         return int(hashed, 16)
-
-    def _random_choice(self):
-        return random.choice(self.alternatives)
 
     def _whiplash(self):
         stats = {}
