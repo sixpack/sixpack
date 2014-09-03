@@ -5,6 +5,7 @@ from config import CONFIG as cfg
 def participate(experiment, alternatives, client_id,
     force=None,
     traffic_fraction=None,
+    record_participation=None,
     datetime=None,
     redis=None):
 
@@ -19,7 +20,8 @@ def participate(experiment, alternatives, client_id,
         alt = exp.winner
     else:
         client = Client(client_id, redis=redis)
-        alt = exp.get_alternative(client, dt=datetime)
+        alt = exp.get_alternative(client, dt=datetime,
+                                  record_participation=record_participation)
 
     return alt
 

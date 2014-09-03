@@ -13,6 +13,7 @@ from . import __version__
 from api import participate, convert
 
 from config import CONFIG as cfg
+from utils import to_bool
 
 try:
     import db
@@ -126,6 +127,7 @@ class Sixpack(object):
         force = request.args.get('force')
         client_id = request.args.get('client_id')
         traffic_fraction = float(request.args.get('traffic_fraction', 1))
+        record_participation = to_bool(request.args.get('participate', 'true'))
 
         if client_id is None or experiment_name is None or alts is None:
             return json_error({'message': 'missing arguments'}, request, 400)
@@ -144,6 +146,7 @@ class Sixpack(object):
             try:
                 alt = participate(experiment_name, alts, client_id,
                                   force=force, traffic_fraction=traffic_fraction,
+                                  record_participation=record_participation,
                                   datetime=dt, redis=self.redis)
             except ValueError as e:
                 return json_error({'message': str(e)}, request, 400)
