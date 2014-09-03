@@ -45,7 +45,7 @@ class Experiment(object):
     def __repr__(self):
         return '<Experiment: {0})>'.format(self.name)
 
-    def objectify_by_period(self, period):
+    def objectify_by_period(self, period, slim=False):
         objectified = {
             'name': self.name,
             'period': period,
@@ -55,14 +55,19 @@ class Experiment(object):
             'total_conversions': self.total_conversions(),
             'description': self.description,
             'has_winner': self.winner is not None,
+            'winner': self.winner,
             'is_archived': self.is_archived(),
             'kpis': list(self.kpis),
             'kpi': self.kpi
         }
 
         for alternative in self.alternatives:
-            objectified_alt = alternative.objectify_by_period(period)
+            objectified_alt = alternative.objectify_by_period(period, slim)
             objectified['alternatives'].append(objectified_alt)
+
+        if slim:
+            for key in ['period', 'kpi', 'kpis', 'has_winner']:
+                del(objectified[key])
 
         return objectified
 
@@ -475,7 +480,11 @@ class Alternative(object):
     def __repr__(self):
         return "<Alternative {0} (Experiment {1})>".format(repr(self.name), repr(self.experiment.name))
 
-    def objectify_by_period(self, period):
+    def objectify_by_period(self, period, slim=False):
+
+        if slim:
+            return self.name
+
         PERIOD_TO_METHOD_MAP = {
             'day': {
                 'participants': self.participants_by_day,
