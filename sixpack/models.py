@@ -351,7 +351,7 @@ class Experiment(object):
 
     def _get_hash(self, client):
         salty = "{0}.{1}".format(self.name, client.client_id)
-        hashed = sha1(salty).hexdigest()[:13]
+        hashed = sha1(salty).hexdigest()[:7]
         return int(hashed, 16)
 
     def _random_choice(self):
