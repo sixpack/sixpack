@@ -36,6 +36,7 @@ class Sixpack(object):
             Rule('/_status', endpoint='status'),
             Rule('/participate', endpoint='participate'),
             Rule('/convert', endpoint='convert'),
+            Rule('/experiments/<name>', endpoint='experiment_details'),
             Rule('/favicon.ico', endpoint='favicon')
         ])
 
@@ -159,6 +160,14 @@ class Sixpack(object):
         }
 
         return json_success(resp, request)
+
+    @service_unavailable_on_connection_error
+    def on_experiment_details(self, request, name):
+        exp = Experiment.find(name, redis=self.redis)
+        if exp is None:
+            return json_error({'message': 'experiment not found'}, request, 404)
+
+        return json_success(exp.objectify_by_period('day', True), request)
 
 
 def should_exclude_visitor(request):
