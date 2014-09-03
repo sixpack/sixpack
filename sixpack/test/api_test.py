@@ -23,15 +23,6 @@ class TestApi(unittest.TestCase):
         alternative = participate("test", ["no", "yes"], "id1", force="yes")
         self.assertEqual("yes", alternative.name)
 
-    @patch.object(Experiment, "find_or_create")
-    def test_participate_with_client_chosen_alternative(self, mock_find_or_create):
-        exp = Experiment("test", ["no", "yes"], winner=None)
-        exp.get_alternative = Mock(return_value=Alternative("yes", exp))
-        mock_find_or_create.return_value = exp
-        alternative = participate("test", ["no", "yes"], "id1", alternative="yes")
-        exp.get_alternative.assert_called_once()
-        self.assertEqual("yes", alternative.name)
-
     @patch.object(Experiment, "find")
     def test_convert(self, mock_find):
         exp = Experiment("test", ["no", "yes"], winner=None)
