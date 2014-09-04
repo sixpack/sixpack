@@ -341,12 +341,18 @@ class Experiment(object):
 
         return self._uniform_choice(client), True
 
+    # Ported from https://github.com/facebook/planout/blob/master/planout/ops/random.py
     def _uniform_choice(self, client):
         idx = self._get_hash(client) % len(self.alternatives)
         return self.alternatives[idx]
 
     def _get_hash(self, client):
         salty = "{0}.{1}".format(self.name, client.client_id)
+
+        # We're going to take the first 7 bytes of the client UUID
+        # because of the largest integer values that can be represented safely
+        # with Sixpack client libraries
+        # More Info: https://github.com/seatgeek/sixpack/issues/132#issuecomment-54318218
         hashed = sha1(salty).hexdigest()[:7]
         return int(hashed, 16)
 
