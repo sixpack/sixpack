@@ -53,7 +53,7 @@ def archived():
 
 @app.route('/experiments.json')
 def experiment_list():
-    experiments = Experiment.all(db.REDIS)
+    experiments = Experiment.all(redis=db.REDIS)
     period = determine_period()
     experiments = [simple_markdown(exp.objectify_by_period(period)) for exp in experiments]
     return jsonify({'experiments': experiments})
