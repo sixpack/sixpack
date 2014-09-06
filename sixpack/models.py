@@ -50,6 +50,7 @@ class Experiment(object):
             'period': period,
             'alternatives': [],
             'created_at': self.created_at,
+            'traffic_fraction': self.traffic_fraction,
             'total_participants': self.total_participants(),
             'total_conversions': self.total_conversions(),
             'description': self.description,
