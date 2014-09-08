@@ -419,13 +419,18 @@ class Experiment(object):
         if traffic_fraction is None:
             traffic_fraction = 1
 
+        check_fraction = False
         try:
             experiment = Experiment.find(experiment_name, redis=redis)
+            check_fraction = True
         except ValueError:
             experiment = cls(experiment_name, alternatives, redis=redis)
             # TODO: I want to revist this later
             experiment.set_traffic_fraction(traffic_fraction)
             experiment.save()
+
+        if check_fraction and experiment.traffic_fraction != traffic_fraction:
+            raise ValueError('do not change traffic fraction once a test has started. please delete in admin')
 
         # Make sure the alternative options are correct. If they are not,
         # raise an error.
