@@ -180,12 +180,14 @@ class Experiment(object):
             return None
 
     def reset(self):
-        self.delete()
-
         name = self.name
+        desc = self.description
         alts = self.get_alternative_names()
 
+        self.delete()
+
         experiment = Experiment(name, alts, redis=self.redis)
+        experiment.update_description(desc)
         experiment.save()
 
     def delete(self):
