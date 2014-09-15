@@ -156,12 +156,12 @@ We've already provided clients in four languages. We'd love to add clients in ad
 .. _Go: http://github.com/subosito/sixpack-go
 .. _Perl: http://github.com/b10m/p5-WWW-Sixpack
 
-Algorithms
-==========
+Algorithm
+=========
 
-Sixpack ships with two algorithms for choosing an alternative.
+As of version 2.0 of Sixpack, we use a deterministic algorithm to choose which alternative a client with receive. The algorithm was ported from Facebook's Planout project, and more information can be found HERE_.
 
-The standard algorithm is purely random. It uses python's `random.choice()` against the list of available alternatives.
+
 
 
 Dashboard
@@ -248,4 +248,5 @@ Sixpack is released under the `BSD 2-Clause License`_.
 
 .. _gunicorn: https://github.com/benoitc/gunicorn
 .. _CLIENTSPEC: https://github.com/seatgeek/sixpack/blob/master/CLIENTSPEC.md
+.. _HERE: https://github.com/facebook/planout/blob/master/planout/ops/random.py
 .. _`BSD 2-Clause License`: http://opensource.org/licenses/BSD-2-Clause
