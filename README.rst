@@ -32,8 +32,6 @@ Next, create a Sixpack configuration. A configuration must be created for sixpac
     redis_prefix: sixpack                   # all Redis keys will be prefixed with this
     redis_db: 15                            # DB number in redis
 
-    enable_whiplash: False                  # Enable the whiplash/multi-armed bandit alternative algorithm
-
     # The regex to match for robots
     robot_regex: $^|trivial|facebook|MetaURI|butterfly|google|amazon|goldfire|sleuth|xenu|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|pingdom|bot|yahoo|slurp|java|fetch|spider|url|crawl|oneriot|abby|commentreader|twiceler
     ignored_ip_addresses: []                # List of IP
@@ -55,7 +53,6 @@ Alternatively, as of version 1.1, all Sixpack configuration can be set by enviro
 * ``SIXPACK_CONFIG_REDIS_PASSWORD``
 * ``SIXPACK_CONFIG_REDIS_PREFIX``
 * ``SIXPACK_CONFIG_REDIS_DB``
-* ``SIXPACK_CONFIG_WHIPLASH``
 * ``SIXPACK_CONFIG_ROBOT_REGEX``
 * ``SIXPACK_CONFIG_IGNORE_IPS`` - comma separated
 * ``SIXPACK_CONFIG_ASSET_PATH``
@@ -164,10 +161,7 @@ Algorithms
 
 Sixpack ships with two algorithms for choosing an alternative.
 
-The standard algorithm is purely random. It uses python's `random.choice()` against the list of available alternatives. Sixpack also includes a port of Andrew Nesbit's implementation_ of the multi-armed bandit algorithm_. This algorithm weighs the alternative based on relative performance. To enable the multi-armed bandit algorithm, please see the above configuration section.
-
-.. _implementation: https://github.com/andrew/split/blob/master/lib/split/algorithms/whiplash.rb
-.. _algorithm: http://stevehanov.ca/blog/index.php?id=132
+The standard algorithm is purely random. It uses python's `random.choice()` against the list of available alternatives.
 
 
 Dashboard

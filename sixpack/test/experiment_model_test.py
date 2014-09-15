@@ -151,9 +151,6 @@ class TestExperimentModel(unittest.TestCase):
 
         # should return current participation
         exp.unarchive()
-        ### HACK TO SKIP WHIPLASH TESTS
-        exp.random_sample = 1
-        ### HACK TO SKIP WHIPLASH TESTS
 
         selected_for_client = exp.get_alternative(client)
         self.assertIn(selected_for_client.name, ['w', 'l'])
@@ -174,20 +171,6 @@ class TestExperimentModel(unittest.TestCase):
 
     def _test_random_choice(self):
         pass
-
-    def _test_whiplash(self):
-        pass
-
-    def test_key(self):
-        key = self.exp_1.key()
-        self.assertEqual(key, 'sxp:e:show-something-awesome')
-
-        key_2 = self.exp_2.key()
-        self.assertEqual(key_2, 'sxp:e:dales-lagunitas')
-
-        exp = Experiment('brews', ['mgd', 'bud-heavy'], redis=self.redis)
-        key_3 = exp.key()
-        self.assertEqual(key_3, 'sxp:e:brews')
 
     def test_find(self):
         exp = Experiment('crunches-situps', ['crunches', 'situps'], redis=self.redis)
@@ -335,8 +318,6 @@ class TestExperimentModel(unittest.TestCase):
 
         # simulate conversion via webrequest
         client = Client(100, redis=self.redis)
-        # hack for disabling whiplash
-        exp.random_sample = 1
 
         exp.get_alternative(client)
         exp.convert(client, None, 'bananza')

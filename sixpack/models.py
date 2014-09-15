@@ -11,7 +11,6 @@ from db import _key, msetbit, sequential_id, first_key_with_bit_set
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_]*$", re.I)
 VALID_KPI_RE = re.compile(r"^[a-z0-9][a-z0-9\-_]*$", re.I)
-RANDOM_SAMPLE = .2
 
 
 class Client(object):
@@ -33,7 +32,6 @@ class Experiment(object):
 
         self.name = name
         self.redis = redis
-        self.random_sample = RANDOM_SAMPLE
         self.alternatives = self.initialize_alternatives(alternatives)
         self.kpi = None
 
@@ -338,9 +336,6 @@ class Experiment(object):
             self.exclude_client(client)
             return self.control, False
 
-        if cfg.get('enable_whiplash') and random.random() >= self.random_sample:
-            return Alternative(self._whiplash(), self, redis=self.redis), True
-
         return self._uniform_choice(client), True
 
     # Ported from https://github.com/facebook/planout/blob/master/planout/ops/random.py
@@ -357,23 +352,6 @@ class Experiment(object):
         # More Info: https://github.com/seatgeek/sixpack/issues/132#issuecomment-54318218
         hashed = sha1(salty).hexdigest()[:7]
         return int(hashed, 16)
-
-    def _whiplash(self):
-        stats = {}
-        for alternative in self.alternatives:
-            participant_count = alternative.participant_count()
-            completed_count = alternative.completed_count()
-            stats[alternative.name] = self._arm_guess(participant_count, completed_count)
-
-        return max(stats.iteritems(), key=operator.itemgetter(1))[0]
-
-    def _arm_guess(self, participant_count, completed_count):
-        fairness_score = 7
-
-        a = max([participant_count, 0])
-        b = max([participant_count - completed_count, 0])
-
-        return random.betavariate(a + fairness_score, b + fairness_score)
 
     def existing_conversion(self, client):
         alts = self.get_alternative_names()
