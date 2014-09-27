@@ -144,7 +144,7 @@ class Experiment(object):
         if stat_range not in ['days', 'months', 'years']:
             raise ValueError("Unrecognized stat range: {0}".format(stat_range))
 
-        pipe = self.redis.pipe()
+        pipe = self.redis.pipeline()
 
         stats = {}
         search_key = _key("{0}:{1}:{2}".format(stat_type, exp_key, stat_range))
