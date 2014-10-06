@@ -1,4 +1,5 @@
 from datetime import datetime
+from hashlib import sha1
 from math import log
 import operator
 import random
@@ -10,7 +11,6 @@ from db import _key, msetbit, sequential_id, first_key_with_bit_set
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_]*$", re.I)
 VALID_KPI_RE = re.compile(r"^[a-z0-9][a-z0-9\-_]*$", re.I)
-RANDOM_SAMPLE = .2
 
 
 class Client(object):
@@ -32,7 +32,6 @@ class Experiment(object):
 
         self.name = name
         self.redis = redis
-        self.random_sample = RANDOM_SAMPLE
         self.alternatives = self.initialize_alternatives(alternatives)
         self.kpi = None
 
@@ -44,7 +43,7 @@ class Experiment(object):
     def __repr__(self):
         return '<Experiment: {0})>'.format(self.name)
 
-    def objectify_by_period(self, period):
+    def objectify_by_period(self, period, slim=False):
         objectified = {
             'name': self.name,
             'period': period,
@@ -55,14 +54,19 @@ class Experiment(object):
             'total_conversions': self.total_conversions(),
             'description': self.description,
             'has_winner': self.winner is not None,
+            'winner': self.winner,
             'is_archived': self.is_archived(),
             'kpis': list(self.kpis),
             'kpi': self.kpi
         }
 
         for alternative in self.alternatives:
-            objectified_alt = alternative.objectify_by_period(period)
+            objectified_alt = alternative.objectify_by_period(period, slim)
             objectified['alternatives'].append(objectified_alt)
+
+        if slim:
+            for key in ['period', 'kpi', 'kpis', 'has_winner']:
+                del(objectified[key])
 
         return objectified
 
@@ -175,12 +179,14 @@ class Experiment(object):
             return None
 
     def reset(self):
-        self.delete()
-
         name = self.name
+        desc = self.description
         alts = self.get_alternative_names()
 
+        self.delete()
+
         experiment = Experiment(name, alts, redis=self.redis)
+        experiment.update_description(desc)
         experiment.save()
 
     def delete(self):
@@ -287,23 +293,19 @@ class Experiment(object):
             self._sequential_ids[client.client_id] = id_
         return self._sequential_ids[client.client_id]
 
-    def get_alternative(self, client, alternative=None, dt=None):
+    def get_alternative(self, client, dt=None, prefetch=False):
         """Returns and records an alternative according to the following
         precedence:
           1. An existing alternative
-          2. A client-chosen alternative
-          3. A server-chosen alternative
+          2. A server-chosen alternative
         """
         if self.is_archived():
             return self.control
 
         chosen_alternative = self.existing_alternative(client)
         if not chosen_alternative:
-            if alternative:
-                chosen_alternative, participate = Alternative(alternative, self, redis=self.redis), True
-            else:
-                chosen_alternative, participate = self.choose_alternative(client)
-            if participate:
+            chosen_alternative, participate = self.choose_alternative(client)
+            if participate and not prefetch:
                 chosen_alternative.record_participation(client, dt=dt)
 
         return chosen_alternative
@@ -335,30 +337,22 @@ class Experiment(object):
             self.exclude_client(client)
             return self.control, False
 
-        if cfg.get('enable_whiplash') and random.random() >= self.random_sample:
-            return Alternative(self._whiplash(), self, redis=self.redis), True
+        return self._uniform_choice(client), True
 
-        return self._random_choice(), True
+    # Ported from https://github.com/facebook/planout/blob/master/planout/ops/random.py
+    def _uniform_choice(self, client):
+        idx = self._get_hash(client) % len(self.alternatives)
+        return self.alternatives[idx]
 
-    def _random_choice(self):
-        return random.choice(self.alternatives)
+    def _get_hash(self, client):
+        salty = "{0}.{1}".format(self.name, client.client_id)
 
-    def _whiplash(self):
-        stats = {}
-        for alternative in self.alternatives:
-            participant_count = alternative.participant_count()
-            completed_count = alternative.completed_count()
-            stats[alternative.name] = self._arm_guess(participant_count, completed_count)
-
-        return max(stats.iteritems(), key=operator.itemgetter(1))[0]
-
-    def _arm_guess(self, participant_count, completed_count):
-        fairness_score = 7
-
-        a = max([participant_count, 0])
-        b = max([participant_count - completed_count, 0])
-
-        return random.betavariate(a + fairness_score, b + fairness_score)
+        # We're going to take the first 7 bytes of the client UUID
+        # because of the largest integer values that can be represented safely
+        # with Sixpack client libraries
+        # More Info: https://github.com/seatgeek/sixpack/issues/132#issuecomment-54318218
+        hashed = sha1(salty).hexdigest()[:7]
+        return int(hashed, 16)
 
     def existing_conversion(self, client):
         alts = self.get_alternative_names()
@@ -404,13 +398,18 @@ class Experiment(object):
         if traffic_fraction is None:
             traffic_fraction = 1
 
+        check_fraction = False
         try:
             experiment = Experiment.find(experiment_name, redis=redis)
+            check_fraction = True
         except ValueError:
             experiment = cls(experiment_name, alternatives, redis=redis)
             # TODO: I want to revist this later
             experiment.set_traffic_fraction(traffic_fraction)
             experiment.save()
+
+        if check_fraction and experiment.traffic_fraction != traffic_fraction:
+            raise ValueError('do not change traffic fraction once a test has started. please delete in admin')
 
         # Make sure the alternative options are correct. If they are not,
         # raise an error.
@@ -466,7 +465,11 @@ class Alternative(object):
     def __repr__(self):
         return "<Alternative {0} (Experiment {1})>".format(repr(self.name), repr(self.experiment.name))
 
-    def objectify_by_period(self, period):
+    def objectify_by_period(self, period, slim=False):
+
+        if slim:
+            return self.name
+
         PERIOD_TO_METHOD_MAP = {
             'day': {
                 'participants': self.participants_by_day,

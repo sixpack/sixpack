@@ -13,6 +13,7 @@ from . import __version__
 from api import participate, convert
 
 from config import CONFIG as cfg
+from utils import to_bool
 
 try:
     import db
@@ -36,6 +37,7 @@ class Sixpack(object):
             Rule('/_status', endpoint='status'),
             Rule('/participate', endpoint='participate'),
             Rule('/convert', endpoint='convert'),
+            Rule('/experiments/<name>', endpoint='experiment_details'),
             Rule('/favicon.ico', endpoint='favicon')
         ])
 
@@ -125,7 +127,7 @@ class Sixpack(object):
         force = request.args.get('force')
         client_id = request.args.get('client_id')
         traffic_fraction = float(request.args.get('traffic_fraction', 1))
-        client_chosen_alt = request.args.get('alternative', None)
+        prefetch = to_bool(request.args.get('prefetch', 'false'))
 
         if client_id is None or experiment_name is None or alts is None:
             return json_error({'message': 'missing arguments'}, request, 400)
@@ -144,7 +146,7 @@ class Sixpack(object):
             try:
                 alt = participate(experiment_name, alts, client_id,
                                   force=force, traffic_fraction=traffic_fraction,
-                                  alternative=client_chosen_alt, datetime=dt, redis=self.redis)
+                                  prefetch=prefetch, datetime=dt, redis=self.redis)
             except ValueError as e:
                 return json_error({'message': str(e)}, request, 400)
 
@@ -160,6 +162,14 @@ class Sixpack(object):
         }
 
         return json_success(resp, request)
+
+    @service_unavailable_on_connection_error
+    def on_experiment_details(self, request, name):
+        exp = Experiment.find(name, redis=self.redis)
+        if exp is None:
+            return json_error({'message': 'experiment not found'}, request, 404)
+
+        return json_success(exp.objectify_by_period('day', True), request)
 
 
 def should_exclude_visitor(request):

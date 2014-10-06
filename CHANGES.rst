@@ -1,3 +1,10 @@
+2.0
+===
+* [FEATURE] Include new deterministic alternative choice algorithm
+* [BUG] Several bug fixes
+* [REMOVE] Whiplash/Multi-armed bandit has been removed
+
+
 1.1.2
 =====
 * [ENHANCEMENT] Client can now choose alternative when async is not ideal

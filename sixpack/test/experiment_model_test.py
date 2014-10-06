@@ -151,9 +151,6 @@ class TestExperimentModel(unittest.TestCase):
 
         # should return current participation
         exp.unarchive()
-        ### HACK TO SKIP WHIPLASH TESTS
-        exp.random_sample = 1
-        ### HACK TO SKIP WHIPLASH TESTS
 
         selected_for_client = exp.get_alternative(client)
         self.assertIn(selected_for_client.name, ['w', 'l'])
@@ -174,20 +171,6 @@ class TestExperimentModel(unittest.TestCase):
 
     def _test_random_choice(self):
         pass
-
-    def _test_whiplash(self):
-        pass
-
-    def test_key(self):
-        key = self.exp_1.key()
-        self.assertEqual(key, 'sxp:e:show-something-awesome')
-
-        key_2 = self.exp_2.key()
-        self.assertEqual(key_2, 'sxp:e:dales-lagunitas')
-
-        exp = Experiment('brews', ['mgd', 'bud-heavy'], redis=self.redis)
-        key_3 = exp.key()
-        self.assertEqual(key_3, 'sxp:e:brews')
 
     def test_find(self):
         exp = Experiment('crunches-situps', ['crunches', 'situps'], redis=self.redis)
@@ -273,8 +256,8 @@ class TestExperimentModel(unittest.TestCase):
 
     def test_valid_options(self):
         Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=1, redis=self.redis)
-        Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0, redis=self.redis)
-        Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0.4, redis=self.redis)
+        Experiment.find_or_create('red-white-2', ['red', 'white'], traffic_fraction=0.4, redis=self.redis)
+
 
     def test_invalid_traffic_fraction(self):
         with self.assertRaises(ValueError):
@@ -285,6 +268,13 @@ class TestExperimentModel(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             Experiment.find_or_create('dist-100', ['dist', '100'], traffic_fraction="x", redis=self.redis)
+
+    def test_changing_traffic_fraction_fails(self):
+        Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=1, redis=self.redis)
+
+        with self.assertRaises(ValueError):
+            Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0.4, redis=self.redis)
+
 
     def test_valid_traffic_fractions_save(self):
         # test the hidden prop gets set
@@ -328,8 +318,6 @@ class TestExperimentModel(unittest.TestCase):
 
         # simulate conversion via webrequest
         client = Client(100, redis=self.redis)
-        # hack for disabling whiplash
-        exp.random_sample = 1
 
         exp.get_alternative(client)
         exp.convert(client, None, 'bananza')
