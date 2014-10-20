@@ -87,7 +87,7 @@ $(function () {
 
   function sanitizeExperiment(experiment) {
     var sanitizedName = experiment;
-    // Do magic
+    // Todo: Create dashboard & url friendly names
     return sanitizedName;
   }
 
