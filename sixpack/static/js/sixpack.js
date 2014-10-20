@@ -126,7 +126,7 @@ $(function () {
           $(this).html('<p> Experiment name is invalid. </p>');
         } else {
           $(this).remove();
-          $('.failing-experiments table').append('<tr><td><span>' + experiment_name + '</span></td>' + '<td><span>' + resp.statusText + '</span></td>' + '<td><span>' + "Failing" + '</span></td></tr>');
+          $('.failing-experiments table').append('<tr><td><span>' + experiment_name + '</span></td>' + '<td><span>' + resp.statusText + '</span></td>' + '<td><span>' + "Erroring" + '</span></td></tr>');
         }
       });
 
