@@ -13,12 +13,19 @@ $(function () {
     my.template = _.template($('#experiment-template').html());
 
     my.getData = function (callback) {
-      var url = '/experiments/' + my.name + '.json?period=day';
+      var url = '/experiments/' + encodeURIComponent(my.name) + '.json?period=day';
       if (typeof kpi != 'undefined' && kpi !== false) {
         url += '&kpi=' + kpi;
       }
-      $.getJSON(url, function (data) {
+      
+      var promise = $.getJSON(url);
+
+      promise.done(function(data) {
         callback(data);
+      });
+
+      promise.fail(function(resp) {
+        $(my.el).trigger('fail', [resp]);
       });
     };
 

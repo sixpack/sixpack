@@ -137,6 +137,7 @@
     text-align: left;
     border-left: 0;
   }
+
   ul.experiments > li table tr > :last-child {
     border-right: 0;
   }
@@ -150,6 +151,83 @@
     color: #fff;
     background: none repeat scroll 0 0 rgba(170,170,170,0.1);
   }
+
+/* Failed Experiments */
+
+.failing-experiments > table {
+  width: 100%;
+  border-collapse: separate;
+  background: rgba(255, 255, 255, .03);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.failing-experiments h3.name,
+.failing-experiments h3.name a {
+  color: #faf3ee;
+  font-size: 30px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 100;
+}
+.failing-experiments h3.name a:hover {
+  text-decoration: underline;
+}
+.failing-experiments > table tr th,
+.failing-experiments > table tr td {
+  padding-right: 22px;
+  font-weight: 300;
+  text-align: right;
+  border-top:    1px solid rgba(255, 255, 255, .05);
+  border-left:   1px solid rgba(0, 0, 0, .2);
+  border-bottom: 1px solid rgba(0, 0, 0, .5);
+}
+
+.failing-experiments > table tr th {
+  padding: 10px 20px 10px 0;
+}
+.failing-experiments > table tr th:last-child {
+  border-right: 0;
+}
+.failing-experiments > table tr td {
+  color: #C2BDB9;
+  padding: 10px 20px 10px 0;
+}
+.failing-experiments > table tr td span.circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  margin-right: 7px;
+  float: left;
+}
+.failing-experiments > table tr td .alt-name {
+  margin-left: 25px;
+}
+.failing-experiments > table tr > :first-child {
+  padding-left: 20px;
+  text-align: left;
+  border-left: 0;
+}
+
+.failing-experiments > table tr td > :first-child {
+  color: #D4534E;
+}
+
+.failing-experiments > table tr > :last-child {
+  border-right: 0;
+}
+
+/* Alternating column shading */
+.failing-experiments > table tr > :nth-child(even) {
+  background: rgba(170, 170, 170, 0.02);
+}
+
+.failing-experiments > table tr.highlight td {
+  color: #fff;
+  background: none repeat scroll 0 0 rgba(170,170,170,0.1);
+}
 
 /* END: Experiments */
 

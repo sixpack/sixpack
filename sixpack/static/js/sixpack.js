@@ -79,11 +79,16 @@ $(function () {
 
     });
 
-
     // Focus the edit description textarea when opening the modal
     $('#desc-modal').on('shown', function() {
       $('#edit-description-textarea').focus();
     });
+  }
+
+  function sanitizeExperiment(experiment) {
+    var sanitizedName = experiment;
+    // Do magic
+    return sanitizedName;
   }
 
   // Draw charts on Dashboard page.
@@ -108,12 +113,23 @@ $(function () {
       if (el.data('loaded')) return;
       el.data('loaded', true);
 
-      var experiment = new Experiment(el, experiment_name, function () {
+      var experiment = new Experiment(el, sanitizeExperiment(experiment_name), function () {
         el.find('.spinner').fadeOut('fast').remove();
         el.animate({
           opacity: 1
         });
       });
+
+      // Listen to failed experiment response and handle it
+      el.on('fail', function(e, resp) {
+        if(experiment_name === 'undefined') {
+          $(this).html('<p> Experiment name is invalid. </p>');
+        } else {
+          $(this).remove();
+          $('.failing-experiments table').append('<tr><td><span>' + experiment_name + '</span></td>' + '<td><span>' + resp.statusText + '</span></td>' + '<td><span>' + "Failing" + '</span></td></tr>');
+        }
+      });
+
       el.css('visibility', 'visible');
     }, {
       offset: viewport_height + (viewport_height * 0.5)
