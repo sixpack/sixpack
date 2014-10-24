@@ -14,6 +14,7 @@ if cfg.get('redis_sentinels'):
                         socket_timeout=cfg.get('redis_socket_timeout'))
     pool = SentinelConnectionPool(service_name, sentinel,
                                 db=cfg.get('redis_db'),
+                                max_connections=cfg.get('redis_max_connections'),
                                 parser_class=PythonParser)
 else:
     from redis.connection import ConnectionPool
@@ -21,6 +22,7 @@ else:
                         port=cfg.get('redis_port'),
                         password=cfg.get('redis_password', None),
                         db=cfg.get('redis_db'),
+                        max_connections=cfg.get('redis_max_connections'),
                         parser_class=PythonParser)
 
 REDIS = redis.StrictRedis(connection_pool=pool)

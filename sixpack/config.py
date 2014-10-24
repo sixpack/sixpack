@@ -20,6 +20,7 @@ else:
         'redis_prefix': os.environ.get('SIXPACK_CONFIG_REDIS_PREFIX', "sxp"),
         'redis_socket_timeout': os.environ.get('SIXPACK_CONFIG_REDIS_SOCKET_TIMEOUT', None),
         'redis_sentinel_service_name': os.environ.get('SIXPACK_CONFIG_REDIS_SENTINEL_SERVICE_NAME', None),
+        'redis_max_connections': int(os.environ.get('SIXPACK_CONFIG_REDIS_MAX_CONNECTIONS', '0')),
         'redis_db': int(os.environ.get('SIXPACK_CONFIG_REDIS_DB', '15')),
         'robot_regex': os.environ.get('SIXPACK_CONFIG_ROBOT_REGEX', "$^|trivial|facebook|MetaURI|butterfly|google|"
                                                                     "amazon|goldfire|sleuth|xenu|msnbot|SiteUptime|"
