@@ -238,8 +238,6 @@ $(function () {
         .attr("class", "y-axis")
         .call(my.yAxis);
 
-      console.log(my.height);
-
       my.svg.append("g")
         .attr("class", "x-axis")
         .attr("transform", "translate(0," + (my.height) + ")")
