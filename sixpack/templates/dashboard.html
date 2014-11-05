@@ -109,7 +109,7 @@
   </table>
 
   <div class="chart-container">
-    <div id="chart-<%- experiment.name %>" class="chart" data-experiment="<%-experiment.name %>"></div>
+    <div id="chart-<%- (experiment.name && experiment.name.match(/w+/g) ? experiment.name.match(/w+/g).join("-") : "") %>" class="chart" data-experiment="<%-experiment.name %>"></div>
   </div>
 </script>
 {% endblock %}

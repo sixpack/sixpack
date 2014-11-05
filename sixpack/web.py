@@ -12,6 +12,8 @@ from models import Experiment
 from analysis import ExportExperiment
 import utils
 
+import re
+
 app = Flask(__name__)
 csrf = SeaSurf(app)
 
@@ -184,10 +186,14 @@ def simple_markdown(experiment):
         experiment['pretty_description'] = markdown(description)
     return experiment
 
+def sanitize_experiment(experiment):
+    matches = re.findall("\w+", experiment)
+    return "-".join(matches)
 
 app.secret_key = cfg.get('secret_key')
 app.jinja_env.filters['number_to_percent'] = utils.number_to_percent
 app.jinja_env.filters['number_format'] = utils.number_format
+app.jinja_env.filters['sanitize'] = sanitize_experiment
 toolbar = DebugToolbarExtension(app)
 
 
