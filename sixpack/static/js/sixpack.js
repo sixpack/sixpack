@@ -86,9 +86,7 @@ $(function () {
   }
 
   function sanitizeExperiment(experiment) {
-    var sanitizedName = experiment;
-    // Todo: Create dashboard & url friendly names
-    return sanitizedName;
+    return experiment.match(/\w+/g).join('-');
   }
 
   // Draw charts on Dashboard page.

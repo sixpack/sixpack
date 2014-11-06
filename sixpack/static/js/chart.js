@@ -218,7 +218,7 @@ $(function () {
     };
 
     my.drawBase = function () {
-      my.svg = d3.select('#' + my.el.attr('id')).append("svg")
+      my.svg = d3.select("[data-experiment='" + my.experiment + "']").append("svg")
         .attr("width", my.width + my.margin.left + my.margin.right)
         .attr("height", my.height + my.margin.top + my.margin.bottom)
         .append("g")
@@ -297,7 +297,8 @@ $(function () {
     };
 
     that.draw = function () {
-      my.el = $('#chart-' + my.experiment);
+      my.el = $("[data-experiment='" + my.experiment + "']");
+      console.log(my.el);
       
       // Get the aggregate data intervals for drawing labels + background
       var aggregate_rates = [];
