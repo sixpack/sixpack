@@ -56,7 +56,6 @@ $(function () {
 
       $("li[data-name='" + my.codedName + "'] tr").on({
         mouseover: function () {
-          console.log($(this));
           var alt_name = $(this).attr('class');
           if (!alt_name) return;
 
