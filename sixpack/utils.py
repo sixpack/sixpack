@@ -48,3 +48,10 @@ def number_format(number):
 
 def to_bool(val):
     return val.lower() in ['y', 'true', 'yes']
+
+def regex_replace(s, find, replace):
+    return re.sub(find, replace, s)
+
+def sanitize_experiment(experiment):
+    matches = re.findall("\w+", experiment)
+    return "-".join(matches)

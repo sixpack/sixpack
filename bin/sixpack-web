@@ -10,4 +10,4 @@ sys.path.append("..")
 port = os.environ.get('SIXPACK_WEB_PORT', 5001)
 debug = 'SIXPACK_DEBUG' in os.environ
 
-app.run(host='0.0.0.0', port=port, debug=debug)
+app.run(host='0.0.0.0', port=port, debug=True)

@@ -85,10 +85,6 @@ $(function () {
     });
   }
 
-  function sanitizeExperiment(experiment) {
-    return experiment.match(/\w+/g).join('-');
-  }
-
   // Draw charts on Dashboard page.
   if ($('#dashboard-page').length) {
 
@@ -111,7 +107,7 @@ $(function () {
       if (el.data('loaded')) return;
       el.data('loaded', true);
 
-      var experiment = new Experiment(el, sanitizeExperiment(experiment_name), function () {
+      var experiment = new Experiment(el, experiment_name, function () {
         el.find('.spinner').fadeOut('fast').remove();
         el.animate({
           opacity: 1
@@ -136,6 +132,7 @@ $(function () {
 });
 
 function getParameterByName (name) {
+  // return name;
   name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
   var regexS = "[\\?&]" + name + "=([^&#]*)";
   var regex = new RegExp(regexS);

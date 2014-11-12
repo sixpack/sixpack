@@ -297,7 +297,7 @@ $(function () {
     };
 
     that.draw = function () {
-      my.el = $("[data-experiment='" + my.experiment + "']");
+      my.el = $("[data-experiment='" + my.experiment.match(/\w+/g).join('-') + "']");
       console.log(my.el);
       
       // Get the aggregate data intervals for drawing labels + background
