@@ -65,7 +65,7 @@
 <script type="text/template" id="experiment-template">
   <div class="header">
     <h3 class="name">
-      <a href="/experiments/<%- experiment.name %>"><%- experiment.name %></a>
+      <a href="/experiments/<%- encodeURIComponent(experiment.name) %>"><%- experiment.name %></a>
     </h3>
     <% if (experiment.description) { %>
       <div class="desc"><%= experiment.pretty_description %></div>
@@ -86,7 +86,7 @@
     </thead>
     <tbody>
       <% _.each(experiment.alternatives, function (alt, index) { %>
-        <tr class="<%- experiment.name %>-line-<%- index %>">
+        <tr class="<%- experiment.name.match(/\w+/g).join('-') %>-line-<%- index %>">
           <td>
             <span class="circle color-<%- (index + 1) %>">
               <% if (alt.is_winner) { %>
@@ -109,7 +109,7 @@
   </table>
 
   <div class="chart-container">
-    <div id="chart-<%- (experiment.name && experiment.name.match(/w+/g) ? experiment.name.match(/w+/g).join("-") : "") %>" class="chart" data-experiment="<%-experiment.name %>"></div>
+    <div id="chart-<%-experiment.name.match(/\w+/g).join('-') %>" class="chart" data-experiment="<%-experiment.name.match(/\w+/g).join('-') %>"></div>
   </div>
 </script>
 {% endblock %}

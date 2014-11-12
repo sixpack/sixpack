@@ -1,3 +1,5 @@
+import urllib
+
 from flask import Flask
 from flask import render_template, abort, request, url_for, redirect, jsonify, make_response
 from flask.ext.seasurf import SeaSurf
@@ -164,6 +166,7 @@ def internal_server_error(e):
 
 def find_or_404(experiment_name):
     try:
+        experiment_name = url=urllib.unquote(experiment_name).decode('utf8') 
         exp = Experiment.find(experiment_name, db.REDIS)
         if request.args.get('kpi'):
             exp.set_kpi(request.args.get('kpi'))
@@ -186,14 +189,11 @@ def simple_markdown(experiment):
         experiment['pretty_description'] = markdown(description)
     return experiment
 
-def sanitize_experiment(experiment):
-    matches = re.findall("\w+", experiment)
-    return "-".join(matches)
-
 app.secret_key = cfg.get('secret_key')
 app.jinja_env.filters['number_to_percent'] = utils.number_to_percent
 app.jinja_env.filters['number_format'] = utils.number_format
-app.jinja_env.filters['sanitize'] = sanitize_experiment
+app.jinja_env.filters['sanitize'] = utils.sanitize_experiment
+app.jinja_env.filters['regex_replace'] = utils.regex_replace
 toolbar = DebugToolbarExtension(app)
 
 
