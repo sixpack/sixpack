@@ -9,6 +9,8 @@ import sixpack
 from sixpack.db import REDIS, _key
 
 parser = OptionParser()
+parser.add_option("-k", "--kpi", dest="kpi", default="default",
+                  help="KPI to report on", metavar="KPI")
 (options, args) = parser.parse_args()
 
 if len(args) != 2:
@@ -17,31 +19,54 @@ if len(args) != 2:
 
 command, experiment = args
 
-if command != "dump-participants":
+if command == "dump-participations":
+    alternatives_key = _key("e:{}:alternatives".format(experiment))
+
+    out = csv.writer(sys.stdout)
+    for alternative in REDIS.lrange(alternatives_key, 0, -1):
+        participated_key = _key("p:{}:{}:all".format(experiment, alternative))
+        participation_data = bitstring.BitStream(bytes=REDIS.get(participated_key))
+
+        participated_ids = []
+        for i in range(0, len(participation_data)):
+            bit = participation_data.read("uint:1")
+            # rbit = REDIS.getbit(participated_key, i)
+            # if bit != rbit:
+            #     print "Mismatched bit"
+            #     print (i, bit, rbit, alternative)
+            #     sys.exit(1)
+            if bit:
+                participated_ids.append(i)
+
+        users_zset_key = _key("e:{}:users".format(experiment))
+        participated_client_ids = []
+        for id_ in participated_ids:
+            out.writerow((experiment, alternative, REDIS.zrange(users_zset_key, id_, id_)[0]))
+
+elif command == "dump-conversions":
+    alternatives_key = _key("e:{}:alternatives".format(experiment))
+
+    out = csv.writer(sys.stdout)
+    for alternative in REDIS.lrange(alternatives_key, 0, -1):
+        # c:test-name/KPI-name:alternative-name:users:all
+        if options.kpi == "default":
+            exp_with_kpi = experiment
+        else:
+            exp_with_kpi = "{}/{}".format(experiment, options.kpi)
+        converted_key = _key("c:{}:{}:users:all".format(exp_with_kpi, alternative))
+        conversion_data = bitstring.BitStream(bytes=REDIS.get(converted_key))
+
+        converted_ids = []
+        for i in range(0, len(conversion_data)):
+            bit = conversion_data.read("uint:1")
+            if bit:
+                converted_ids.append(i)
+
+        users_zset_key = _key("e:{}:users".format(experiment))
+        converted_client_ids = []
+        for id_ in converted_ids:
+            out.writerow((experiment, options.kpi, alternative, REDIS.zrange(users_zset_key, id_, id_)[0]))
+
+else:
     print "Invalid command"
     sys.exit(1)
-
-
-alternatives_key = _key("e:{}:alternatives".format(experiment))
-
-out = csv.writer(sys.stdout)
-for alternative in REDIS.lrange(alternatives_key, 0, -1):
-    participated_key = _key("p:{}:{}:all".format(experiment, alternative))
-    participation_data = bitstring.BitStream(bytes=REDIS.get(participated_key))
-
-    participated_ids = []
-    for i in range(0, len(participation_data)):
-        bit = participation_data.read("uint:1")
-        # rbit = REDIS.getbit(participated_key, i)
-        # if bit != rbit:
-        #     print "Mismatched bit"
-        #     print (i, bit, rbit, alternative)
-        #     sys.exit(1)
-        if bit:
-            participated_ids.append(i)
-
-    users_zset_key = _key("e:{}:users".format(experiment))
-    participated_client_ids = []
-    for id_ in participated_ids:
-        out.writerow((experiment, alternative, REDIS.zrange(users_zset_key, id_, id_)[0]))
-
