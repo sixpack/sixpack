@@ -54,7 +54,7 @@ class Experiment(object):
             'total_conversions': self.total_conversions(),
             'description': self.description,
             'has_winner': self.winner is not None,
-            'winner': self.winner,
+            'winner': self.winner.name if self.winner is not None else '',
             'is_archived': self.is_archived(),
             'kpis': list(self.kpis),
             'kpi': self.kpi
