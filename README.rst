@@ -250,5 +250,5 @@ Sixpack is released under the `BSD 2-Clause License`_.
 
 .. _gunicorn: https://github.com/benoitc/gunicorn
 .. _CLIENTSPEC: https://github.com/seatgeek/sixpack/blob/master/CLIENTSPEC.md
-.. _HERE: https://github.com/facebook/planout/blob/master/planout/ops/random.py
+.. _HERE: https://github.com/facebook/planout/blob/master/python/planout/ops/random.py
 .. _`BSD 2-Clause License`: http://opensource.org/licenses/BSD-2-Clause
