@@ -126,7 +126,9 @@ class Sixpack(object):
         experiment_name = request.args.get('experiment')
         force = request.args.get('force')
         client_id = request.args.get('client_id')
-        traffic_fraction = float(request.args.get('traffic_fraction', 1))
+        traffic_fraction = request.args.get('traffic_fraction')
+        if traffic_fraction is not None:
+            traffic_fraction = float(traffic_fraction)
         prefetch = to_bool(request.args.get('prefetch', 'false'))
 
         if client_id is None or experiment_name is None or alts is None:

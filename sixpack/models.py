@@ -395,21 +395,23 @@ class Experiment(object):
         if len(alternatives) < 2:
             raise ValueError('experiments require at least two alternatives')
 
-        if traffic_fraction is None:
-            traffic_fraction = 1
-
-        check_fraction = False
+        is_update = False
         try:
             experiment = Experiment.find(experiment_name, redis=redis)
-            check_fraction = True
+            is_update = True
         except ValueError:
             experiment = cls(experiment_name, alternatives, redis=redis)
+
+            if traffic_fraction is None:
+                traffic_fraction = 1
+
             # TODO: I want to revist this later
             experiment.set_traffic_fraction(traffic_fraction)
             experiment.save()
 
-        if check_fraction and experiment.traffic_fraction != traffic_fraction:
-            raise ValueError('do not change traffic fraction once a test has started. please delete in admin')
+        # only check traffic fraction if the experiment is being updated and the traffic fraction actually changes
+        if is_update and traffic_fraction is not None and experiment.traffic_fraction != traffic_fraction:
+            raise ValueError('do not change traffic fraction once a test has started. please delete in admin!')
 
         # Make sure the alternative options are correct. If they are not,
         # raise an error.
