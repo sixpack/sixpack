@@ -5,6 +5,9 @@ Sixpack
 .. image:: https://travis-ci.org/seatgeek/sixpack.png?branch=master
         :target: https://travis-ci.org/seatgeek/sixpack
 
+.. image:: https://coveralls.io/repos/seatgeek/sixpack/badge.png?branch=master
+  :target: https://coveralls.io/r/seatgeek/sixpack?branch=master
+
 Sixpack is a framework to enable A/B testing across multiple programming languages. It does this by exposing a simple API for client libraries.  Client libraries can be written in virtually any language.
 
 Sixpack has two main parts. The first, **Sixpack-server**, is responsible for responding to web requests.  The second, **Sixpack-web**, is a web dashboard for tracking and acting on your A/B tests.  Sixpack-web is optional.
