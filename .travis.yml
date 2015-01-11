@@ -4,6 +4,6 @@ python:
 install: "pip install -r requirements.txt --use-mirrors"
 services:
   - redis-server
-script: "cd sixpack && nosetests --with-coverage --cover-erase"
+script: "cd sixpack && nosetests --with-coverage --cover-erase --cover-package=sixpack"
 after_script:
   - coveralls
