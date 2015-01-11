@@ -23,6 +23,11 @@ class TestExperimentModel(unittest.TestCase):
         self.exp_2.save()
         self.exp_3.save()
 
+    def tearDown(self):
+        pipe = self.redis.pipeline()
+        pipe.flushdb()
+        pipe.execute()
+
     def test_constructor(self):
         with self.assertRaises(ValueError):
             Experiment('not-enough-args', ['1'], redis=self.redis)
@@ -269,12 +274,15 @@ class TestExperimentModel(unittest.TestCase):
         with self.assertRaises(ValueError):
             Experiment.find_or_create('dist-100', ['dist', '100'], traffic_fraction="x", redis=self.redis)
 
-    def test_changing_traffic_fraction_fails(self):
-        Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=1, redis=self.redis)
+    def test_fail_when_changing_traffic(self):
+        Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0.8, redis=self.redis)
 
         with self.assertRaises(ValueError):
             Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0.4, redis=self.redis)
 
+    def test_dont_fail_when_participating_in_nondefault_traffic_experiment_without_traffic_param(self):
+        Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0.5, redis=self.redis)
+        Experiment.find_or_create('red-white', ['red', 'white'], redis=self.redis)
 
     def test_valid_traffic_fractions_save(self):
         # test the hidden prop gets set
