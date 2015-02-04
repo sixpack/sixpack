@@ -8,7 +8,7 @@ from sixpack.server import create_app
 
 sys.path.append("..")
 
-port = os.environ.get('SIXPACK_PORT', 5000)
+port = int(os.environ.get('SIXPACK_PORT', 5000))
 debug = 'SIXPACK_DEBUG' in os.environ
 
 app = create_app()
