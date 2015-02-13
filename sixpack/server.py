@@ -38,7 +38,7 @@ class Sixpack(object):
             Rule('/participate', endpoint='participate'),
             Rule('/convert', endpoint='convert'),
             Rule('/experiments/<name>', endpoint='experiment_details'),
-            Rule('/experiments/<name>/<client_id>', endpoint='experiment_details_for_client_id'),
+            Rule('/experiments/<name>/<client>', endpoint='experiment_details_for_client_id'),
             Rule('/favicon.ico', endpoint='favicon')
         ])
 
@@ -173,20 +173,12 @@ class Sixpack(object):
         return json_success(exp.objectify_by_period('day', True), request)
 
     @service_unavailable_on_connection_error
-    def on_experiment_details_for_client_id(self, request, name, client_id):
+    def on_experiment_details_for_client_id(self, request, name, client):
         if should_exclude_visitor(request):
             return json_success({'excluded': 'true'}, request)
 
-        #experiment_name = request.args.get('name')
-        experiment_name = 'id_verification_app'
-        #client_id = request.args.get('client_id')
-        client_id = 2
-
-        if client_id is None or experiment_name is None:
-            return json_error({'message': 'missing arguments'}, request, 400)
-
         try:
-            alt = alternative(experiment_name, client_id, redis=self.redis)
+            alt = alternative(name, client, redis=self.redis)
         except ValueError as e:
             return json_error({'message': str(e)}, request, 400)
 
@@ -200,7 +192,7 @@ class Sixpack(object):
             'experiment': {
                 'name': alt.experiment.name,
             },
-            'client_id': client_id
+            'client_id': client
         }
 
         return json_success(resp, request)
