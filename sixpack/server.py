@@ -10,7 +10,7 @@ from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
 
 from . import __version__
-from api import participate, convert
+from api import participate, convert, alternative
 
 from config import CONFIG as cfg
 from utils import to_bool
@@ -38,6 +38,7 @@ class Sixpack(object):
             Rule('/participate', endpoint='participate'),
             Rule('/convert', endpoint='convert'),
             Rule('/experiments/<name>', endpoint='experiment_details'),
+            Rule('/experiments/<name>/<client_id>', endpoint='experiment_details_for_client_id'),
             Rule('/favicon.ico', endpoint='favicon')
         ])
 
@@ -170,6 +171,39 @@ class Sixpack(object):
             return json_error({'message': 'experiment not found'}, request, 404)
 
         return json_success(exp.objectify_by_period('day', True), request)
+
+    @service_unavailable_on_connection_error
+    def on_experiment_details_for_client_id(self, request, name, client_id):
+        if should_exclude_visitor(request):
+            return json_success({'excluded': 'true'}, request)
+
+        #experiment_name = request.args.get('name')
+        experiment_name = 'id_verification_app'
+        #client_id = request.args.get('client_id')
+        client_id = 2
+
+        if client_id is None or experiment_name is None:
+            return json_error({'message': 'missing arguments'}, request, 400)
+
+        try:
+            alt = alternative(experiment_name, client_id, redis=self.redis)
+        except ValueError as e:
+            return json_error({'message': str(e)}, request, 400)
+
+        if alt is None:
+            return json_error({'message': 'this client was not participaing'}, request, 404)
+
+        resp = {
+            'alternative': {
+                'name': alt.name
+            },
+            'experiment': {
+                'name': alt.experiment.name,
+            },
+            'client_id': client_id
+        }
+
+        return json_success(resp, request)
 
 
 def should_exclude_visitor(request):
