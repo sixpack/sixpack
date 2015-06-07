@@ -4,6 +4,7 @@ fakeredis==0.4.0
 Flask-Assets==0.12
 Flask-DebugToolbar==0.7.1
 Flask-SeaSurf==0.1.13
+Flask-Cors==2.0.1
 Flask==0.10
 gevent==1.0.2
 gunicorn>=17.5,<=19.4.1

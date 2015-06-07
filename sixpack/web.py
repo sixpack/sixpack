@@ -4,6 +4,7 @@ from flask import Flask
 from flask import render_template, abort, request, url_for, redirect, jsonify, make_response
 from flask.ext.seasurf import SeaSurf
 from flask.ext.assets import Environment, Bundle
+from flask.ext.cors import CORS
 from flask_debugtoolbar import DebugToolbarExtension
 from markdown import markdown
 
@@ -20,6 +21,7 @@ app = Flask(__name__)
 app.config['CSRF_DISABLE'] = cfg.get('csrf_disable', False)
 
 csrf = SeaSurf(app)
+cors = CORS(app)
 
 js = Bundle('js/vendor/jquery.js', 'js/vendor/d3.js',
             'js/vendor/bootstrap.js', 'js/experiment.js', 'js/chart.js',
@@ -183,7 +185,7 @@ def internal_server_error(e):
 
 def find_or_404(experiment_name):
     try:
-        experiment_name = url=urllib.unquote(experiment_name).decode('utf8') 
+        experiment_name = url=urllib.unquote(experiment_name).decode('utf8')
         exp = Experiment.find(experiment_name, db.REDIS)
         if request.args.get('kpi'):
             exp.set_kpi(request.args.get('kpi'))

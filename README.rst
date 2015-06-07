@@ -72,6 +72,8 @@ Using the API
 
 All interaction with Sixpack is done via ``HTTP GET`` requests. Sixpack allows for cross-language testing by accepting a unique ``client_id`` (which the client is responsible for generating) that links a participation to a conversion. All requests to Sixpack require a ``client_id``.
 
+The Sixpack API can be used from front-end Javascript via CORS-enabled requests. The Sixpack API server will accept CORS requests from any domain.
+
 Participating in an Experiment
 ------------------------------
 
