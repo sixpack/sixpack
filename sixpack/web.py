@@ -17,6 +17,7 @@ import utils
 import re
 
 app = Flask(__name__)
+cors = CORS(app)
 csrf = SeaSurf(app)
 
 js = Bundle('js/vendor/jquery.js', 'js/vendor/d3.js',
