@@ -42,6 +42,37 @@ class TestAlternativeChoice(unittest.TestCase):
         # after a winner
         test_force()
 
+    def test_disabling_force_participation_does_not_record(self):
+        alts = ["one", "two", "three"]
+        e = Experiment.find_or_create("disabling-force-participation", alts, redis=self.app.redis)
+
+        c1_data = json.loads(self.client.get(
+            "/participate?experiment=disabling-force-participation&"
+            "alternatives=one&"
+            "alternatives=two&"
+            "alternatives=three&"
+            "client_id=rand_c1").data)
+
+        c2_data = json.loads(self.client.get(
+            "/participate?experiment=disabling-force-participation&"
+            "alternatives=one&"
+            "alternatives=two&"
+            "alternatives=three&"
+            "force_participation=false&"
+            "client_id=rand_c2").data)
+
+        self.assertEqual(c2_data['alternative']['name'], '')
+        self.assertNotEqual(c1_data['alternative']['name'], '')
+
+        c2_with_participation = json.loads(self.client.get(
+            "/participate?experiment=disabling-force-participation&"
+            "alternatives=one&"
+            "alternatives=two&"
+            "alternatives=three&"
+            "client_id=rand_c2").data)
+
+        self.assertEqual(c2_data['alternative']['name'], '')
+
     def test_uniform_choice(self):
 
         # test name: deterministic-1

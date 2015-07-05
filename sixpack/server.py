@@ -125,6 +125,7 @@ class Sixpack(object):
         alts = request.args.getlist('alternatives')
         experiment_name = request.args.get('experiment')
         force = request.args.get('force')
+        force_participation = to_bool(request.args.get('force_participation', 'true'))
         client_id = request.args.get('client_id')
         traffic_fraction = float(request.args.get('traffic_fraction', 1))
         prefetch = to_bool(request.args.get('prefetch', 'false'))
@@ -146,7 +147,8 @@ class Sixpack(object):
             try:
                 alt = participate(experiment_name, alts, client_id,
                                   force=force, traffic_fraction=traffic_fraction,
-                                  prefetch=prefetch, datetime=dt, redis=self.redis)
+                                  prefetch=prefetch, datetime=dt, redis=self.redis,
+                                  force_participation=force_participation)
             except ValueError as e:
                 return json_error({'message': str(e)}, request, 400)
 
