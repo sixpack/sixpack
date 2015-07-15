@@ -1,3 +1,8 @@
+2.0.3
+=====
+* [BUG] Fix broken config in some python versions
+* [ENHANCEMENT] Add max redis connections config option
+
 2.0.2
 =====
 * [BUG] Fix broken experiments when a winner is set
