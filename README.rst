@@ -151,6 +151,7 @@ We've already provided clients in four languages. We'd love to add clients in ad
 - Go_
 - Perl_
 - `C#`_
+- `Java/Android`_
 
 .. _Ruby: http://github.com/seatgeek/sixpack-rb
 .. _Python: http://github.com/seatgeek/sixpack-py
@@ -160,6 +161,7 @@ We've already provided clients in four languages. We'd love to add clients in ad
 .. _Go: http://github.com/subosito/sixpack-go
 .. _Perl: http://github.com/b10m/p5-WWW-Sixpack
 .. _C#: https://github.com/nderraugh/sixpack-cs
+.. _Java/Android: http://github.com/seatgeek/sixpack-java
 
 Algorithm
 =========
