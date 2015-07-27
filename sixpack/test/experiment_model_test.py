@@ -346,3 +346,13 @@ class TestExperimentModel(unittest.TestCase):
         self.assertIn(kpis[0], ekpi)
         self.assertIn(kpis[1], ekpi)
         exp.delete()
+
+    def test_excluded_clients(self):
+        e = Experiment.find_or_create('count-excluded-clients', ['red', 'blue'], redis=self.redis)
+
+        for i in range(10):
+            c = Client("c-%d" % i, self.redis)
+            e.exclude_client(c)
+
+            # there is a very small chance that a client was not excluded.
+            self.assertEqual(e.excluded_clients(), i + 1)

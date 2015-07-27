@@ -70,7 +70,7 @@
     <% if (experiment.description) { %>
       <div class="desc"><%= experiment.pretty_description %></div>
     <% } %>
-    <div class="created-at">created: <%= experiment.created_at %> | traffic fraction: <%= experiment.traffic_fraction %></div>
+    <div class="created-at">created: <%= experiment.created_at %> | traffic fraction: <%= experiment.traffic_fraction %> (<%= experiment.excluded_clients %> excluded clients)</div>
 
   </div>
   <div class="clearfix"></div>

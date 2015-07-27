@@ -6,7 +6,7 @@ PyYAML==3.10
 Flask==0.10
 Flask-SeaSurf==0.1.13
 Flask-Assets==0.8
-fakeredis==0.3.0
+fakeredis==0.4.0
 decorator==3.3.2
 jsmin==2.0.2-1
 python-dateutil==1.5

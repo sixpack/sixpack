@@ -50,6 +50,7 @@ class Experiment(object):
             'alternatives': [],
             'created_at': self.created_at,
             'traffic_fraction': self.traffic_fraction,
+            'excluded_clients': self.excluded_clients(),
             'total_participants': self.total_participants(),
             'total_conversions': self.total_conversions(),
             'description': self.description,
@@ -317,6 +318,10 @@ class Experiment(object):
     def is_client_excluded(self, client):
         key = _key("e:{0}:excluded".format(self.name))
         return self.redis.getbit(key, self.sequential_id(client))
+
+    def excluded_clients(self):
+        key = _key("e:{0}:excluded".format(self.name))
+        return self.redis.bitcount(key)
 
     def existing_alternative(self, client):
         if self.is_client_excluded(client):
