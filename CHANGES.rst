@@ -8,7 +8,7 @@
 * [BUG] Fix broken experiments when a winner is set
 
 2.0.1
-===
+=====
 * [FEATURE] New 'failing experiments' section in the dashboard
 * [ENHANCEMENT] Better error handling
 * [BUG] Remove infinite load for failing tests
