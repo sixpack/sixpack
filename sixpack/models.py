@@ -221,7 +221,7 @@ class Experiment(object):
     def convert(self, client, dt=None, kpi=None):
         alternative = self.existing_alternative(client)
         if not alternative:
-            raise ValueError('this client was not participaing')
+            raise ValueError('this client was not participating')
 
         if kpi is not None:
             if not Experiment.validate_kpi(kpi):
