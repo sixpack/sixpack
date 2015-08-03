@@ -356,3 +356,30 @@ class TestExperimentModel(unittest.TestCase):
 
             # there is a very small chance that a client was not excluded.
             self.assertEqual(e.excluded_clients(), i + 1)
+
+    def test_excluded_client(self):
+        # need proper redis to register the msetbit script
+        import sixpack.db
+
+        e = Experiment.find_or_create('excluded-client', ['option-a', 'option-b'], redis=sixpack.db.REDIS)
+
+        # force participate 1 proper client on the control alternative
+        cnil = Client("cnil", redis=sixpack.db.REDIS)
+        e.control.record_participation(cnil)
+        e.convert(cnil)
+
+        # exclude client, gets control alternative & try to convert
+        c = Client("c", redis=sixpack.db.REDIS)
+        e.exclude_client(c)
+
+        self.assertTrue(e.control == e.get_alternative(c))
+        try:
+            e.convert(c)
+        except ValueError, ve:
+            pass
+
+        # confidence interval should be 0, throws an exception
+        self.assertEqual(e.control.confidence_interval(), 0)
+        # participation & completed count should be 1
+        self.assertEqual(e.control.participant_count(), 1)
+        self.assertEqual(e.control.completed_count(), 1)
