@@ -684,7 +684,7 @@ class Alternative(object):
                         +   control_conversions * log(control_conversions / expected_control_conversions) \
                         +   control_failures * log(control_failures / expected_control_failures))
 
-        except ZeroDivisionError:
+        except (ValueError, ZeroDivisionError):
             return 0
 
         return round(g_stat, 2)
