@@ -340,7 +340,7 @@ class Experiment(object):
         return None
 
     def choose_alternative(self, client):
-        rnd = round(random.uniform(1, 0.01), 2)
+        rnd = random.random()
         if rnd >= self.traffic_fraction:
             self.exclude_client(client)
             return self.control, False
