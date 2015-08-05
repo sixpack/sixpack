@@ -1,5 +1,4 @@
 $(function() {
-	$('#client').bind('click', show_clients);
   $('#see-more-web').bind('click', show_web_ui);
 	$('#upper-content').animate({ opacity: 1 }, {queue: false, duration: 800});
 	$('#upper-content').animate({ top: 0 }, 700, 'easeOutQuad', function() {
@@ -17,15 +16,6 @@ $(function() {
     var s = skrollr.init();
   }
 });
-
-function show_clients() {
-	$('#upper').animate({
-		paddingBottom: '+=112px'
-	}, function() {
-		$('#clients').fadeIn();
-	});
-	$('#client').unbind('click', show_clients);
-}
 
 function show_web_ui(e) {
   e.preventDefault();

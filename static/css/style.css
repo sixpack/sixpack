@@ -181,6 +181,13 @@ h4 {
 }
 #clients ul li {
 	margin-bottom: 2px;
+	display: inline-block;
+	background: #eee;
+	border: 1px solid #EEE;
+	border-radius: 5px;
+	padding: 6px 12px;
+	margin-right: 2px;
+	margin-left: 2px;
 }
 footer {
 	color: #696969;
