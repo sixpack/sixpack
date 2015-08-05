@@ -306,6 +306,9 @@ class Experiment(object):
         if self.is_archived():
             return self.control
 
+        if self.is_client_excluded(client):
+            return self.control
+
         chosen_alternative = self.existing_alternative(client)
         if not chosen_alternative:
             chosen_alternative, participate = self.choose_alternative(client)
@@ -328,7 +331,7 @@ class Experiment(object):
 
     def existing_alternative(self, client):
         if self.is_client_excluded(client):
-            return self.control
+            None
 
         alts = self.get_alternative_names()
         keys = [_key("p:{0}:{1}:all".format(self.name, alt)) for alt in alts]
