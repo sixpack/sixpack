@@ -383,6 +383,7 @@ class TestExperimentModel(unittest.TestCase):
         e.exclude_client(c)
 
         self.assertTrue(e.control == e.get_alternative(c))
+        self.assertTrue(None == e.existing_alternative(c))
         with self.assertRaises(ValueError):
             e.convert(c)
 
