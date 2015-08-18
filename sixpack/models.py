@@ -331,7 +331,7 @@ class Experiment(object):
 
     def existing_alternative(self, client):
         if self.is_client_excluded(client):
-            None
+            return None
 
         alts = self.get_alternative_names()
         keys = [_key("p:{0}:{1}:all".format(self.name, alt)) for alt in alts]
