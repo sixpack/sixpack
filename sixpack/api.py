@@ -7,7 +7,8 @@ def participate(experiment, alternatives, client_id,
     traffic_fraction=None,
     prefetch=False,
     datetime=None,
-    redis=None):
+    redis=None,
+    force_participation=True):
 
     exp = Experiment.find_or_create(experiment, alternatives, traffic_fraction=traffic_fraction, redis=redis)
 
@@ -20,7 +21,10 @@ def participate(experiment, alternatives, client_id,
         alt = exp.winner
     else:
         client = Client(client_id, redis=redis)
-        alt = exp.get_alternative(client, dt=datetime, prefetch=prefetch)
+        alt = exp.get_alternative(client, dt=datetime, prefetch=prefetch, participate_if_new=force_participation)
+
+        if alt is None:
+            alt = Alternative('', exp, redis=redis)
 
     return alt
 

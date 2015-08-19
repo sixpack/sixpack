@@ -96,6 +96,8 @@ In this example, red will always be returned. This is used for testing only, and
 
 ``traffic_fraction`` (optional) sixpack allows for limiting experiments to a subset of traffic. You can pass the percentage of traffic you'd like to expose the test to as a decimal number here. (``?traffic_fraction=0.10`` for 10%)
 
+``force_participation`` (optional) if the user isn't already participating in the experiment, do we record participation (default) or just tell you they're not participating (by returning ``''`` as the alternative name)? Useful when changing things in several parts of your site depending on which bucket a user's in, and you only want to count users who start on a particular page.
+
 
 Response
 --------
