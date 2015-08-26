@@ -161,7 +161,7 @@ class Experiment(object):
 
         redis_results = pipe.execute()
         for idx, k in enumerate(keys):
-            stats[k] = float(redis_results[idx])
+            stats[k] = int(redis_results[idx])
 
         return stats
 
@@ -589,7 +589,7 @@ class Alternative(object):
 
         redis_results = pipe.execute()
         for idx, k in enumerate(keys):
-            stats[k] = float(redis_results[idx])
+            stats[k] = int(redis_results[idx])
 
         return stats
 
