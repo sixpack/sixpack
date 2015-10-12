@@ -57,6 +57,7 @@ class Experiment(object):
             'has_winner': self.winner is not None,
             'winner': self.winner.name if self.winner is not None else '',
             'is_archived': self.is_archived(),
+            'is_paused': self.is_paused(),
             'kpis': list(self.kpis),
             'kpi': self.kpi
         }
@@ -211,14 +212,27 @@ class Experiment(object):
 
     def archive(self):
         self.redis.hset(self.key(), 'archived', 1)
-
-    def unarchive(self):
-        self.redis.hdel(self.key(), 'archived')
+        self.redis.delete(_key('e:{0}:users'.format(self.name)))
 
     def is_archived(self):
         return self.redis.hexists(self.key(), 'archived')
 
+    def pause(self):
+        self.redis.hset(self.key(), 'paused', 1)
+
+    def resume(self):
+        self.redis.hdel(self.key(), 'paused')
+
+    def is_paused(self):
+        return self.redis.hexists(self.key(), 'paused')
+
     def convert(self, client, dt=None, kpi=None):
+        if self.is_archived():
+            raise ValueError('this experiment is archived and can no longer be updated')
+
+        if self.is_paused():
+            raise ValueError('this experiment is paused and can not receive updates.')
+
         if self.is_client_excluded(client):
             raise ValueError('this client was not participating')
 
@@ -303,7 +317,8 @@ class Experiment(object):
           1. An existing alternative
           2. A server-chosen alternative
         """
-        if self.is_archived():
+
+        if self.is_archived() or self.is_paused():
             return self.control
 
         if self.is_client_excluded(client):
@@ -436,7 +451,7 @@ class Experiment(object):
         return redis.smembers(_key('e'))
 
     @staticmethod
-    def all(exclude_archived=True, redis=None):
+    def all(exclude_archived=True, exclude_paused=True, redis=None):
         experiments = []
         keys = redis.smembers(_key('e'))
 
@@ -444,13 +459,20 @@ class Experiment(object):
             experiment = Experiment.find(key, redis=redis)
             if experiment.is_archived() and exclude_archived:
                 continue
+            if experiment.is_paused() and exclude_paused:
+                continue
             experiments.append(experiment)
         return experiments
 
     @staticmethod
     def archived(redis=None):
-        experiments = Experiment.all(exclude_archived=False, redis=redis)
+        experiments = Experiment.all(exclude_archived=False, exclude_paused=True, redis=redis)
         return [exp for exp in experiments if exp.is_archived()]
+
+    @staticmethod
+    def paused(redis=None):
+        experiments = Experiment.all(exclude_archived=True, exclude_paused=False, redis=redis)
+        return [exp for exp in experiments if exp.is_paused()]
 
     @staticmethod
     def load_alternatives(experiment_name, redis=None):

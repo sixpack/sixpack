@@ -20,10 +20,17 @@
 
     <div class="controls">
 
+      <form action="{{ url_for('toggle_experiment_pause', experiment_name=experiment.name) }}" method="post">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-small btn-inverse"><i class="icon-white icon-ok-circle"></i> <% if (experiment.is_paused) { %>Resume<% } else { %>Pause <% } %> </button>
+      </form>
+
+      <% if (!experiment.is_archived) { %>
       <form action="{{ url_for('toggle_experiment_archive', experiment_name=experiment.name) }}" method="post">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-small btn-inverse"><i class="icon-white icon-ok-circle"></i> <% if (experiment.is_archived) { %>Un-<% } %>Archive</button>
+        <button class="btn btn-small btn-inverse"><i class="icon-white icon-ok-circle"></i> Archive</button>
       </form>
+      <% } %>
 
       <form>
         <button class="btn btn-small btn-inverse btn-edit-description" data-toggle="modal" data-target="#desc-modal"><i class="icon-white icon-pencil"></i> Edit Description</button>
