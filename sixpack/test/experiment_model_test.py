@@ -263,7 +263,6 @@ class TestExperimentModel(unittest.TestCase):
         Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=1, redis=self.redis)
         Experiment.find_or_create('red-white-2', ['red', 'white'], traffic_fraction=0.4, redis=self.redis)
 
-
     def test_invalid_traffic_fraction(self):
         with self.assertRaises(ValueError):
             Experiment.find_or_create('dist-2', ['dist', '2'], traffic_fraction=2, redis=self.redis)
@@ -274,15 +273,15 @@ class TestExperimentModel(unittest.TestCase):
         with self.assertRaises(ValueError):
             Experiment.find_or_create('dist-100', ['dist', '100'], traffic_fraction="x", redis=self.redis)
 
-    def test_fail_when_changing_traffic(self):
-        Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0.8, redis=self.redis)
-
-        with self.assertRaises(ValueError):
-            Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0.4, redis=self.redis)
-
     def test_dont_fail_when_participating_in_nondefault_traffic_experiment_without_traffic_param(self):
         Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0.5, redis=self.redis)
         Experiment.find_or_create('red-white', ['red', 'white'], redis=self.redis)
+
+    def test_changing_traffic_fraction_succeeds(self):
+        exp = Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=1, redis=self.redis)
+        self.assertEqual(exp._traffic_fraction, 1)
+        exp = Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0.4, redis=self.redis)
+        self.assertEqual(exp._traffic_fraction, 0.4)
 
     def test_valid_traffic_fractions_save(self):
         # test the hidden prop gets set
