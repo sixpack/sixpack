@@ -17,6 +17,8 @@ import utils
 import re
 
 app = Flask(__name__)
+app.config['CSRF_DISABLE'] = cfg.get('csrf_disable', False)
+
 csrf = SeaSurf(app)
 
 js = Bundle('js/vendor/jquery.js', 'js/vendor/d3.js',
