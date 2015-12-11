@@ -1,3 +1,7 @@
+2.0.4
+=====
+* [ENHANCEMENT] Add disabling CSRF in Sixpack-Web as an option
+
 2.0.3
 =====
 * [BUG] Fix broken config in some python versions
