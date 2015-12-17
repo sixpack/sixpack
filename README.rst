@@ -21,14 +21,14 @@ Requirements
 Getting Started
 ===============
 
-To get going, create (or don't, but you really should) a new virtualenv for your sixpack installation. Follow that up with ``pip install``::
+To get going, create (or don't, but you really should) a new virtualenv for your Sixpack installation. Follow that up with ``pip install``::
 
     $ pip install sixpack
 
 
 **Note:** If you get an error like ``src/hiredis.h:4:20: fatal error: Python.h: No such file or directory`` you need to install the python development tools. ``apt-get install python-dev`` on Ubuntu.
 
-Next, create a Sixpack configuration. A configuration must be created for sixpack to run. Here's the default::
+Next, create a Sixpack configuration. A configuration must be created for Sixpack to run. Here's the default::
 
     redis_port: 6379                        # Redis port
     redis_host: localhost                   # Redis host
@@ -42,7 +42,7 @@ Next, create a Sixpack configuration. A configuration must be created for sixpac
     asset_path: gen                         # Path for compressed assets to live. This path is RELATIVE to sixpack/static
     secret_key: '<your secret key here>'    # Random key (any string is valid, required for sixpack-web to run)
 
-You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As long as Redis is running, you can now start the sixpack server like this::
+You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As long as Redis is running, you can now start the Sixpack server like this::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack
 
@@ -86,7 +86,7 @@ Arguments
 
 ``user_agent`` (optional) user agent of the user making a request. Used for bot detection.
 
-``ip_address`` (optional) ip address of user making a request. Used for bot detection.
+``ip_address`` (optional) IP address of user making a request. Used for bot detection.
 
 ``force`` (optional) force a specific alternative to be returned, example::
 
@@ -94,7 +94,7 @@ Arguments
 
 In this example, red will always be returned. This is used for testing only, and no participation will be recorded.
 
-``traffic_fraction`` (optional) sixpack allows for limiting experiments to a subset of traffic. You can pass the percentage of traffic you'd like to expose the test to as a decimal number here. (``?traffic_fraction=0.10`` for 10%)
+``traffic_fraction`` (optional) Sixpack allows for limiting experiments to a subset of traffic. You can pass the percentage of traffic you'd like to expose the test to as a decimal number here. (``?traffic_fraction=0.10`` for 10%)
 
 
 Response
@@ -125,7 +125,7 @@ You can convert a user with a ``GET`` request to the ``convert`` endpoint::
 Arguments
 ---------
 
-``experiment`` (required) the name of the experiment you would like to convert on
+``experiment`` (required) the name of the experiment you would like to convert on.
 
 ``client_id`` (required) the client you would like to convert.
 
@@ -134,7 +134,7 @@ Arguments
 Notes
 -----
 
-You'll notice that the ``convert`` endpoint does not take a ``alternative`` query parameter. This is because Sixpack handles that internally with the ``client_id``.
+You'll notice that the ``convert`` endpoint does not take an ``alternative`` query parameter. This is because Sixpack handles that internally with the ``client_id``.
 
 We've included a 'health-check' endpoint, available at ``/_status``. This is helpful for monitoring and alerting if the Sixpack service becomes unavailable. The health check will respond with either 200 (success) or 500 (failure) headers.
 
@@ -178,7 +178,7 @@ Sixpack comes with a built in dashboard. You can start the dashboard with::
 
     $ SIXPACK_CONFIG=<path to config.yml> sixpack-web
 
-The sixpack dashboard allows you to visualize how each experiment's alternatives are doing compared to the rest, select alternatives as winners, and update experiment descriptions to something more human-readable
+The Sixpack dashboard allows you to visualize how each experiment's alternatives are doing compared to the rest, select alternatives as winners, and update experiment descriptions to something more human-readable.
 
 Sixpack-web defaults to run on port ``5001`` but can be changed with the ``SIXPACK_WEB_PORT`` environment variable.
 
@@ -241,7 +241,7 @@ This command will make a few dozen requests to the ``participate`` and ``convert
 7. Push to the branch (``git push origin my-new-feature``)
 8. Create new pull request
 
-Please avoid changing versions numbers; we'll take care of that for you
+Please avoid changing versions numbers; we'll take care of that for you.
 
 Using Sixpack in production?
 ============
