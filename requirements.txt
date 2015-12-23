@@ -15,3 +15,5 @@ closure==20121212
 Flask-DebugToolbar==0.7.1
 Markdown==2.3.1
 python-coveralls==2.4.3
+gunicorn
+gevent
