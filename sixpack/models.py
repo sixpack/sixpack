@@ -72,11 +72,24 @@ class Experiment(object):
         return objectified
 
     def initialize_alternatives(self, alternatives):
+        alternatives_list = []
         for alternative_name in alternatives:
+            weight = None
+            try:
+                # try to parse "name:weight" format
+                alternative_name_sub,weight = alternative_name.split(':', 1)
+                weight = int(weight) # raise ValueError
+                alternative_name = alternative_name_sub
+            except ValueError as e:
+                pass
+            
             if not Alternative.is_valid(alternative_name):
                 raise ValueError('invalid alternative name')
+            
+            alternative = Alternative(alternative_name, self, redis=self.redis, weight=weight)
+            alternatives_list.append(alternative)
 
-        return [Alternative(n, self, redis=self.redis) for n in alternatives]
+        return alternatives_list
 
     def save(self):
         pipe = self.redis.pipeline()
@@ -346,13 +359,38 @@ class Experiment(object):
         if rnd >= self.traffic_fraction:
             self.exclude_client(client)
             return self.control, False
+        
+        alg = self._uniform_choice
+        if self.is_weighted():
+            alg = self._weighted_choice
 
-        return self._uniform_choice(client), True
+        return alg(client), True
+    
+    def is_weighted(self):
+        weights = filter(None, [a.weight for a in self.alternatives])
+        return len(weights) == len(self.alternatives) and sum(weights) == 100
 
-    # Ported from https://github.com/facebook/planout/blob/master/planout/ops/random.py
+    # Ported from https://github.com/facebook/planout/blob/master/python/planout/ops/random.py
     def _uniform_choice(self, client):
         idx = self._get_hash(client) % len(self.alternatives)
         return self.alternatives[idx]
+    
+    # Ported from https://github.com/facebook/planout/blob/master/python/planout/ops/random.py
+    def _weighted_choice(self, client):
+        choices = self.alternatives
+        weights = [a.weight for a in choices]
+        
+        cum_weights = dict(enumerate(weights))
+        cum_sum = 0.0
+        
+        for index in cum_weights:
+            cum_sum += cum_weights[index]
+            cum_weights[index] = cum_sum
+        
+        stop_value = random.random() * cum_sum
+        for index in cum_weights:
+            if stop_value <= cum_weights[index]:
+                return choices[index]
 
     def _get_hash(self, client):
         salty = "{0}.{1}".format(self.name, client.client_id)
@@ -472,10 +510,11 @@ class Experiment(object):
 
 class Alternative(object):
 
-    def __init__(self, name, experiment, redis=None):
+    def __init__(self, name, experiment, redis=None, weight=None):
         self.name = name
         self.experiment = experiment
         self.redis = redis
+        self.weight = weight
 
     def __repr__(self):
         return "<Alternative {0} (Experiment {1})>".format(repr(self.name), repr(self.experiment.name))
