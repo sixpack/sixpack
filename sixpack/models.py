@@ -20,6 +20,9 @@ class Client(object):
         self.client_id = client_id
 
 
+class NotParticipatingError(Exception):
+    pass
+
 class Experiment(object):
 
     def __init__(self, name, alternatives,
@@ -223,7 +226,7 @@ class Experiment(object):
 
         alternative = self.existing_alternative(client)
         if not alternative:
-            raise ValueError('this client was not participating')
+            raise NotParticipatingError('this client was not participating')
 
         if kpi is not None:
             if not Experiment.validate_kpi(kpi):
