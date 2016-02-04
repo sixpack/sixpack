@@ -8,7 +8,7 @@ $(function () {
 
     my.el = el;
     my.codedName = name;
-    my.name = name.match(/\w+/g).join('-');
+    my.name = name.replace(/[\W_]+/g, '-');
     my.encoded = encodeURIComponent(name);
     my.callback = callback;
 
