@@ -122,11 +122,17 @@ class Sixpack(object):
 
     @service_unavailable_on_connection_error
     def on_participate(self, request):
+
+        # Dont serve up sixpack to robots
+        if is_robot(request.args.get('user_agent')):
+            return json_success({'excluded': 'true'}, request)
+
         alts = request.args.getlist('alternatives')
         experiment_name = request.args.get('experiment')
         force = request.args.get('force')
         client_id = request.args.get('client_id')
         traffic_fraction = request.args.get('traffic_fraction')
+
         if traffic_fraction is not None:
             traffic_fraction = float(traffic_fraction)
         prefetch = to_bool(request.args.get('prefetch', 'false'))
