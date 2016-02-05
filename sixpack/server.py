@@ -127,6 +127,7 @@ class Sixpack(object):
         force = request.args.get('force')
         client_id = request.args.get('client_id')
         traffic_fraction = request.args.get('traffic_fraction')
+
         if traffic_fraction is not None:
             traffic_fraction = float(traffic_fraction)
         prefetch = to_bool(request.args.get('prefetch', 'false'))
@@ -137,20 +138,19 @@ class Sixpack(object):
         dt = None
         if request.args.get("datetime"):
             dt = dateutil.parser.parse(request.args.get("datetime"))
-
-        if should_exclude_visitor(request):
-            exp = Experiment.find(experiment_name, redis=self.redis)
-            if exp.winner is not None:
-                alt = exp.winner
+        try:
+            if should_exclude_visitor(request):
+                exp = Experiment.find(experiment_name, redis=self.redis)
+                if exp.winner is not None:
+                    alt = exp.winner
+                else:
+                    alt = exp.control
             else:
-                alt = exp.control
-        else:
-            try:
                 alt = participate(experiment_name, alts, client_id,
                                   force=force, traffic_fraction=traffic_fraction,
                                   prefetch=prefetch, datetime=dt, redis=self.redis)
-            except ValueError as e:
-                return json_error({'message': str(e)}, request, 400)
+        except ValueError as e:
+            return json_error({'message': str(e)}, request, 400)
 
         resp = {
             'alternative': {
