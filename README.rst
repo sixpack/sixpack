@@ -2,11 +2,12 @@
 Sixpack
 =======
 
+
 .. image:: https://travis-ci.org/seatgeek/sixpack.png?branch=master
-        :target: https://travis-ci.org/seatgeek/sixpack
+    :target: https://travis-ci.org/seatgeek/sixpack
 
 .. image:: https://coveralls.io/repos/seatgeek/sixpack/badge.png?branch=master
-  :target: https://coveralls.io/r/seatgeek/sixpack?branch=master
+    :target: https://coveralls.io/r/seatgeek/sixpack?branch=master
 
 Sixpack is a framework to enable A/B testing across multiple programming languages. It does this by exposing a simple API for client libraries.  Client libraries can be written in virtually any language.
 
@@ -122,14 +123,12 @@ You can convert a user with a ``GET`` request to the ``convert`` endpoint::
 
     $ curl http://localhost:5000/convert?experiment=button_color&client_id=12345678-1234-5678-1234-567812345678
 
-Arguments
----------
+Conversion Arguments
+--------------------
 
-``experiment`` (required) the name of the experiment you would like to convert on.
-
-``client_id`` (required) the client you would like to convert.
-
-``kpi`` (optional) sixpack supports recording multiple KPIs. If you would like to track conversion against a specfic KPI, you can do that here. If the KPI does not exist, it will be created automatically.
+- ``experiment`` (required) the name of the experiment you would like to convert on.
+- ``client_id`` (required) the client you would like to convert.
+- ``kpi`` (optional) sixpack supports recording multiple KPIs. If you would like to track conversion against a specfic KPI, you can do that here. If the KPI does not exist, it will be created automatically.
 
 Notes
 -----
@@ -212,27 +211,21 @@ Contributing
 ============
 
 1. Fork it
-2. Start Sixpack in development mode with
+2. Start Sixpack in development mode with::
 
-::
+      $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> bin/sixpack
 
-    $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> bin/sixpack
+   and::
 
-and
+      $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> bin/sixpack-web
 
-::
+   We've also included a small script that will seed Sixpack with lots of random data for testing and development on sixpack-web. You can seed Sixpack with the following command::
 
-    $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> bin/sixpack-web
+      $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> sixpack/test/seed
 
-We've also included a small script that will seed Sixpack with lots of random data for testing and development on sixpack-web. You can seed Sixpack with the following command
+   This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get additional data.
 
-::
-
-    $ PYTHONPATH=. SIXPACK_CONFIG=<path to config.yml> sixpack/test/seed
-
-This command will make a few dozen requests to the ``participate`` and ``convert`` endpoints. Feel free to run it multiple times to get additional data.
-
-**Note:** By default the server runs in production mode. If you'd like to turn on Flask and Werkzeug debug modes set the ``SIXPACK_DEBUG`` environment variable to ``true``.
+   **Note:** By default the server runs in production mode. If you'd like to turn on Flask and Werkzeug debug modes set the ``SIXPACK_DEBUG`` environment variable to ``true``.
 
 3. Create your feature branch (``git checkout -b my-new-feature``)
 4. Write tests
@@ -244,11 +237,12 @@ This command will make a few dozen requests to the ``participate`` and ``convert
 Please avoid changing versions numbers; we'll take care of that for you.
 
 Using Sixpack in production?
-============
+============================
+
 If you're a company using Sixpack in production, kindly let us know! We're going to add a 'using Sixpack' section to the project landing page, and we'd like to include you. Drop Jack a line at jack [at] seatgeek dot.com with your company name.
 
 License
-============
+=======
 
 Sixpack is released under the `BSD 2-Clause License`_.
 
