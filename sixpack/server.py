@@ -13,6 +13,7 @@ from . import __version__
 from api import participate, convert
 
 from config import CONFIG as cfg
+from metrics import init_statsd
 from utils import to_bool
 
 try:
@@ -29,6 +30,7 @@ class Sixpack(object):
 
     def __init__(self, redis_conn):
         self.redis = redis_conn
+        self.statsd = init_statsd(cfg) if cfg.get('metrics') else None
 
         self.config = cfg
 
@@ -46,7 +48,11 @@ class Sixpack(object):
 
     def wsgi_app(self, environ, start_response):
         request = Request(environ)
-        response = self.dispatch_request(request)
+        if self.config.get('metrics'):
+            dispatcher = self.dispatch_request_with_metrics
+        else:
+            dispatcher = self.dispatch_request
+        response = dispatcher(request)
         return response(environ, start_response)
 
     def dispatch_request(self, request):
@@ -57,6 +63,25 @@ class Sixpack(object):
         except NotFound:
             return json_error({"message": "not found"}, request, 404)
         except HTTPException:
+            return json_error({"message": "an internal error has occurred"}, request, 500)
+
+    def _incr_status_code(self, code):
+        self.statsd.incr('response_code.{}'.format(code))
+
+    def dispatch_request_with_metrics(self, request):
+        adapter = self.url_map.bind_to_environ(request.environ)
+        try:
+            endpoint, values = adapter.match()
+            with self.statsd.timer('{}.response_time'.format(endpoint)):
+                response = getattr(self, 'on_' + endpoint)(request, **values)
+                self.statsd.incr('{}.count'.format(endpoint))
+                self._incr_status_code(response.status_code)
+                return response
+        except NotFound:
+            self._incr_status_code(404)
+            return json_error({"message": "not found"}, request, 404)
+        except HTTPException:
+            self._incr_status_code(500)
             return json_error({"message": "an internal error has occurred"}, request, 500)
 
     @service_unavailable_on_connection_error
