@@ -30,7 +30,11 @@ else:
         'ignored_ip_addresses':os.environ.get('SIXPACK_CONFIG_IGNORE_IPS', "").split(","),
         'asset_path':os.environ.get('SIXPACK_CONFIG_ASSET_PATH', "gen"),
         'secret_key':os.environ.get('SIXPACK_CONFIG_SECRET', 'temp'),
-        'csrf_disable':os.environ.get('SIXPACK_CONFIG_CSRF_DISABLE', False)
+        'csrf_disable':os.environ.get('SIXPACK_CONFIG_CSRF_DISABLE', False),
+        'metrics': to_bool(os.environ.get('SIXPACK_METRICS', 'False')),
+        'statsd_host': os.environ.get('SIXPACK_STATSD_HOST', 'localhost'),
+        'statsd_port': int(os.environ.get('SIXPACK_STATSD_PORT', '8125')),
+        'statsd_prefix': os.environ.get('SIXPACK_STATSD_PREFIX', 'sixpack'),
     }
 
     if 'SIXPACK_CONFIG_REDIS_SENTINELS' in os.environ:
