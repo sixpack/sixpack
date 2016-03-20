@@ -296,11 +296,12 @@ class Experiment(object):
             self._sequential_ids[client.client_id] = id_
         return self._sequential_ids[client.client_id]
 
-    def get_alternative(self, client, dt=None, prefetch=False):
+    def get_alternative(self, client, dt=None, prefetch=False, bucket=None):
         """Returns and records an alternative according to the following
         precedence:
           1. An existing alternative
-          2. A server-chosen alternative
+          2. A caller chosen alternative
+          3. A server-chosen alternative
         """
         if self.is_archived():
             return self.control
@@ -309,8 +310,13 @@ class Experiment(object):
             return self.control
 
         chosen_alternative = self.existing_alternative(client)
+        participate = None
         if not chosen_alternative:
-            chosen_alternative, participate = self.choose_alternative(client)
+            if not bucket:
+                chosen_alternative, participate = self.choose_alternative(client)
+            else:
+                chosen_alternative = self.alternatives[self.get_alternative_names().index(bucket)]
+                participate = True
             if participate and not prefetch:
                 chosen_alternative.record_participation(client, dt=dt)
 
