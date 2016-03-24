@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.2.0 (2016-03-24)
+------------------
+
+- Add StatsD support [Igor Bondarenko]
+
+
 2.1.0 (2016-02-16)
 ------------------
 
@@ -1488,5 +1494,3 @@ Changelog
 - Well that's pretty much done. [Eric Waller]
 
 - First commit. [Eric Waller]
-
-
