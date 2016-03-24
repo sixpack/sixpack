@@ -17,3 +17,4 @@ Markdown==2.3.1
 python-coveralls==2.4.3
 gunicorn>=17.5,<=19.4.1
 gevent==1.0.2
+statsd==3.2.1

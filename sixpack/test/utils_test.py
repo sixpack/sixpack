@@ -1,5 +1,6 @@
 import unittest
 from sixpack import utils
+from sixpack import metrics
 
 
 class TestServerLogic(unittest.TestCase):
@@ -34,3 +35,17 @@ class TestServerLogic(unittest.TestCase):
         self.assertFalse(utils.to_bool('FaLse'))
         self.assertFalse(utils.to_bool('no'))
         self.assertFalse(utils.to_bool('n'))
+
+
+
+class TestStatsd(unittest.TestCase):
+
+    def test_parse_url(self):
+        self.assertEqual(
+            ('example.com', 9999, 'prefix'),
+            metrics.parse_url('udp://example.com:9999/prefix'))
+
+    def test_parse_url_defaults(self):
+        self.assertEqual(
+            ('localhost', 8125, 'sixpack'),
+            metrics.parse_url(''))

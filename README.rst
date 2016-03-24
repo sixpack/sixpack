@@ -31,17 +31,20 @@ To get going, create (or don't, but you really should) a new virtualenv for your
 
 Next, create a Sixpack configuration. A configuration must be created for Sixpack to run. Here's the default::
 
-    redis_port: 6379                        # Redis port
-    redis_host: localhost                   # Redis host
-    redis_prefix: sixpack                   # all Redis keys will be prefixed with this
-    redis_db: 15                            # DB number in redis
+    redis_port: 6379                            # Redis port
+    redis_host: localhost                       # Redis host
+    redis_prefix: sixpack                       # all Redis keys will be prefixed with this
+    redis_db: 15                                # DB number in redis
+
+    metrics: false                              # send metrics to StatsD (response times, # of calls, etc)?
+    statsd_url: 'udp://localhost:8125/sixpack'  # StatsD url to connect to (used only when metrics: true)
 
     # The regex to match for robots
     robot_regex: $^|trivial|facebook|MetaURI|butterfly|google|amazon|goldfire|sleuth|xenu|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|pingdom|bot|yahoo|slurp|java|fetch|spider|url|crawl|oneriot|abby|commentreader|twiceler
-    ignored_ip_addresses: []                # List of IP
+    ignored_ip_addresses: []                    # List of IP
 
-    asset_path: gen                         # Path for compressed assets to live. This path is RELATIVE to sixpack/static
-    secret_key: '<your secret key here>'    # Random key (any string is valid, required for sixpack-web to run)
+    asset_path: gen                             # Path for compressed assets to live. This path is RELATIVE to sixpack/static
+    secret_key: '<your secret key here>'        # Random key (any string is valid, required for sixpack-web to run)
 
 You can store this file anywhere (we recommend ``/etc/sixpack/config.yml``). As long as Redis is running, you can now start the Sixpack server like this::
 
@@ -61,6 +64,8 @@ Alternatively, as of version 1.1, all Sixpack configuration can be set by enviro
 * ``SIXPACK_CONFIG_IGNORE_IPS`` - comma separated
 * ``SIXPACK_CONFIG_ASSET_PATH``
 * ``SIXPACK_CONFIG_SECRET``
+* ``SIXPACK_METRICS``
+* ``STATSD_URL``
 
 Using the API
 =============
