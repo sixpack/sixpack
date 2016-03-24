@@ -32,9 +32,7 @@ else:
         'secret_key':os.environ.get('SIXPACK_CONFIG_SECRET', 'temp'),
         'csrf_disable':os.environ.get('SIXPACK_CONFIG_CSRF_DISABLE', False),
         'metrics': to_bool(os.environ.get('SIXPACK_METRICS', 'False')),
-        'statsd_host': os.environ.get('SIXPACK_STATSD_HOST', 'localhost'),
-        'statsd_port': int(os.environ.get('SIXPACK_STATSD_PORT', '8125')),
-        'statsd_prefix': os.environ.get('SIXPACK_STATSD_PREFIX', 'sixpack'),
+        'statsd_url': os.environ.get('STATSD_URL', 'udp://localhost:8125/sixpack'),
     }
 
     if 'SIXPACK_CONFIG_REDIS_SENTINELS' in os.environ:
