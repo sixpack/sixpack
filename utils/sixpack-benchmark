@@ -3,7 +3,7 @@
 import time
 import random
 
-import sixpack_client
+from sixpack.sixpack import Session
 
 
 exp_name = "benchmark-test"
@@ -18,7 +18,7 @@ convert_count = 0
 
 for i in xrange(0, participants):
     # participate
-    sess = sixpack_client.Session()
+    sess = Session()
     start = time.time()
     resp = sess.participate(exp_name, exp_alternatives)
     participate_time += time.time() - start
