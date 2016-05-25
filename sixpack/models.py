@@ -296,21 +296,27 @@ class Experiment(object):
             self._sequential_ids[client.client_id] = id_
         return self._sequential_ids[client.client_id]
 
-    def get_alternative(self, client, dt=None, prefetch=False):
+    def get_alternative(self, client, dt=None, prefetch=False, force=None):
         """Returns and records an alternative according to the following
         precedence:
           1. An existing alternative
           2. A server-chosen alternative
         """
         if self.is_archived():
-            return self.control
+            if self.winner is not None:
+                return self.winner
+            else:
+                return self.control
+
+        if force is None and self.winner is not None:
+            force = self.winner.name
 
         if self.is_client_excluded(client):
             return self.control
 
         chosen_alternative = self.existing_alternative(client)
         if not chosen_alternative:
-            chosen_alternative, participate = self.choose_alternative(client)
+            chosen_alternative, participate = self.choose_alternative(client, force=force)
             if participate and not prefetch:
                 chosen_alternative.record_participation(client, dt=dt)
 
@@ -341,7 +347,11 @@ class Experiment(object):
 
         return None
 
-    def choose_alternative(self, client):
+    def choose_alternative(self, client, force=None):
+        if force:
+            alternative = self.alternatives[self.get_alternative_names().index(force)]
+            return alternative, True
+
         rnd = random.random()
         if rnd >= self.traffic_fraction:
             self.exclude_client(client)
@@ -420,7 +430,7 @@ class Experiment(object):
             experiment.set_traffic_fraction(traffic_fraction)
             experiment.save()
 
-        # Only check traffic fraction if the experiment is being updated 
+        # Only check traffic fraction if the experiment is being updated
         # and the traffic fraction actually changes.
         if is_update and experiment.traffic_fraction != traffic_fraction:
             experiment.set_traffic_fraction(traffic_fraction)

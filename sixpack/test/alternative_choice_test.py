@@ -95,3 +95,12 @@ class TestAlternativeChoice(unittest.TestCase):
         cli = SClient('53c07ed4-80cd-4860-ad68-7eb76ed27180', redis=self.redis)
         alt = exp.get_alternative(cli).name
         self.assertEqual('two', alt)
+
+    def test_winner_saves_to_db(self):
+        e = Experiment.find_or_create('winner-saves-to-db', ['one', 'two'], redis=self.app.redis)
+        client = SClient('random', redis=self.app.redis)
+
+        e.set_winner('two')
+        self.assertEqual('two', e.get_alternative(client).name)
+        e.set_winner('one')
+        self.assertEqual('two', e.get_alternative(client).name)
