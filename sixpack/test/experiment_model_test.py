@@ -4,8 +4,15 @@ import unittest
 from datetime import datetime
 
 import fakeredis
+import redis
 
 from sixpack.models import Experiment, Alternative, Client
+
+
+class FakePipelineRaisesWatchError(fakeredis.FakePipeline):
+
+    def execute(self):
+        raise redis.WatchError
 
 
 class TestExperimentModel(unittest.TestCase):
@@ -282,6 +289,25 @@ class TestExperimentModel(unittest.TestCase):
         self.assertEqual(exp._traffic_fraction, 1)
         exp = Experiment.find_or_create('red-white', ['red', 'white'], traffic_fraction=0.4, redis=self.redis)
         self.assertEqual(exp._traffic_fraction, 0.4)
+
+    def test_save_with_conflict_persists_traffic_fraction(self):
+        def fake_pipeline(transaction=True):
+            return FakePipelineRaisesWatchError(self.redis, transaction)
+
+        real_pipeline = self.redis.pipeline
+        self.redis.pipeline = fake_pipeline
+
+        # this experiment encounters a WatchError upon saving and only
+        # persists its traffic_fraction...
+        exp = Experiment('experiment', self.alternatives, redis=self.redis)
+        exp.set_traffic_fraction(0.5)
+        exp.save()
+
+        self.redis.pipeline = real_pipeline
+
+        # ...and a later instance can recover that traffic fraction
+        same_exp = Experiment('experiment', self.alternatives, redis=self.redis)
+        self.assertEqual(same_exp.traffic_fraction, 0.5)
 
     def test_valid_traffic_fractions_save(self):
         # test the hidden prop gets set
