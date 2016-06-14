@@ -4,6 +4,7 @@ from math import log
 import operator
 import random
 import re
+import redis
 
 from config import CONFIG as cfg
 from db import _key, msetbit, sequential_id, first_key_with_bit_set
@@ -80,16 +81,24 @@ class Experiment(object):
 
     def save(self):
         pipe = self.redis.pipeline()
-        if self.is_new_record():
-            pipe.sadd(_key('e'), self.name)
-            pipe.hset(self.key(), 'created_at', datetime.now().strftime("%Y-%m-%d %H:%M"))
-            # reverse here and use lpush to keep consistent with using lrange
-            for alternative in reversed(self.alternatives):
-                pipe.lpush("{0}:alternatives".format(self.key()), alternative.name)
-
-        # allow traffic fraction to change in mid-flight of an experiment.
-        pipe.hset(self.key(), 'traffic_fraction', self._traffic_fraction)
-        pipe.execute()
+        pipe.watch(self.key())
+        is_new_record = self.is_new_record()
+        try:
+            pipe.multi()
+            if is_new_record:
+                pipe.sadd(_key('e'), self.name)
+                pipe.hset(self.key(), 'created_at', datetime.now().strftime("%Y-%m-%d %H:%M"))
+                # reverse here and use lpush to keep consistent with using lrange
+                for alternative in reversed(self.alternatives):
+                    pipe.lpush("{0}:alternatives".format(self.key()), alternative.name)
+            pipe.hset(self.key(), 'traffic_fraction', self._traffic_fraction)
+            pipe.execute()
+        except redis.WatchError:
+            # another writer has created this experiment and caused
+            # our transaction to fail.  assume that everything except
+            # the traffic_fraction is the same between the two writers
+            # and ensure that the traffic_fraction is updated.
+            self.redis.hset(self.key(), 'traffic_fraction', self._traffic_fraction)
 
     @property
     def control(self):
@@ -107,7 +116,7 @@ class Experiment(object):
         return [alt.name for alt in self.alternatives]
 
     def is_new_record(self):
-        return not self.redis.sismember(_key("e"), self.name)
+        return not self.redis.exists(self.key())
 
     def total_participants(self):
         key = _key("p:{0}:_all:all".format(self.name))
