@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.3.0 (2016-06-14)
+------------------
+
+- Ensure atomic experiment creation [Mark Williams]
+
 2.2.0 (2016-03-24)
 ------------------
 
