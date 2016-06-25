@@ -80,6 +80,17 @@ class TestExperimentModel(unittest.TestCase):
         exp.update_description('hallo')
         self.assertEqual(exp.description, 'hallo')
 
+        # create a new kpi to demonstrate that the default description is still used
+        client = Client(100, redis=self.redis)
+
+        exp.get_alternative(client)
+        exp.convert(client, None, 'new-kpi')
+
+        exp2 = Experiment.find_or_create('never-gonna', ['give', 'you', 'up'], redis=self.redis)
+        self.assertEqual(exp2.description, 'hallo')
+        exp2.set_kpi('new-kpi')
+        self.assertEqual(exp2.description, 'hallo')
+
     def test_change_alternatives(self):
         exp = Experiment.find_or_create('never-gonna-x', ['let', 'you', 'down'], redis=self.redis)
 

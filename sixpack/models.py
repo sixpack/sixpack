@@ -181,7 +181,7 @@ class Experiment(object):
 
     @property
     def description(self):
-        description = self.redis.hget(self.key(), 'description')
+        description = self.redis.hget(self.key(False), 'description')
         if description:
             return description.decode("utf-8", "replace")
         else:
