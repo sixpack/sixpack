@@ -148,7 +148,7 @@ def update_experiment_description(experiment_name):
 
     experiment.update_description(request.form['description'])
 
-    return redirect(url_for('details', experiment_name=experiment.name))
+    return redirect(url_for('details', experiment_name=experiment.name, kpi=experiment.kpi))
 
 
 @app.route('/favicon.ico')
