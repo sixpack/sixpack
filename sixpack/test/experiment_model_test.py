@@ -7,7 +7,7 @@ import fakeredis
 import redis
 
 from sixpack.models import Experiment, Alternative, Client
-
+from sixpack.db import _key
 
 class FakePipelineRaisesWatchError(fakeredis.FakePipeline):
 
@@ -113,14 +113,20 @@ class TestExperimentModel(unittest.TestCase):
         self.assertFalse(self.exp_1.is_archived())
         self.exp_1.archive()
         self.assertTrue(self.exp_1.is_archived())
-        self.exp_1.unarchive()
-        self.assertFalse(self.exp_1.is_archived())
 
-    def test_unarchive(self):
-        self.exp_1.archive()
-        self.assertTrue(self.exp_1.is_archived())
-        self.exp_1.unarchive()
-        self.assertFalse(self.exp_1.is_archived())
+
+    def test_pause(self):
+        self.assertFalse(self.exp_1.is_paused())
+        self.exp_1.pause()
+        self.assertTrue(self.exp_1.is_paused())
+        self.exp_1.resume()
+        self.assertFalse(self.exp_1.is_paused())
+
+    def test_resume(self):
+        self.exp_1.pause()
+        self.assertTrue(self.exp_1.is_paused())
+        self.exp_1.resume()
+        self.assertFalse(self.exp_1.is_paused())
 
     def test_set_winner(self):
         exp = Experiment('test-winner', ['1', '2'], redis=self.redis)
@@ -154,22 +160,44 @@ class TestExperimentModel(unittest.TestCase):
     def test_get_alternative(self):
         client = Client(10, redis=self.redis)
 
-        exp = Experiment.find_or_create('archived-control', ['w', 'l'], redis=self.redis)
-        exp.archive()
+        exp = Experiment.find_or_create('pause-control', ['w', 'l'], redis=self.redis)
+        exp.pause()
 
-        # should return control on archived test with no winner
+        # should return control on paused test with no winner
         alt = exp.get_alternative(client)
         self.assertEqual(alt.name, 'w')
 
         # should return current participation
-        exp.unarchive()
+        exp.resume()
 
+        # should be one or the other.
+        # @todo, this test is not really testing anything.
         selected_for_client = exp.get_alternative(client)
         self.assertIn(selected_for_client.name, ['w', 'l'])
 
         # should check to see if client is participating and only return the same alt
         # unsure how to currently test since fakeredis obviously doesn't parse lua
         # most likely integration tests
+        exp.archive()
+
+        # test if the redis key is no longer present
+        self.redis.get(_key('e:{0}:users'.format(exp.name)))
+
+        # should return control on archived test
+        alt = exp.get_alternative(client)
+        self.assertEqual(alt.name, 'w')
+
+    def test_reset_experiment(self):
+        client = Client(10, redis=self.redis)
+        exp = Experiment.find_or_create('reset-test', ['w', 'l'], redis=self.redis)
+        exp.get_alternative(client)
+
+        # archive and afterwards reset to see if we 
+        # actually reset the data.
+        exp.archive()
+        self.assertEqual(exp.is_archived(), True)
+        exp.reset()
+        self.assertEqual(exp.is_archived(), False)
 
     # See above note for the next 5 tests
     def _test_existing_alternative(self):
@@ -213,21 +241,45 @@ class TestExperimentModel(unittest.TestCase):
         all_of_them = Experiment.all(redis=self.redis)
         self.assertEqual(len(all_of_them), 3)
 
-        exp_1 = Experiment('archive-this', ['archived', 'unarchive'], redis=self.redis)
+        exp_1 = Experiment('archive-this', ['archived', 'archived2'], redis=self.redis)
         exp_1.save()
 
+        # Check if we have 4 active experiments in total
         all_again = Experiment.all(redis=self.redis)
         self.assertEqual(len(all_again), 4)
 
+        # Pause one experiment.
+        exp_1.pause()
+        # We should have 1 paused experiment in total
+        all_paused = Experiment.paused(redis=self.redis)
+        self.assertEqual(len(all_paused), 1)
+
+        # We should have 3 active experiments.
+        all_active_experiments = Experiment.all(redis=self.redis)
+        self.assertEqual(len(all_active_experiments), 3)
+
+        # Total, with paused and excluding archived should be 4.
+        all_with_paused = Experiment.all(exclude_paused=False, redis=self.redis)
+        self.assertEqual(len(all_with_paused), 4)
+
+        # Resume the experiment
+        exp_1.resume()
+        # We should have 4 active experiments
+        all_active_experiments = Experiment.all(redis=self.redis)
+        self.assertEqual(len(all_active_experiments), 4)        
+
+        # Archive the experiment
         exp_1.archive()
-        all_archived = Experiment.all(redis=self.redis)
-        self.assertEqual(len(all_archived), 3)
+        all_active_experiments = Experiment.all(redis=self.redis)
+        self.assertEqual(len(all_active_experiments), 3)
 
-        all_with_archived = Experiment.all(exclude_archived=False, redis=self.redis)
-        self.assertEqual(len(all_with_archived), 4)
-
+        # We should have 1 archived experiment
         all_archived = Experiment.archived(redis=self.redis)
         self.assertEqual(len(all_archived), 1)
+
+        # Total, with archived, excluding paused should be 4
+        all_with_archived = Experiment.all(exclude_archived=False, redis=self.redis)
+        self.assertEqual(len(all_with_archived), 4)
 
     def test_load_alternatives(self):
         exp = Experiment.find_or_create('load-alts-test', ['yes', 'no', 'call-me-maybe'], redis=self.redis)
