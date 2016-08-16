@@ -382,6 +382,10 @@ ul.experiments h4 {
 .archive-is-active {
   display: none;
 }
+.pause-is-not-active,
+.pause-is-active {
+  display: none;
+}
 #dashboard-page ul.experiments > li table {
   width: 650px;
 }
