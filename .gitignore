@@ -12,3 +12,5 @@ sixpack/static/gen/sixpack.css
 .webassets-cache
 .vfenv
 .idea
+venv
+dump.rdb
