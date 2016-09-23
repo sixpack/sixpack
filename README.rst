@@ -81,6 +81,11 @@ You can participate in an experiment with a ``GET`` request to the ``participate
 
 If the test does not exist, it will be created automatically.  You do not need to create the test in Sixpack-web.
 
+    Experiment names are not validated, so it is possible to explode the Redis keyspace.
+    If you need to validate that the experiments being created are only those you wish to
+    whitelist, consider fronting Sixpack with either `Nginx+Lua`/`Openresty` or `Varnish`,
+    and performing your whitelisting logic there.
+
 Arguments
 ---------
 
