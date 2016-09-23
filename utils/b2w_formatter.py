@@ -8,8 +8,6 @@ from datetime import datetime
 class B2WJSONFormatter(json_log_formatter.JSONFormatter):
 
     def json_record(self, message, extra, record):
-        import ipdb;ipdb.set_trace()
-
         extra['log_message'] = message.replace('"', '\"').replace("\n", " ")
         extra['hostname'] = socket.gethostname()
         extra['application'] = 'dynamic-pricing'
@@ -33,9 +31,6 @@ class B2WJSONFormatter(json_log_formatter.JSONFormatter):
         return extra
 
     def format(self, record):
-        import ipdb;
-        ipdb.set_trace()
-
         message = record.getMessage()
         extra = self.extra_from_record(record)
         json_record = self.json_record(message, extra, record)
