@@ -1,7 +1,7 @@
+import os
+import sys
 import json_log_formatter
 import socket
-import threading
-import sys
 from datetime import datetime
 
 
@@ -10,24 +10,17 @@ class B2WJSONFormatter(json_log_formatter.JSONFormatter):
     def json_record(self, message, extra, record):
         extra['log_message'] = message.replace('"', '\"').replace("\n", " ")
         extra['hostname'] = socket.gethostname()
-        extra['application'] = 'dynamic-pricing'
-        extra['version'] = '1.00'
-        extra['environment'] = 'atlas'
-        extra['brand'] = 'b2w'
-        extra['customer_id'] = '000000'
-        extra['order_id'] = '000000'
-        extra['tid'] = '000000'
-        if 'log_level' not in extra:
-            extra['log_level'] = 'WARNING'
-        extra['thread_name'] = threading.current_thread().name
-        extra['class'] = 'default'
+        extra['application'] = os.getenv("JSONFORMATTER_APP", 'sixpack-ab')
+        extra['version'] = os.getenv("JSONFORMATTER_APP_VERSION", '1.00')
+        extra['environment'] = os.getenv("JSONFORMATTER_APP_ENV", 'Atlas')
+        extra['brand'] = os.getenv("JSONFORMATTER_APP_BRAND", 'B2W')
+        extra['log_level'] = record.levelname
         extra['file'] = sys.argv[0]
-        extra['method'] = 'followCompetitorsPricing'
-        extra['throwable'] = {}
         date = datetime.now().strftime("%d/%m/%Y %H:%M:%S.%f")
         allowedDateSize = 23
         diff = len(date) - allowedDateSize
         extra['date'] = datetime.now().strftime("%d/%m/%Y %H:%M:%S.%f")[:-diff]
+
         return extra
 
     def format(self, record):
