@@ -175,7 +175,7 @@ We've already provided clients in four languages. We'd love to add clients in ad
 Algorithm
 =========
 
-As of version 2.0 of Sixpack, we use a deterministic algorithm to choose which alternative a client with receive. The algorithm was ported from Facebook's Planout project, and more information can be found HERE_.
+As of version 2.0 of Sixpack, we use a deterministic algorithm to choose which alternative a client will receive. The algorithm was ported from Facebook's Planout project, and more information can be found HERE_.
 
 
 
