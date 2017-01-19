@@ -189,7 +189,7 @@ Sixpack comes with a built in dashboard. You can start the dashboard with::
 
 The Sixpack dashboard allows you to visualize how each experiment's alternatives are doing compared to the rest, select alternatives as winners, and update experiment descriptions to something more human-readable.
 
-Sixpack-web defaults to run on port ``5001`` but can be changed with the ``SIXPACK_WEB_PORT`` environment variable.
+Sixpack-web defaults to run on port ``5001`` but can be changed with the ``SIXPACK_WEB_PORT`` environment variable. Sixpack-web will not work properly until you set the ``secret_key`` variable in the configuration file.
 
 API
 ---
