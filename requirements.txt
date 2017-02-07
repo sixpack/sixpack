@@ -7,7 +7,7 @@ Flask-SeaSurf==0.1.13
 Flask==0.10
 gevent==1.1.2
 gunicorn>=17.5,<=19.4.1
-hiredis==0.13.3
+hiredis==0.1.4
 jsmin==2.0.2-1
 Markdown==2.3.1
 mock==1.0.1
