@@ -66,6 +66,11 @@ Alternatively, as of version 1.1, all Sixpack configuration can be set by enviro
 * ``SIXPACK_CONFIG_SECRET``
 * ``SIXPACK_METRICS``
 * ``STATSD_URL``
+* ``STATSD_CORS_ORIGIN``
+* ``STATSD_CORS_HEADERS``
+* ``STATSD_CORS_CREDENTIALS``
+* ``STATSD_CORS_METHODS``
+* ``STATSD_CORS_EXPOSE_HEADERS``
 
 Using the API
 =============
@@ -216,6 +221,19 @@ To run the sixpack web dashboard using gunicorn/gevent (a separate installation)
     gunicorn --access-logfile - -w 2 --worker-class=gevent sixpack.web:start
 
 **Note:** After selecting an experiment winner, it is best to remove the Sixpack experiment code from your codebase to avoid unnecessary http requests.
+
+CORS
+====
+
+Cross-origin resource sharing can be adjusted with the following config attributes::
+
+    cors_origin: *
+    cors_headers: ...
+    cors_credentials: true
+    cors_methods: GET
+    cors_expose_headers: ...
+
+
 
 Contributing
 ============
