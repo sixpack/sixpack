@@ -18,8 +18,6 @@ from config import CONFIG as cfg
 from metrics import init_statsd
 from utils import to_bool
 
-from flask.ext.cors import CORS
-
 try:
     import db
 except ConnectionError:
