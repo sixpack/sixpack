@@ -33,6 +33,10 @@ class CORSMiddleware(object):
 
     def __init__(self, app, origin=None):
         self.app = app
+        self.redis = self.app.redis
+        self.statsd = self.app.statsd
+        self.config = self.app.config
+
         self.origin = origin or cfg.get("cors_origin")
         self.origin_regexp = re.compile(self.origin.replace("*", "(.*)")) \
             if self.origin != '*' else None
@@ -263,9 +267,8 @@ def is_ignored_ip(ip_address):
 
     return unquote(ip_address) in cfg.get('ignored_ip_addresses')
 
+
 # Method to run with built-in server
-
-
 def create_app():
     app = Sixpack(db.REDIS)
     return CORSMiddleware(app)
@@ -273,5 +276,4 @@ def create_app():
 
 #  Method to run with gunicorn
 def start(environ, start_response):
-    app = Sixpack(db.REDIS)
-    return CORSMiddleware(app)(environ, start_response)
+    return create_app()(environ, start_response)
