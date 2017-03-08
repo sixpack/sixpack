@@ -28,14 +28,7 @@
 
 /* BEGIN: Navbar */
   .navbar-inverse .navbar-inner {
-    background-color: #cc6d00;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#cc6d00), to(#994d00));
-    background-image: -webkit-linear-gradient(top, #cc6d00, #994d00);
-    background-image:    -moz-linear-gradient(top, #cc6d00, #994d00);
-    background-image:     -ms-linear-gradient(top, #cc6d00, #994d00);
-    background-image:         linear-gradient(top, #cc6d00, #994d00);
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#cc6d00', EndColorStr='#994d00');
-
+    background-color: #99258d;
     border: none;
     box-shadow: 0 1px 4px rgba(0, 0, 0, .5);
   }
@@ -45,7 +38,7 @@
   .navbar-inverse .brand {
     width: 108px;
     height: 30px;
-    background: url('../img/logo@2x.png') no-repeat;
+    background: url('../img/wow-76.png') no-repeat;
     background-size: 108px 30px;
     padding: 0;
     margin: 15px 0 0 10px;
