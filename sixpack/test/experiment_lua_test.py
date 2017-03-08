@@ -34,15 +34,7 @@ class TestExperimentLua(unittest.TestCase):
         total_participants = sum([d["participants"] for d in altdata])
         self.assertEqual(total_participants, 1)
         total_conversions = sum([d["conversions"] for d in altdata])
-        self.assertEqual(data["has_winner"], False)
         self.assertEqual(total_conversions, 1)
-
-        # Only retrieve the slim set.
-        data = exp.objectify_by_period("day", slim=True)
-        self.assertFalse(data.has_key("has_winner"))
-        self.assertFalse(data.has_key("kpi"))
-        self.assertFalse(data.has_key("kpis"))
-        self.assertFalse(data.has_key("period"))
 
     def test_find_existing_conversion(self):
         exp = Experiment('test-find-existing-conversion', ['1', '2'], redis=self.app.redis)

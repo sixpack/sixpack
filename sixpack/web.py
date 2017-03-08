@@ -48,21 +48,17 @@ def status():
 
 @app.route("/")
 def hello():
-    experiments = Experiment.all(redis=db.REDIS)
+    experiments = Experiment.all(exclude_archived=True, redis=db.REDIS)
     experiments = [exp.name for exp in experiments]
     return render_template('dashboard.html', experiments=experiments, page='home')
 
+
 @app.route('/archived')
 def archived():
-    experiments = Experiment.archived(redis=db.REDIS)
-    experiments = [exp.name for exp in experiments]
+    experiments = Experiment.all(exclude_archived=False, redis=db.REDIS)
+    experiments = [exp.name for exp in experiments if exp.is_archived()]
     return render_template('dashboard.html', experiments=experiments, page='archived')
 
-@app.route('/paused')
-def paused():
-    experiments = Experiment.paused(redis=db.REDIS)
-    experiments = [exp.name for exp in experiments]
-    return render_template('dashboard.html', experiments=experiments, page='paused')
 
 @app.route('/experiments.json')
 def experiment_list():
@@ -137,23 +133,12 @@ def delete_experiment(experiment_name):
     return redirect(url_for('hello'))
 
 
-# Pause experiment
-@app.route("/experiments/<experiment_name>/pause", methods=['POST'])
-def toggle_experiment_pause(experiment_name):
-    experiment = find_or_404(experiment_name)
-    if experiment.is_paused():
-        experiment.resume()
-    else:
-        experiment.pause()
-
-    return redirect(url_for('details', experiment_name=experiment.name))
-
 # Archive experiment
 @app.route("/experiments/<experiment_name>/archive", methods=['POST'])
 def toggle_experiment_archive(experiment_name):
     experiment = find_or_404(experiment_name)
     if experiment.is_archived():
-        internal_server_error()
+        experiment.unarchive()
     else:
         experiment.archive()
 
