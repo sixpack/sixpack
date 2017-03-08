@@ -126,6 +126,8 @@ class Sixpack(object):
 
         try:
             alt = convert(experiment_name, client_id, kpi=kpi, datetime=dt, redis=self.redis)
+        except NotParticipatingError as e:
+            return json_error({'message': str(e)}, request, 404)
         except ValueError as e:
             return json_error({'message': str(e)}, request, 400)
 
