@@ -99,6 +99,8 @@ Arguments
 
 ``ip_address`` (optional) IP address of user making a request. Used for bot detection.
 
+``bucket`` (optional) name of the alternative you want to choose for participant.
+
 ``force`` (optional) force a specific alternative to be returned, example::
 
     $ curl http://localhost:5000/participate?experiment=button_color&alternatives=red&alternatives=blue&force=red&client_id=12345678-1234-5678-1234-567812345678
