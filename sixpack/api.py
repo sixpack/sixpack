@@ -39,3 +39,16 @@ def convert(experiment, client_id,
         alt = exp.control
 
     return alt
+
+def alternative(experiment, client_id,
+    redis=None):
+
+    exp = Experiment.find(experiment, redis=redis)
+
+    if cfg.get('enabled', True):
+        client = Client(client_id, redis=redis)
+        alt = exp.existing_alternative(client)
+    else:
+        alt = None
+
+    return alt
