@@ -1,5 +1,6 @@
 import yaml
 import os
+import urlparse
 
 from utils import to_bool
 
@@ -16,6 +17,7 @@ else:
         'enabled': to_bool(os.environ.get('SIXPACK_CONFIG_ENABLED', 'True')),
         'redis_port': int(os.environ.get('SIXPACK_CONFIG_REDIS_PORT', '6379')),
         'redis_host': os.environ.get('SIXPACK_CONFIG_REDIS_HOST', "localhost"),
+        'redis_url': os.environ.get('SIXPACK_CONFIG_REDIS_URL', None),
         'redis_password': os.environ.get('SIXPACK_CONFIG_REDIS_PASSWORD', None),
         'redis_prefix': os.environ.get('SIXPACK_CONFIG_REDIS_PREFIX', "sxp"),
         'redis_socket_timeout': os.environ.get('SIXPACK_CONFIG_REDIS_SOCKET_TIMEOUT', None),
@@ -42,3 +44,11 @@ else:
             server,port = sentinel.split(":")
             sentinels.append([server, int(port)])
         CONFIG['redis_sentinels'] = sentinels
+
+    # redis_url or SIXPACK_CONFIG_REDIS_URL takes precedence
+    if CONFIG['redis_url']:
+      urlparse.uses_netloc.append("redis")
+      url = urlparse.urlparse(os.environ["SIXPACK_CONFIG_REDIS_URL"])
+      CONFIG["redis_host"] = url.hostname or 'localhost'
+      CONFIG["redis_port"] = url.port or 6379
+      CONFIG["redis_password"] = url.password

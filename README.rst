@@ -33,6 +33,9 @@ Next, create a Sixpack configuration. A configuration must be created for Sixpac
 
     redis_port: 6379                            # Redis port
     redis_host: localhost                       # Redis host
+    # redis_password: password                  # Optional redis password
+    # Alternatively the above can be set with redis_url which takes precedence
+    # redis_url:  'redis://h:password@localhost:6379'
     redis_prefix: sixpack                       # all Redis keys will be prefixed with this
     redis_db: 15                                # DB number in redis
 
@@ -58,6 +61,7 @@ Alternatively, as of version 1.1, all Sixpack configuration can be set by enviro
 * ``SIXPACK_CONFIG_REDIS_PORT``
 * ``SIXPACK_CONFIG_REDIS_HOST``
 * ``SIXPACK_CONFIG_REDIS_PASSWORD``
+* ``SIXPACK_CONFIG_REDIS_URL``
 * ``SIXPACK_CONFIG_REDIS_PREFIX``
 * ``SIXPACK_CONFIG_REDIS_DB``
 * ``SIXPACK_CONFIG_ROBOT_REGEX``
@@ -66,6 +70,8 @@ Alternatively, as of version 1.1, all Sixpack configuration can be set by enviro
 * ``SIXPACK_CONFIG_SECRET``
 * ``SIXPACK_METRICS``
 * ``STATSD_URL``
+
+``SIXPACK_CONFIG_REDIS_URL`` takes precedence over the indivudal port/host/password settings
 
 Using the API
 =============
