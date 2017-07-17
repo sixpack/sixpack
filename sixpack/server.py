@@ -1,3 +1,4 @@
+import os
 import re
 from socket import inet_aton
 import sys
@@ -8,6 +9,7 @@ from redis import ConnectionError
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
+from werkzeug.datastructures import Headers
 
 from . import __version__
 from api import participate, convert
@@ -24,6 +26,48 @@ except ConnectionError:
 
 from models import Experiment, Client
 from utils import service_unavailable_on_connection_error, json_error, json_success
+
+
+class CORSMiddleware(object):
+    """Add Cross-origin resource sharing headers to every request."""
+
+    def __init__(self, app, origin=None):
+        self.app = app
+        self.redis = self.app.redis
+        self.statsd = self.app.statsd
+        self.config = self.app.config
+
+        self.origin = origin or cfg.get("cors_origin")
+        self.origin_regexp = re.compile(self.origin.replace("*", "(.*)")) \
+            if self.origin != '*' else None
+
+    def __call__(self, environ, start_response):
+
+        def get_origin(status, headers):
+            if self.origin == '*':
+                return self.origin
+            origin = environ.get("HTTP_ORIGIN", "")
+            return origin if self.origin_regexp.match(origin) else "null"
+
+        def add_cors_headers(status, headers, exc_info=None):
+            headers = Headers(headers)
+            headers.add("Access-Control-Allow-Origin",
+                        get_origin(status, headers))
+            headers.add("Access-Control-Allow-Headers",
+                        cfg.get("cors_headers"))
+            headers.add("Access-Control-Allow-Credentials",
+                        cfg.get("cors_credentials"))
+            headers.add("Access-Control-Allow-Methods",
+                        cfg.get("cors_methods"))
+            headers.add("Access-Control-Expose-Headers",
+                        cfg.get("cors_expose_headers"))
+            return start_response(status, headers.to_list(), exc_info)
+
+        if environ.get("REQUEST_METHOD") == "OPTIONS":
+            add_cors_headers("200 Ok", [("Content-Type", "text/plain")])
+            return [b'200 Ok']
+
+        return self.app(environ, add_cors_headers)
 
 
 class Sixpack(object):
@@ -125,7 +169,8 @@ class Sixpack(object):
             dt = dateutil.parser.parse(request.args.get("datetime"))
 
         try:
-            alt = convert(experiment_name, client_id, kpi=kpi, datetime=dt, redis=self.redis)
+            alt = convert(experiment_name, client_id, kpi=kpi,
+                          datetime=dt, redis=self.redis)
         except ValueError as e:
             return json_error({'message': str(e)}, request, 400)
 
@@ -226,10 +271,9 @@ def is_ignored_ip(ip_address):
 # Method to run with built-in server
 def create_app():
     app = Sixpack(db.REDIS)
-    return app
+    return CORSMiddleware(app)
 
 
-# Method to run with gunicorn
+#  Method to run with gunicorn
 def start(environ, start_response):
-    app = Sixpack(db.REDIS)
-    return app(environ, start_response)
+    return create_app()(environ, start_response)
