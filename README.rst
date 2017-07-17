@@ -94,7 +94,7 @@ If the test does not exist, it will be created automatically.  You do not need t
 Arguments
 ---------
 
-``experiment`` (required) is the name of the test. Valid experiment names must be alphanumeric and can contain ``_`` and ``-``.
+``experiment`` (required) is the name of the test. Valid experiment names must be a lowercase alphanumeric string and can contain ``_`` and ``-``.
 
 ``alternatives`` (required) are the potential responses from Sixpack.  One of them will be the bucket that the ``client_id`` is assigned to.
 

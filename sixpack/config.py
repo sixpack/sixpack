@@ -34,15 +34,12 @@ else:
         'csrf_disable': os.environ.get('SIXPACK_CONFIG_CSRF_DISABLE', False),
         'metrics': to_bool(os.environ.get('SIXPACK_METRICS', 'False')),
         'statsd_url': os.environ.get('STATSD_URL', 'udp://localhost:8125/sixpack'),
-
-
+        'proxy_fix': os.environ.get('SIXPACK_PROXY_FIX', False),
         'cors_origin': os.environ.get("SIXPACK_CORS_ORIGIN", "*"),
         'cors_headers': os.environ.get("SIXPACK_CORS_HEADERS", "Origin, ..."),
         'cors_credentials': os.environ.get("SIXPACK_CORS_CREDENTIALS", "true"),
         'cors_methods': os.environ.get("SIXPACK_CORS_METHODS", "GET"),
         'cors_expose_headers': os.environ.get("SIXPACK_CORS_EXPOSE_HEADERS", "..."),
-
-
     }
 
     if 'SIXPACK_CONFIG_REDIS_SENTINELS' in os.environ:

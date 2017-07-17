@@ -6,6 +6,7 @@ from flask.ext.seasurf import SeaSurf
 from flask.ext.assets import Environment, Bundle
 from flask_debugtoolbar import DebugToolbarExtension
 from markdown import markdown
+from werkzeug.contrib.fixers import ProxyFix
 
 from . import __version__
 from config import CONFIG as cfg
@@ -17,6 +18,8 @@ import utils
 import re
 
 app = Flask(__name__)
+if cfg.get('proxy_fix', False):
+    app.wsgi_app = ProxyFix(app.wsgi_app)
 app.config['CSRF_DISABLE'] = cfg.get('csrf_disable', False)
 
 csrf = SeaSurf(app)
