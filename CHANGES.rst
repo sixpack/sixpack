@@ -1,6 +1,14 @@
 Changelog
 =========
 
+2.6.1 (2017-07-25)
+------------------
+
+Fix
+~~~
+
+- Be less cute about in-place logic. Closes #279. [Jose Diaz-Gonzalez]
+
 2.6.0 (2017-07-24)
 ------------------
 
