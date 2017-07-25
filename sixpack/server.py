@@ -38,8 +38,9 @@ class CORSMiddleware(object):
         self.config = self.app.config
 
         self.origin = origin or cfg.get("cors_origin")
-        self.origin_regexp = re.compile(self.origin.replace("*", "(.*)")) \
-            if self.origin != '*' else None
+        self.origin_regexp = None
+        if self.origin != '*':
+            self.origin_regexp = re.compile(self.origin.replace("*", "(.*)"))
 
     def __call__(self, environ, start_response):
 
