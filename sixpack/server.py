@@ -45,7 +45,7 @@ class CORSMiddleware(object):
     def __call__(self, environ, start_response):
 
         def get_origin(status, headers):
-            if self.origin == '*':
+            if self.origin == '*' or self.origin is None:
                 return self.origin
             origin = environ.get("HTTP_ORIGIN", "")
             return origin if self.origin_regexp.match(origin) else "null"
