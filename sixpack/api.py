@@ -4,6 +4,7 @@ from config import CONFIG as cfg
 
 def participate(experiment, alternatives, client_id,
     force=None,
+    record_force=False,
     traffic_fraction=None,
     prefetch=False,
     datetime=None,
@@ -14,6 +15,11 @@ def participate(experiment, alternatives, client_id,
     alt = None
     if force and force in alternatives:
         alt = Alternative(force, exp, redis=redis)
+
+        if record_force:
+            client = Client(client_id, redis=redis)
+            alt.record_participation(client, datetime)
+
     elif not cfg.get('enabled', True):
         alt = exp.control
     elif exp.winner is not None:
