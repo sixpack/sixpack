@@ -112,6 +112,8 @@ Arguments
 
 In this example, red will always be returned. This is used for testing only, and no participation will be recorded.
 
+``record_force`` (optional) for use with ``force``, participation will be recorded.
+
 ``traffic_fraction`` (optional) Sixpack allows for limiting experiments to a subset of traffic. You can pass the percentage of traffic you'd like to expose the test to as a decimal number here. (``?traffic_fraction=0.10`` for 10%)
 
 
