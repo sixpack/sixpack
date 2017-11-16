@@ -5,6 +5,7 @@ import sixpack
 from sixpack.models import Experiment, Alternative
 from sixpack.api import participate, convert
 
+import fakeredis
 
 class TestApi(unittest.TestCase):
 
@@ -22,6 +23,13 @@ class TestApi(unittest.TestCase):
         mock_find_or_create.return_value = Experiment("test", ["no", "yes"], winner=None)
         alternative = participate("test", ["no", "yes"], "id1", force="yes")
         self.assertEqual("yes", alternative.name)
+
+    @patch.object(Experiment, "find_or_create")
+    def test_participate_with_forced_and_record_force_alternative(self, mock_find_or_create):
+        mock_find_or_create.return_value = Experiment("test", ["no", "yes"], winner=None)
+        alternative = participate("test", ["no", "yes"], "id1", force="yes", record_force=True, redis=fakeredis.FakeStrictRedis())
+        self.assertEqual("yes", alternative.name)
+        self.assertEqual("test", alternative.experiment.name)
 
     @patch.object(Experiment, "find")
     def test_convert(self, mock_find):
