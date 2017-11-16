@@ -196,7 +196,7 @@ class Sixpack(object):
         alts = request.args.getlist('alternatives')
         experiment_name = request.args.get('experiment')
         force = request.args.get('force')
-        record_force = request.args.get('record_force')
+        record_force = to_bool(request.args.get('record_force', 'false'))
         client_id = request.args.get('client_id')
         traffic_fraction = request.args.get('traffic_fraction')
 
