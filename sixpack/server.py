@@ -48,7 +48,7 @@ class CORSMiddleware(object):
             if self.origin == '*':
                 return self.origin
             origin = environ.get("HTTP_ORIGIN", "")
-            return origin if self.origin_regexp.match(origin) else "null"
+            return origin if self.origin_regexp is not None and self.origin_regexp.match(origin) else "null"
 
         def add_cors_headers(status, headers, exc_info=None):
             headers = Headers(headers)
