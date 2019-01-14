@@ -1,0 +1,9 @@
+FROM python:2-alpine3.8
+MAINTAINER Swee Tat Lim "limsweetat@spgroup.com.sg"
+EXPOSE 5000 5001
+WORKDIR /sixpack
+RUN apk add build-base; \
+  git pull; \
+  pip install sixpack
+VOLUME /sixpack
+CMD SIXPACK_CONFIG=/sixpack/config.yml sixpack
