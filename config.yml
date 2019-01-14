@@ -1,7 +1,7 @@
 enabled: True
 
 redis_port: 6379
-redis_host: localhost
+redis_host: redis
 redis_prefix: sxp
 redis_db: 15
 
@@ -13,4 +13,4 @@ robot_regex: $^|trivial|facebook|MetaURI|butterfly|google|amazon|goldfire|sleuth
 ignored_ip_addresses: []
 
 asset_path: gen
-secret_key: '<your secret key here>'
+secret_key: 'spdigital'
