@@ -15,7 +15,6 @@ services:
       - redis
     volumes:
       - ./:/sixpack
-      - ./config.yml:/sixpack/config.yml
     ports:
       - "5000:5000"
     environment:
@@ -33,13 +32,13 @@ services:
     depends_on:
       - redis
     volumes:
-      - ./:/sixpack
-      - ./config.yml:/sixpack/config.yml
+      - ./:/sixpack/
     ports:
       - "8090:8090"
     environment:
       SIXPACK_CONFIG: /sixpack/config.yml
       SIXPACK_CONFIG_ENABLE: "true"
       SIXPACK_WEB_PORT: 8090
-    command:
-      sixpack-web
+    command: >
+      sh -c "python sixpack/test/seed &&
+        sixpack-web"
