@@ -19,7 +19,7 @@ Requirements
 * Redis >= 2.6
 * Python >= 2.7 (3.0 untested, pull requests welcome)
 
-Getting Started WIth Docker
+Getting Started With Docker
 ===========================
 
 The docker-compose.yml of the main directory should be sufficient for someone to just run the following command::
