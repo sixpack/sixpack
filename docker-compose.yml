@@ -14,15 +14,14 @@ services:
     depends_on:
       - redis
     volumes:
-      - ./:/sixpack
+      - ./:/sixpack/
     ports:
       - "5000:5000"
     environment:
-      SIXPACK_CONFIG: /sixpack/config.yml
-      SIXPACK_CONFIG_ENABLE: "true"
+      SIXPACK_CONFIG: /sixpack/docker-config.yml
       SIXPACK_PORT: 5000
-    command:
-      sixpack
+    command: >
+      sh -c "python /sixpack/bin/sixpack"
 
   sixpack-web:
     image: sixpack:1.0.3
@@ -36,9 +35,9 @@ services:
     ports:
       - "8090:8090"
     environment:
-      SIXPACK_CONFIG: /sixpack/config.yml
+      SIXPACK_CONFIG: /sixpack/docker-config.yml
       SIXPACK_CONFIG_ENABLE: "true"
       SIXPACK_WEB_PORT: 8090
     command: >
-      sh -c "python sixpack/test/seed &&
-        sixpack-web"
+      sh -c "python /sixpack/sixpack/test/seed \
+        && /sixpack/bin/sixpack-web"
