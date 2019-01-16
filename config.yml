@@ -12,7 +12,7 @@ robot_regex: $^|trivial|facebook|MetaURI|butterfly|google|amazon|goldfire|sleuth
 ignored_ip_addresses: []
 
 asset_path: gen
-secret_key: '<your key here>'
+secret_key: '<your secret key here>'
 
 cors_origin: '*'
 cors_headers: ...
