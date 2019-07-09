@@ -198,6 +198,8 @@ class Sixpack(object):
         force = request.args.get('force')
         record_force = to_bool(request.args.get('record_force', 'false'))
         client_id = request.args.get('client_id')
+        client = Client(client_id, redis=self.redis)
+        show_excluded = request.args.get('show_excluded') == 'true'
         traffic_fraction = request.args.get('traffic_fraction')
 
         if traffic_fraction is not None:
@@ -225,6 +227,8 @@ class Sixpack(object):
         except ValueError as e:
             return json_error({'message': str(e)}, request, 400)
 
+        excluded = bool(alt.experiment.is_client_excluded(client)) if show_excluded else "null"
+
         resp = {
             'alternative': {
                 'name': alt.name
@@ -233,6 +237,7 @@ class Sixpack(object):
                 'name': alt.experiment.name,
             },
             'client_id': client_id,
+            'excluded': excluded,
             'status': 'ok'
         }
 
