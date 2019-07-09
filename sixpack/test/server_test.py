@@ -65,19 +65,6 @@ class TestServer(unittest.TestCase):
         self.assertTrue('name' in data['experiment'])
         self.assertTrue('client_id' in data)
         self.assertTrue('status' in data)
-        self.assertEqual(data['excluded'], 'null')
-        self.assertEqual(data['status'], 'ok')
-
-    def test_ok_participate_with_excluded_parameter(self):
-        resp = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&show_excluded=true")
-        data = json.loads(resp.data)
-        self.assertEqual(200, resp.status_code)
-        self.assertTrue('alternative' in data)
-        self.assertTrue('name' in data['alternative'])
-        self.assertTrue('experiment' in data)
-        self.assertTrue('name' in data['experiment'])
-        self.assertTrue('client_id' in data)
-        self.assertTrue('status' in data)
         self.assertTrue(data['excluded'] == False or data['excluded'] == True)
         self.assertEqual(data['status'], 'ok')
 
