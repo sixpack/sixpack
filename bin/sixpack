@@ -3,6 +3,7 @@
 import os
 import sys
 
+from urlparse import urlparse
 from werkzeug.serving import run_simple
 from sixpack.server import create_app
 
@@ -10,6 +11,12 @@ sys.path.append("..")
 
 port = int(os.environ.get('SIXPACK_PORT', 5000))
 debug = 'SIXPACK_DEBUG' in os.environ
+
+if 'REDISTOGO_URL' in os.environ:
+    redistogo_url = urlparse(os.environ.get('REDISTOGO_URL'))
+    os.environ.update(SIXPACK_CONFIG_REDIS_HOST=redistogo_url.hostname,
+                      SIXPACK_CONFIG_REDIS_PORT=redistogo_url.port,
+                      SIXPACK_CONFIG_REDIS_PASSWORD=redistogo_url.password)
 
 app = create_app()
 run_simple('0.0.0.0', port, app, use_debugger=debug, use_reloader=debug)

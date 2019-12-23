@@ -1,0 +1,15 @@
+{
+  "addons": [
+    "redistogo"
+  ],
+  "buildpacks": [
+    "heroku/python-2.7.17"
+  ],
+  "env": {
+    "SIXPACK_CONFIG_SECRET": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "required": true,
+      "generator": "secret"
+    }
+  }
+}

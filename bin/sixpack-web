@@ -3,11 +3,18 @@
 import os
 import sys
 
+from urlparse import urlparse
 from sixpack.web import app
 
 sys.path.append("..")
 
 port = int(os.environ.get('SIXPACK_WEB_PORT', 5001))
 debug = 'SIXPACK_DEBUG' in os.environ
+
+if 'REDISTOGO_URL' in os.environ:
+    redistogo_url = urlparse(os.environ.get('REDISTOGO_URL'))
+    os.environ.update(SIXPACK_CONFIG_REDIS_HOST=redistogo_url.hostname,
+                      SIXPACK_CONFIG_REDIS_PORT=redistogo_url.port,
+                      SIXPACK_CONFIG_REDIS_PASSWORD=redistogo_url.password)
 
 app.run(host='0.0.0.0', port=port, debug=debug)
