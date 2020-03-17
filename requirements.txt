@@ -1,7 +1,7 @@
 closure==20121212
 decorator==3.3.2
 fakeredis==0.4.0
-Flask-Assets==0.12
+Flask-Assets==2.0
 Flask-DebugToolbar==0.7.1
 Flask-SeaSurf==0.1.13
 Flask-Cors==2.0.1
