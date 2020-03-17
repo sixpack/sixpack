@@ -6,7 +6,7 @@ Flask-DebugToolbar==0.7.1
 Flask-SeaSurf==0.1.13
 Flask-Cors==2.0.1
 Flask==0.10
-gevent==1.1.2
+gevent==1.4.0
 gunicorn>=17.5,<=19.4.1
 hiredis==0.1.4
 jsmin==2.0.2-1
