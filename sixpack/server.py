@@ -2,7 +2,8 @@ import os
 import re
 from socket import inet_aton
 import sys
-from urllib import unquote
+from urllib.parse import unquote
+
 
 import dateutil.parser
 from redis import ConnectionError
@@ -12,20 +13,20 @@ from werkzeug.exceptions import HTTPException, NotFound
 from werkzeug.datastructures import Headers
 
 from . import __version__
-from api import participate, convert
+from .api import participate, convert
 
-from config import CONFIG as cfg
-from metrics import init_statsd
-from utils import to_bool
+from .config import CONFIG as cfg
+from .metrics import init_statsd
+from .utils import to_bool
 
 try:
-    import db
+    from . import db
 except ConnectionError:
-    print "Redis is currently unavailable or misconfigured"
+    print("Redis is currently unavailable or misconfigured")
     sys.exit()
 
-from models import Experiment, Client
-from utils import service_unavailable_on_connection_error, json_error, json_success
+from .models import Experiment, Client
+from .utils import service_unavailable_on_connection_error, json_error, json_success
 
 
 class CORSMiddleware(object):

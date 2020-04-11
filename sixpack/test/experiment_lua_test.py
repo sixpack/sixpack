@@ -39,10 +39,10 @@ class TestExperimentLua(unittest.TestCase):
 
         # Only retrieve the slim set.
         data = exp.objectify_by_period("day", slim=True)
-        self.assertFalse(data.has_key("has_winner"))
-        self.assertFalse(data.has_key("kpi"))
-        self.assertFalse(data.has_key("kpis"))
-        self.assertFalse(data.has_key("period"))
+        self.assertFalse("has_winner" in data)
+        self.assertFalse("kpi" in data)
+        self.assertFalse("kpis" in data)
+        self.assertFalse("period" in data)
 
     def test_find_existing_conversion(self):
         exp = Experiment('test-find-existing-conversion', ['1', '2'], redis=self.app.redis)

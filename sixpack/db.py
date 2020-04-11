@@ -1,7 +1,7 @@
 import redis
 from redis.connection import PythonParser
 
-from config import CONFIG as cfg
+from .config import CONFIG as cfg
 
 # Because of a bug (https://github.com/andymccurdy/redis-py/issues/318) with
 # script reloading in `redis-py, we need to force the `PythonParser` to prevent
@@ -13,17 +13,19 @@ if cfg.get('redis_sentinels'):
                         password=cfg.get('redis_password', None),
                         socket_timeout=cfg.get('redis_socket_timeout'))
     pool = SentinelConnectionPool(service_name, sentinel,
-                                db=cfg.get('redis_db'),
-                                max_connections=cfg.get('redis_max_connections'),
-                                parser_class=PythonParser)
+                                  db=cfg.get('redis_db'),
+                                  max_connections=cfg.get(
+                                      'redis_max_connections'),
+                                  parser_class=PythonParser)
 else:
     from redis.connection import ConnectionPool
     pool = ConnectionPool(host=cfg.get('redis_host'),
-                        port=cfg.get('redis_port'),
-                        password=cfg.get('redis_password', None),
-                        db=cfg.get('redis_db'),
-                        max_connections=cfg.get('redis_max_connections'),
-                        parser_class=PythonParser)
+                          port=cfg.get('redis_port'),
+                          password=cfg.get('redis_password', None),
+                          db=cfg.get('redis_db'),
+                          max_connections=cfg.get('redis_max_connections'),
+                          parser_class=PythonParser,
+                          decode_responses=True)
 
 REDIS = redis.StrictRedis(connection_pool=pool)
 DEFAULT_PREFIX = cfg.get('redis_prefix')

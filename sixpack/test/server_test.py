@@ -34,29 +34,34 @@ class TestServer(unittest.TestCase):
         self.assertEqual('failed', data['status'])
 
     def test_sans_callback(self):
-        res = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two")
+        res = self.client.get(
+            "/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two")
         self.assertEqual(200, res.status_code)
         self.assertEqual("application/json", dict(res.headers)["Content-Type"])
-        self.assert_(res.data.startswith("{"))
-        self.assert_(res.data.endswith("}"))
+        self.assert_(res.data.startswith(b"{"))
+        self.assert_(res.data.endswith(b"}"))
 
     def test_with_callback(self):
-        res = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=seatgeek.cb")
+        res = self.client.get(
+            "/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=seatgeek.cb")
         self.assertEqual(200, res.status_code)
-        self.assertEqual("application/javascript", dict(res.headers)["Content-Type"])
-        self.assert_(res.data.startswith("seatgeek.cb({"))
-        self.assert_(res.data.endswith("})"))
+        self.assertEqual("application/javascript",
+                         dict(res.headers)["Content-Type"])
+        self.assert_(res.data.startswith(b"seatgeek.cb({"))
+        self.assert_(res.data.endswith(b"})"))
 
     def test_with_bad_callback(self):
         # TODO error out here instead?
-        res = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=alert();foo")
+        res = self.client.get(
+            "/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=alert();foo")
         self.assertEqual(200, res.status_code)
         self.assertEqual("application/json", dict(res.headers)["Content-Type"])
-        self.assert_(res.data.startswith("{"))
-        self.assert_(res.data.endswith("}"))
+        self.assert_(res.data.startswith(b"{"))
+        self.assert_(res.data.endswith(b"}"))
 
     def test_ok_participate(self):
-        resp = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two")
+        resp = self.client.get(
+            "/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two")
         data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
         self.assertTrue('alternative' in data)
@@ -68,7 +73,8 @@ class TestServer(unittest.TestCase):
         self.assertEqual(data['status'], 'ok')
 
     def test_participate_useragent_filter(self):
-        resp = self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&user_agent=fetch")
+        resp = self.client.get(
+            "/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&user_agent=fetch")
         data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
         self.assertTrue('alternative' in data)
@@ -77,7 +83,8 @@ class TestServer(unittest.TestCase):
         self.assertTrue('status' in data)
 
     def test_convert_useragent_filter(self):
-        resp = self.client.get("/convert?experiment=dummy&client_id=foo&user_agent=fetch")
+        resp = self.client.get(
+            "/convert?experiment=dummy&client_id=foo&user_agent=fetch")
         data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
         self.assertTrue('status' in data)
@@ -85,7 +92,8 @@ class TestServer(unittest.TestCase):
         self.assertEqual('true', data['excluded'])
 
     def test_convert(self):
-        self.client.get("/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=seatgeek.cb")
+        self.client.get(
+            "/participate?experiment=dummy&client_id=foo&alternatives=one&alternatives=two&callback=seatgeek.cb")
         resp = self.client.get("/convert?experiment=dummy&client_id=foo")
         data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
@@ -102,8 +110,10 @@ class TestServer(unittest.TestCase):
         self.assertEqual(data['conversion']['kpi'], None)
 
     def test_convert_with_kpi(self):
-        self.client.get("/participate?experiment=dummy-kpi&client_id=foo&alternatives=one&alternatives=two")
-        resp = self.client.get("/convert?experiment=dummy-kpi&client_id=foo&kpi=alligator")
+        self.client.get(
+            "/participate?experiment=dummy-kpi&client_id=foo&alternatives=one&alternatives=two")
+        resp = self.client.get(
+            "/convert?experiment=dummy-kpi&client_id=foo&kpi=alligator")
         data = json.loads(resp.data)
         self.assertEqual(200, resp.status_code)
         self.assertTrue('status' in data)
@@ -119,8 +129,10 @@ class TestServer(unittest.TestCase):
         self.assertEqual(data['conversion']['kpi'], 'alligator')
 
     def test_convert_bad_kpi_failure(self):
-        self.client.get("/participate?experiment=dummy-kpi&client_id=foo&alternatives=one&alternatives=two")
-        resp = self.client.get("/convert?experiment=dummy-kpi&client_id=foo&kpi=&&^^!*(")
+        self.client.get(
+            "/participate?experiment=dummy-kpi&client_id=foo&alternatives=one&alternatives=two")
+        resp = self.client.get(
+            "/convert?experiment=dummy-kpi&client_id=foo&kpi=&&^^!*(")
         data = json.loads(resp.data)
         self.assertEqual(400, resp.status_code)
         self.assertTrue('status' in data)
@@ -136,9 +148,16 @@ class TestServer(unittest.TestCase):
         self.assertEqual(data['message'], 'experiment does not exist')
 
     def test_client_id(self):
-        resp = self.client.get("/participate?experiment=dummy&alternatives=one&alternatives=two")
+        resp = self.client.get(
+            "/participate?experiment=dummy&alternatives=one&alternatives=two")
         data = json.loads(resp.data)
         self.assertEqual(400, resp.status_code)
         self.assertTrue('status' in data)
         self.assertEqual(data['status'], 'failed')
         self.assertEqual(data['message'], 'missing arguments')
+
+    def test_experiment_details(self):
+        resp = self.client.get("/experiments/dummy")
+        data = json.loads(resp.data)
+        self.assertEqual(200, resp.status_code)
+        self.assertEqual(data['name'], 'dummy')

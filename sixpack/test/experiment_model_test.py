@@ -1,6 +1,5 @@
 import unittest
-# from numbers import Number
-# from sixpack.db import _key
+
 from datetime import datetime
 
 import fakeredis
@@ -14,13 +13,12 @@ class FakePipelineRaisesWatchError(fakeredis.FakePipeline):
     def execute(self):
         raise redis.WatchError
 
-
 class TestExperimentModel(unittest.TestCase):
 
     unit = True
 
     def setUp(self):
-        self.redis = fakeredis.FakeStrictRedis()
+        self.redis = fakeredis.FakeStrictRedis(decode_responses=True)
         self.alternatives = ['yes', 'no']
 
         self.exp_1 = Experiment('show-something-awesome', self.alternatives, redis=self.redis)
@@ -192,7 +190,7 @@ class TestExperimentModel(unittest.TestCase):
         exp = Experiment.find_or_create('reset-test', ['w', 'l'], redis=self.redis)
         exp.get_alternative(client)
 
-        # archive and afterwards reset to see if we 
+        # archive and afterwards reset to see if we
         # actually reset the data.
         exp.archive()
         self.assertEqual(exp.is_archived(), True)
@@ -266,7 +264,7 @@ class TestExperimentModel(unittest.TestCase):
         exp_1.resume()
         # We should have 4 active experiments
         all_active_experiments = Experiment.all(redis=self.redis)
-        self.assertEqual(len(all_active_experiments), 4)        
+        self.assertEqual(len(all_active_experiments), 4)
 
         # Archive the experiment
         exp_1.archive()
@@ -348,7 +346,6 @@ class TestExperimentModel(unittest.TestCase):
 
         real_pipeline = self.redis.pipeline
         self.redis.pipeline = fake_pipeline
-
         # this experiment encounters a WatchError upon saving and only
         # persists its traffic_fraction...
         exp = Experiment('experiment', self.alternatives, redis=self.redis)

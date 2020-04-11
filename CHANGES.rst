@@ -1,9 +1,13 @@
 Changelog
 =========
 
+2.8.0 (2020-04-11)
+------------------
+- Adjusted code to support Python 3.7 (tested with 3.7.5) [Igor Springer]
+- Bumped up several dependencies to support Python 3 [Igor Springer]
+
 2.7.0 (2017-11-22)
 ------------------
-------------
 - Merge pull request #286 from dbillingham/master. [Zack Kitzmiller]
 
   Add option to record forced experiment

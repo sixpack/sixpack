@@ -14,7 +14,7 @@ class TestAlternativeChoice(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
         self.client = Client(self.app, BaseResponse)
-        self.redis = fakeredis.FakeStrictRedis()
+        self.redis = fakeredis.FakeStrictRedis(decode_responses=True)
 
     def test_bots_get_winner_otherwise_control(self):
         e = Experiment.find_or_create("bots-get-winner", ["one", "two"], redis=self.app.redis)

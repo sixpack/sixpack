@@ -1,20 +1,19 @@
-import urllib
-
+from urllib.parse import unquote
 from flask import Flask
 from flask import render_template, abort, request, url_for, redirect, jsonify, make_response
-from flask.ext.seasurf import SeaSurf
-from flask.ext.assets import Environment, Bundle
-from flask.ext.cors import CORS
+from flask_seasurf import SeaSurf
+from flask_assets import Environment, Bundle
+from flask_cors import CORS
 from flask_debugtoolbar import DebugToolbarExtension
 from markdown import markdown
 from werkzeug.contrib.fixers import ProxyFix
 
 from . import __version__
-from config import CONFIG as cfg
-import db
-from models import Experiment
-from analysis import ExportExperiment
-import utils
+from .config import CONFIG as cfg
+from . import db
+from .models import Experiment
+from .analysis import ExportExperiment
+from . import utils
 
 import re
 
@@ -54,11 +53,13 @@ def hello():
     experiments = [exp.name for exp in experiments]
     return render_template('dashboard.html', experiments=experiments, page='home')
 
+
 @app.route('/archived')
 def archived():
     experiments = Experiment.archived(redis=db.REDIS)
     experiments = [exp.name for exp in experiments]
     return render_template('dashboard.html', experiments=experiments, page='archived')
+
 
 @app.route('/paused')
 def paused():
@@ -66,11 +67,13 @@ def paused():
     experiments = [exp.name for exp in experiments]
     return render_template('dashboard.html', experiments=experiments, page='paused')
 
+
 @app.route('/experiments.json')
 def experiment_list():
     experiments = Experiment.all(redis=db.REDIS)
     period = determine_period()
-    experiments = [simple_markdown(exp.objectify_by_period(period)) for exp in experiments]
+    experiments = [simple_markdown(
+        exp.objectify_by_period(period)) for exp in experiments]
     return jsonify({'experiments': experiments})
 
 
@@ -98,7 +101,8 @@ def export(experiment_name):
     response.headers["Content-Type"] = "text/csv"
     # force a download with the content-disposition headers
     filename = "sixpack_export_{0}".format(experiment_name)
-    response.headers["Content-Disposition"] = "attachment; filename={0}.csv".format(filename)
+    response.headers["Content-Disposition"] = "attachment; filename={0}.csv".format(
+        filename)
 
     return response
 
@@ -188,7 +192,7 @@ def internal_server_error(e):
 
 def find_or_404(experiment_name):
     try:
-        experiment_name = url=urllib.unquote(experiment_name).decode('utf8')
+        experiment_name = unquote(experiment_name)
         exp = Experiment.find(experiment_name, db.REDIS)
         if request.args.get('kpi'):
             exp.set_kpi(request.args.get('kpi'))
@@ -210,6 +214,7 @@ def simple_markdown(experiment):
     if description and description != '':
         experiment['pretty_description'] = markdown(description)
     return experiment
+
 
 app.secret_key = cfg.get('secret_key')
 app.jinja_env.filters['number_to_percent'] = utils.number_to_percent

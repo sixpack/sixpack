@@ -17,7 +17,7 @@ setup(
     url='http://github.com/seatgeek/sixpack',
     license=open('LICENSE.txt').read(),
     classifiers=[
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.7',
     ],
     description='A/B testing framework under active development at SeatGeek',
     long_description=open('README.rst').read() + '\n\n' +

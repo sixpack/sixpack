@@ -1,4 +1,4 @@
-import cStringIO as StringIO
+from io import StringIO
 import csv
 
 

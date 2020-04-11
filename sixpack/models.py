@@ -1,13 +1,15 @@
 from datetime import datetime
 from hashlib import sha1
 from math import log
+from itertools import chain
+
 import operator
 import random
 import re
 import redis
 
-from config import CONFIG as cfg
-from db import _key, msetbit, sequential_id, first_key_with_bit_set
+from .config import CONFIG as cfg
+from .db import _key, msetbit, sequential_id, first_key_with_bit_set
 
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_]*$", re.I)
@@ -109,7 +111,10 @@ class Experiment(object):
     def created_at(self):
         # Note: the split here is to correctly format legacy dates
         try:
-            return self.redis.hget(self.key(), 'created_at').split('.')[0]
+            date = self.redis.hget(self.key(), 'created_at').split('.')[0]
+
+            # Type casting to return `string` object for both Python 2 & 3
+            return str(date)
         except (AttributeError) as e:
             return None
 
@@ -184,7 +189,7 @@ class Experiment(object):
     def description(self):
         description = self.redis.hget(self.key(), 'description')
         if description:
-            return description.decode("utf-8", "replace")
+            return description
         else:
             return None
 
@@ -379,7 +384,7 @@ class Experiment(object):
         return self.alternatives[idx]
 
     def _get_hash(self, client):
-        salty = "{0}.{1}".format(self.name, client.client_id)
+        salty = "{0}.{1}".format(self.name, client.client_id).encode()
 
         # We're going to take the first 7 bytes of the client UUID
         # because of the largest integer values that can be represented safely
@@ -444,7 +449,7 @@ class Experiment(object):
             experiment.set_traffic_fraction(traffic_fraction)
             experiment.save()
 
-        # Only check traffic fraction if the experiment is being updated 
+        # Only check traffic fraction if the experiment is being updated
         # and the traffic fraction actually changes.
         if is_update and experiment.traffic_fraction != traffic_fraction:
             experiment.set_traffic_fraction(traffic_fraction)
@@ -488,16 +493,18 @@ class Experiment(object):
     @staticmethod
     def load_alternatives(experiment_name, redis=None):
         key = _key("e:{0}:alternatives".format(experiment_name))
-        return redis.lrange(key, 0, -1)
+        alternatives = redis.lrange(key, 0, -1)
+
+        return alternatives
 
     @staticmethod
     def is_valid(experiment_name):
-        return (isinstance(experiment_name, basestring) and
+        return (isinstance(experiment_name, str) and
                 VALID_EXPERIMENT_ALTERNATIVE_RE.match(experiment_name) is not None)
 
     @staticmethod
     def validate_kpi(kpi):
-        return (isinstance(kpi, basestring) and
+        return (isinstance(kpi, str) and
                 VALID_KPI_RE.match(kpi) is not None)
 
 
@@ -538,7 +545,8 @@ class Alternative(object):
         conversions = conversion_fn()
         participants = participants_fn()
 
-        dates = sorted(list(set(conversions.keys() + participants.keys())))
+        dates = sorted(set(chain(conversions.keys(), participants.keys())))
+
         for date in dates:
             _data = {
                 'conversions': conversions.get(date, 0),
@@ -807,5 +815,5 @@ class Alternative(object):
 
     @staticmethod
     def is_valid(alternative_name):
-        return (isinstance(alternative_name, basestring) and
+        return (isinstance(alternative_name, str) and
                 VALID_EXPERIMENT_ALTERNATIVE_RE.match(alternative_name) is not None)

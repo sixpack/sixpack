@@ -1,7 +1,7 @@
 import yaml
 import os
 
-from utils import to_bool
+from .utils import to_bool
 
 config_path = os.environ.get('SIXPACK_CONFIG', None)
 if config_path:
@@ -10,7 +10,7 @@ if config_path:
     except IOError:
         raise RuntimeError(
             'SIXPACK_CONFIG - {0} - is an invalid path'.format(config_path))
-    except yaml.YAMLError, exc:
+    except yaml.YAMLError as exc:
         raise RuntimeError('Error in configuration file: {0}'.format(str(exc)))
 else:
     CONFIG = {
