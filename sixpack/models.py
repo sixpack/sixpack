@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging
 from hashlib import sha1
 from math import log
 import operator
@@ -7,7 +8,7 @@ import re
 import redis
 
 from config import CONFIG as cfg
-from db import _key, msetbit, sequential_id, first_key_with_bit_set
+from db import _key, msetbit, mincrby, sequential_id, first_key_with_bit_set
 
 # This is pretty restrictive, but we can always relax it later.
 VALID_EXPERIMENT_ALTERNATIVE_RE = re.compile(r"^[a-z0-9][a-z0-9\-_]*$", re.I)
@@ -234,7 +235,7 @@ class Experiment(object):
     def is_paused(self):
         return self.redis.hexists(self.key(), 'paused')
 
-    def convert(self, client, dt=None, kpi=None):
+    def convert(self, client, dt=None, kpi=None, kpi_value=None):
         if self.is_archived():
             raise ValueError('this experiment is archived and can no longer be updated')
 
@@ -254,7 +255,7 @@ class Experiment(object):
             self.add_kpi(kpi)
 
         if not self.existing_conversion(client):
-            alternative.record_conversion(client, dt=dt)
+            alternative.record_conversion(client, dt=dt, kpi_value=kpi_value)
 
         return alternative
 
@@ -546,7 +547,9 @@ class Alternative(object):
                 'date': date
             }
             data.append(_data)
-
+        cnt = self.completed_count()
+        if self.experiment.kpi is not None:
+            cnt = self.completed_sum()
         objectified = {
             'name': self.name,
             'data': data,
@@ -555,7 +558,7 @@ class Alternative(object):
             'is_winner': self.is_winner(),
             'test_statistic': self.g_stat(),
             'participant_count': self.participant_count(),
-            'completed_count': self.completed_count(),
+            'completed_count': cnt,
             'confidence_level': self.confidence_level(),
             'confidence_interval': self.confidence_interval()
         }
@@ -585,6 +588,14 @@ class Alternative(object):
     def completed_count(self):
         key = _key("c:{0}:{1}:users:all".format(self.experiment.kpi_key(), self.name))
         return self.redis.bitcount(key)
+
+    def completed_sum(self):
+        key = _key("c:{0}:{1}:users:sum".format(self.experiment.kpi_key(), self.name))
+        v = self.redis.get(key)
+        if v is None:
+            return 0
+
+        return float(v)
 
     def conversions_by_day(self):
         return self._get_stats('conversions', 'days')
@@ -618,11 +629,20 @@ class Alternative(object):
         for k in keys:
             name = self.name if stat_type == 'p' else "{0}:users".format(self.name)
             range_key = _key("{0}:{1}:{2}:{3}".format(stat_type, exp_key, name, k))
-            pipe.bitcount(range_key)
+            if stat_type == 'p':
+                pipe.bitcount(range_key)
+            elif stat_type == 'c':
+                pipe.get(range_key)
+            else:
+                raise ValueError("Unrecognized stat type: {0}".format(stat_type))
 
         redis_results = pipe.execute()
         for idx, k in enumerate(keys):
-            stats[k] = float(redis_results[idx])
+            v = redis_results[idx]
+            if v is None:
+                stats[k] = float(0)
+            else:
+                stats[k] = float(redis_results[idx])
 
         return stats
 
@@ -655,7 +675,7 @@ class Alternative(object):
         ]
         msetbit(keys=keys, args=([self.experiment.sequential_id(client), 1] * len(keys)))
 
-    def record_conversion(self, client, dt=None):
+    def record_conversion(self, client, dt=None, kpi_value=None):
         """Record a user's conversion in a test along with a given variation"""
         if dt is None:
             date = datetime.now()
@@ -673,20 +693,34 @@ class Alternative(object):
         pipe.execute()
 
         keys = [
-            _key("c:{0}:_all:users:all".format(experiment_key)),
             _key("c:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y'))),
             _key("c:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y-%m'))),
             _key("c:{0}:_all:users:{1}".format(experiment_key, date.strftime('%Y-%m-%d'))),
-            _key("c:{0}:{1}:users:all".format(experiment_key, self.name)),
             _key("c:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y'))),
             _key("c:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y-%m'))),
             _key("c:{0}:{1}:users:{2}".format(experiment_key, self.name, date.strftime('%Y-%m-%d'))),
+            _key("c:{0}:_all:users:sum".format(experiment_key)),
+            _key("c:{0}:{1}:users:sum".format(experiment_key, self.name)),
         ]
-        msetbit(keys=keys, args=([self.experiment.sequential_id(client), 1] * len(keys)))
+
+        keys_bit = [
+            _key("c:{0}:_all:users:all".format(experiment_key)),
+            _key("c:{0}:{1}:users:all".format(experiment_key, self.name)),
+        ]
+
+        val = 1
+        if kpi_value is not None:
+            val = int(kpi_value)
+
+        mincrby(keys=keys, args=([int(val)] * len(keys)))
+        msetbit(keys=keys_bit, args=([self.experiment.sequential_id(client), 1] * len(keys_bit)))
 
     def conversion_rate(self):
         try:
-            return self.completed_count() / float(self.participant_count())
+            cnt = self.completed_count()
+            if self.experiment.kpi is not None:
+                cnt = self.completed_sum()
+            return cnt / float(self.participant_count())
         except ZeroDivisionError:
             return 0
 
@@ -797,8 +831,12 @@ class Alternative(object):
     def confidence_interval(self):
         try:
             # 80% confidence
-            p = self.conversion_rate()
-            return pow(p * (1 - p) / self.participant_count(), 0.5) * 1.28 * 100
+            c = self.conversion_rate()
+            p = self.participant_count()
+            pp = c * (1 - c) / self.participant_count()
+            if pp < 0:
+                pp = 1
+            return pow(pp, 0.5) * 1.28 * 100
         except ZeroDivisionError:
             return 0
 
