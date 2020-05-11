@@ -15,7 +15,7 @@ mock==1.0.1
 python-coveralls==2.4.3
 python-dateutil==1.5
 PyYAML==3.10
-redis==2.9.0
+redis==3.5.1
 statsd==3.2.1
 webassets==2.0
 Werkzeug==0.15.3
