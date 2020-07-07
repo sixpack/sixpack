@@ -397,7 +397,7 @@ class TestExperimentModel(unittest.TestCase):
 
     def test_set_kpi(self):
         exp = Experiment.find_or_create('multi-kpi', ['kpi', '123'], redis=self.redis)
-        # We shouldn't beable to manually set a KPI. Only via web request
+        # We shouldn't be able to manually set a KPI. Only via web request
         with self.assertRaises(ValueError):
             exp.set_kpi('bananza')
 
