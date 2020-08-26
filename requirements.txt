@@ -5,7 +5,7 @@ Flask-Assets==2.0
 Flask-DebugToolbar==0.7.1
 Flask-SeaSurf==0.1.13
 Flask-Cors==2.0.1
-Flask==0.11
+Flask==1.0
 gevent==20.6.2
 gunicorn>=17.5,<=19.4.1
 hiredis==0.1.4
