@@ -19,4 +19,4 @@ redis==3.5.3
 statsd==3.2.1
 webassets==2.0
 Werkzeug==0.15.3
-yuicompressor==2.4.7
+yuicompressor==2.4.8
