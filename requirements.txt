@@ -1,4 +1,4 @@
-closure==20121212
+closure==20191111
 decorator==3.3.2
 fakeredis==1.4.3
 Flask-Assets==2.0
