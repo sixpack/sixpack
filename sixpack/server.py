@@ -161,6 +161,7 @@ class Sixpack(object):
         experiment_name = request.args.get('experiment')
         client_id = request.args.get('client_id')
         kpi = request.args.get('kpi', None)
+        kpi_value = request.args.get('kpi_value', None)
 
         if client_id is None or experiment_name is None:
             return json_error({'message': 'missing arguments'}, request, 400)
@@ -170,7 +171,7 @@ class Sixpack(object):
             dt = dateutil.parser.parse(request.args.get("datetime"))
 
         try:
-            alt = convert(experiment_name, client_id, kpi=kpi,
+            alt = convert(experiment_name, client_id, kpi=kpi, kpi_value=kpi_value,
                           datetime=dt, redis=self.redis)
         except ValueError as e:
             return json_error({'message': str(e)}, request, 400)

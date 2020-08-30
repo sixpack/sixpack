@@ -56,6 +56,12 @@ msetbit = REDIS.register_script("""
     return redis.status_reply('ok')
 """)
 
+mincrby = REDIS.register_script("""
+    for index, value in ipairs(KEYS) do
+        redis.call('incrby', value, ARGV[index])
+    end
+    return redis.status_reply('ok')
+""")
 
 first_key_with_bit_set = REDIS.register_script("""
     for index, value in ipairs(KEYS) do
