@@ -72,6 +72,17 @@ Alternatively, as of version 1.1, all Sixpack configuration can be set by enviro
 * ``SIXPACK_METRICS``
 * ``STATSD_URL``
 
+Running the Source
+==================
+
+The file `./bin/sixpack` and `./bin/sixpack-web` will attempt to resolve the globally installed version of sixpack when executing.
+
+The following command can be used when developing in order to ensure that the latest code is running globally:
+
+`sudo rm -rf /usr/lib/python2.7/site-packages/Sixpack*; ./setup.py build; sudo python ./setup.py install`
+
+Provided the above command is run after each set of changes, the `./bin/sixpack` and `./bin/sixpack-web` commands will work as expected.
+
 Using the API
 =============
 
@@ -116,6 +127,7 @@ In this example, red will always be returned. This is used for testing only, and
 
 ``traffic_fraction`` (optional) Sixpack allows for limiting experiments to a subset of traffic. You can pass the percentage of traffic you'd like to expose the test to as a decimal number here. (``?traffic_fraction=0.10`` for 10%)
 
+``allow_alternatives_change`` (optional) If Sixpack detects that a different set of alternatives is being used with an existing experiment, the experiment will be deleted and re-created with the new alternatives. Valid values are 'true' and 'false'
 
 Response
 --------

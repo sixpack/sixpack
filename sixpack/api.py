@@ -8,9 +8,14 @@ def participate(experiment, alternatives, client_id,
     traffic_fraction=None,
     prefetch=False,
     datetime=None,
+    allow_alternatives_change=False,
     redis=None):
 
-    exp = Experiment.find_or_create(experiment, alternatives, traffic_fraction=traffic_fraction, redis=redis)
+    exp = None
+    if allow_alternatives_change is True:
+        exp = Experiment.find_or_recreate(experiment, alternatives, traffic_fraction=traffic_fraction, redis=redis)
+    else:
+        exp = Experiment.find_or_create(experiment, alternatives, traffic_fraction=traffic_fraction, redis=redis)
 
     alt = None
     if force and force in alternatives:
@@ -45,3 +50,8 @@ def convert(experiment, client_id,
         alt = exp.control
 
     return alt
+
+def delete(experiment, redis=None):
+    exp = Experiment.find(experiment, redis=redis)
+    exp.delete()
+    return exp

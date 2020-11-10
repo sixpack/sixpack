@@ -12,7 +12,7 @@ from werkzeug.exceptions import HTTPException, NotFound
 from werkzeug.datastructures import Headers
 
 from . import __version__
-from api import participate, convert
+from api import participate, convert, delete
 
 from config import CONFIG as cfg
 from metrics import init_statsd
@@ -48,7 +48,7 @@ class CORSMiddleware(object):
             if self.origin == '*' or self.origin is None:
                 return self.origin
             origin = environ.get("HTTP_ORIGIN", "")
-            return origin if self.origin_regexp.match(origin) else "null"
+            return origin if self.origin_regexp is not None and self.origin_regexp.match(origin) else "null"
 
         def add_cors_headers(status, headers, exc_info=None):
             headers = Headers(headers)
@@ -84,6 +84,7 @@ class Sixpack(object):
             Rule('/_status', endpoint='status'),
             Rule('/participate', endpoint='participate'),
             Rule('/convert', endpoint='convert'),
+            Rule('/delete', endpoint='delete'),
             Rule('/experiments/<name>', endpoint='experiment_details'),
             Rule('/favicon.ico', endpoint='favicon')
         ])
@@ -199,6 +200,7 @@ class Sixpack(object):
         record_force = to_bool(request.args.get('record_force', 'false'))
         client_id = request.args.get('client_id')
         traffic_fraction = request.args.get('traffic_fraction')
+        allow_alternatives_change = request.args.get('allow_alternatives_change') == 'true'
 
         if traffic_fraction is not None:
             traffic_fraction = float(traffic_fraction)
@@ -221,7 +223,9 @@ class Sixpack(object):
                 alt = participate(experiment_name, alts, client_id,
                                   force=force, record_force=record_force,
                                   traffic_fraction=traffic_fraction,
-                                  prefetch=prefetch, datetime=dt, redis=self.redis)
+                                  prefetch=prefetch, datetime=dt,
+                                  allow_alternatives_change=allow_alternatives_change,
+                                  redis=self.redis)
         except ValueError as e:
             return json_error({'message': str(e)}, request, 400)
 
@@ -236,6 +240,26 @@ class Sixpack(object):
             'status': 'ok'
         }
 
+        return json_success(resp, request)
+
+    @service_unavailable_on_connection_error
+    def on_delete(self, request):
+        experiment_name = request.args.get('experiment')
+
+        if experiment_name is None:
+            return json_error({'message': 'missing arguments'}, request, 400)
+
+        try:
+            deletedExp = delete(experiment_name, self.redis)
+        except ValueError as e:
+            return json_error({'message': str(e)}, request, 400)
+
+        resp = {
+            'experiment': {
+                'name': deletedExp.name,
+            },
+            'status': 'ok'
+        }
         return json_success(resp, request)
 
     @service_unavailable_on_connection_error

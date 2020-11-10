@@ -457,6 +457,45 @@ class Experiment(object):
 
         return experiment
 
+    @classmethod
+    def find_or_recreate(cls, experiment_name, alternatives,
+                       traffic_fraction=None,
+                       redis=None):
+
+        if len(alternatives) < 2:
+            raise ValueError('experiments require at least two alternatives')
+
+        # Traffic fraction can change at any time, so it needs to be
+        # checked.
+        if traffic_fraction is None:
+            traffic_fraction = 1
+
+        is_update = False
+        try:
+            experiment = Experiment.find(experiment_name, redis=redis)
+            is_update = True
+
+            # If the experiment name already exists, but has different alternatives now than it had before, then we need
+            # to delete that experiment and create a new one
+            if sorted(experiment.get_alternative_names()) != sorted(alternatives):
+                experiment.delete()
+                raise ValueError(
+                    'experiment alternatives have changed. automatically re-creating experiment with new alternatives.'
+                )
+        except ValueError:
+            experiment = cls(experiment_name, alternatives, redis=redis)
+            # TODO: I want to revisit this later.
+            experiment.set_traffic_fraction(traffic_fraction)
+            experiment.save()
+
+        # Only check traffic fraction if the experiment is being updated
+        # and the traffic fraction actually changes.
+        if is_update and experiment.traffic_fraction != traffic_fraction:
+            experiment.set_traffic_fraction(traffic_fraction)
+            experiment.save()
+
+        return experiment
+
     @staticmethod
     def all_names(redis=None):
         return redis.smembers(_key('e'))
