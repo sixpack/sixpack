@@ -1,5 +1,5 @@
 closure==20121212
-decorator==3.3.2
+decorator==5.0.9
 fakeredis==1.4.3
 Flask-Assets==2.0
 Flask-DebugToolbar==0.7.1
