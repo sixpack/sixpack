@@ -147,7 +147,7 @@ Conversion Arguments
 
 - ``experiment`` (required) the name of the experiment you would like to convert on.
 - ``client_id`` (required) the client you would like to convert.
-- ``kpi`` (optional) sixpack supports recording multiple KPIs. If you would like to track conversion against a specfic KPI, you can do that here. If the KPI does not exist, it will be created automatically.
+- ``kpi`` (optional) sixpack supports recording multiple KPIs. If you would like to track conversion against a specific KPI, you can do that here. If the KPI does not exist, it will be created automatically.
 
 Notes
 -----

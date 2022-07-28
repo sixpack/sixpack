@@ -36,7 +36,7 @@ class Experiment(object):
         self.alternatives = self.initialize_alternatives(alternatives)
         self.kpi = None
 
-        # False here is a sentinal value for "not looked up yet"
+        # False here is a sentinel value for "not looked up yet"
         self._winner = winner
         self._traffic_fraction = traffic_fraction
         self._sequential_ids = dict()
